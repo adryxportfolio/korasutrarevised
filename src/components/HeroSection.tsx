@@ -111,7 +111,7 @@ export function HeroSection() {
             delay: 0.5
           }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6">Wear it with
             <br />
-              <span className="italic text-accent">​Pride</span>
+              <span className="italic text-[#0f0901]">​Pride</span>
             </motion.h1>
             
             <motion.p initial={{
