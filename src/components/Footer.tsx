@@ -4,23 +4,9 @@ import { Instagram, Facebook, Mail, Phone, MapPin } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const footerLinks = {
-  shop: [
-    { name: 'All Sarees', href: '/sarees' },
-    { name: 'New Arrivals', href: '/new-arrivals' },
-    { name: 'Bestsellers', href: '/bestsellers' },
-    { name: 'Sale', href: '/sale' },
-  ],
-  collections: [
-    { name: 'Silk Sarees', href: '/collections/silk' },
-    { name: 'Cotton Sarees', href: '/collections/cotton' },
-    { name: 'Banarasi', href: '/collections/banarasi' },
-    { name: 'Tissue', href: '/collections/tissue' },
-  ],
   company: [
     { name: 'About Us', href: '/about' },
-    { name: 'Our Story', href: '/story' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Careers', href: '/careers' },
   ],
   support: [
     { name: 'Shipping', href: '/shipping' },
@@ -64,39 +50,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Links */}
-          <div>
-            <h4 className="font-heading text-lg mb-4">Shop</h4>
-            <ul className="space-y-2">
-              {footerLinks.shop.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors font-body"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-heading text-lg mb-4">Collections</h4>
-            <ul className="space-y-2">
-              {footerLinks.collections.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors font-body"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
+          {/* Company Links */}
           <div>
             <h4 className="font-heading text-lg mb-4">Company</h4>
             <ul className="space-y-2">
@@ -113,6 +67,7 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* Support Links */}
           <div>
             <h4 className="font-heading text-lg mb-4">Support</h4>
             <ul className="space-y-2">
