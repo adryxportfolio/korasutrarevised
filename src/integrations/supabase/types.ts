@@ -64,7 +64,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      reviews_public: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          customer_name: string | null
+          helpful_count: number | null
+          id: string | null
+          is_approved: boolean | null
+          is_verified_purchase: boolean | null
+          product_handle: string | null
+          product_id: string | null
+          rating: number | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          helpful_count?: number | null
+          id?: string | null
+          is_approved?: boolean | null
+          is_verified_purchase?: boolean | null
+          product_handle?: string | null
+          product_id?: string | null
+          rating?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          helpful_count?: number | null
+          id?: string | null
+          is_approved?: boolean | null
+          is_verified_purchase?: boolean | null
+          product_handle?: string | null
+          product_id?: string | null
+          rating?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_product_review_stats: {
