@@ -96,7 +96,7 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.4
-          }} className="inline-block text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 font-body">
+          }} className="inline-block tracking-[0.3em] text-muted-foreground uppercase mb-4 font-body text-2xl">
               Kora Sutra 
             </motion.span>
             
@@ -123,7 +123,7 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.7
-          }} className="text-lg text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed">
+          }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed text-xl">
               Discover the artistry of handcrafted sarees, where every thread tells a story of pure elegance and timeless tradition.
             </motion.p>
             
