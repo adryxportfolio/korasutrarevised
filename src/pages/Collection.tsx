@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Loader2, SlidersHorizontal, ChevronDown, Heart, X } from 'lucide-react';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { Navbar } from '@/components/Navbar';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,6 +53,7 @@ const collectionConfig: Record<string, { title: string; description: string; que
 };
 
 type SortOption = 'featured' | 'price-low' | 'price-high' | 'newest';
+type BlouseFilter = 'all' | 'with-blouse' | 'without-blouse';
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'featured', label: 'Featured' },
@@ -59,6 +61,43 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'price-high', label: 'Price: High to Low' },
   { value: 'newest', label: 'Newest' },
 ];
+
+// Common color mapping for normalization
+const colorMap: Record<string, string> = {
+  'red': '#DC2626',
+  'pink': '#EC4899',
+  'rose': '#F43F5E',
+  'orange': '#F97316',
+  'yellow': '#EAB308',
+  'gold': '#D4AF37',
+  'green': '#22C55E',
+  'teal': '#14B8A6',
+  'blue': '#3B82F6',
+  'navy': '#1E3A5A',
+  'purple': '#A855F7',
+  'violet': '#8B5CF6',
+  'maroon': '#800000',
+  'brown': '#92400E',
+  'beige': '#D4B896',
+  'cream': '#FFFDD0',
+  'ivory': '#FFFFF0',
+  'white': '#FFFFFF',
+  'grey': '#6B7280',
+  'gray': '#6B7280',
+  'black': '#1F2937',
+  'off-white': '#FAF9F6',
+  'mustard': '#FFDB58',
+  'peach': '#FFCBA4',
+  'coral': '#FF7F50',
+  'magenta': '#FF00FF',
+  'wine': '#722F37',
+  'rust': '#B7410E',
+  'olive': '#808000',
+  'turquoise': '#40E0D0',
+  'aqua': '#00FFFF',
+  'lavender': '#E6E6FA',
+  'mint': '#98FB98',
+};
 
 export default function Collection() {
   const { slug } = useParams<{ slug: string }>();
@@ -70,12 +109,81 @@ export default function Collection() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [maxPrice, setMaxPrice] = useState(50000);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [blouseFilter, setBlouseFilter] = useState<BlouseFilter>('all');
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
 
   const config = slug ? collectionConfig[slug] : null;
   const searchQuery = searchParams.get('q');
+
+  // Extract available colors from products
+  const availableColors = useMemo(() => {
+    const colorsSet = new Set<string>();
+    products.forEach(product => {
+      // Check tags for colors
+      product.node.tags?.forEach(tag => {
+        const normalizedTag = tag.toLowerCase().trim();
+        if (colorMap[normalizedTag]) {
+          colorsSet.add(normalizedTag);
+        }
+      });
+      // Check title and description for colors
+      const textToSearch = `${product.node.title} ${product.node.description}`.toLowerCase();
+      Object.keys(colorMap).forEach(color => {
+        if (textToSearch.includes(color)) {
+          colorsSet.add(color);
+        }
+      });
+    });
+    return Array.from(colorsSet).sort();
+  }, [products]);
+
+  // Check if product has blouse
+  const hasBlouse = (product: ShopifyProduct): boolean => {
+    const text = `${product.node.title} ${product.node.description}`.toLowerCase();
+    const tags = product.node.tags?.map(t => t.toLowerCase()) || [];
+    
+    // Check for "with blouse" indicators
+    const withBlouseIndicators = ['with blouse', 'blouse included', 'includes blouse', 'blouse piece included', 'running blouse'];
+    const withoutBlouseIndicators = ['without blouse', 'no blouse', 'blouse not included', 'saree only'];
+    
+    // Check tags first
+    for (const tag of tags) {
+      for (const indicator of withBlouseIndicators) {
+        if (tag.includes(indicator)) return true;
+      }
+      for (const indicator of withoutBlouseIndicators) {
+        if (tag.includes(indicator)) return false;
+      }
+    }
+    
+    // Check text
+    for (const indicator of withBlouseIndicators) {
+      if (text.includes(indicator)) return true;
+    }
+    for (const indicator of withoutBlouseIndicators) {
+      if (text.includes(indicator)) return false;
+    }
+    
+    // Default to true if "blouse" is mentioned without "without"
+    if (text.includes('blouse') && !text.includes('without blouse')) return true;
+    
+    return false;
+  };
+
+  // Check product color
+  const hasColor = (product: ShopifyProduct, colors: string[]): boolean => {
+    if (colors.length === 0) return true;
+    
+    const tags = product.node.tags?.map(t => t.toLowerCase()) || [];
+    const text = `${product.node.title} ${product.node.description}`.toLowerCase();
+    
+    return colors.some(color => {
+      return tags.some(tag => tag.includes(color)) || text.includes(color);
+    });
+  };
 
   useEffect(() => {
     async function loadProducts() {
@@ -104,6 +212,16 @@ export default function Collection() {
       const price = parseFloat(p.node.priceRange.minVariantPrice.amount);
       return price >= priceRange[0] && price <= priceRange[1];
     });
+
+    // Blouse filter
+    if (blouseFilter === 'with-blouse') {
+      result = result.filter(p => hasBlouse(p));
+    } else if (blouseFilter === 'without-blouse') {
+      result = result.filter(p => !hasBlouse(p));
+    }
+
+    // Color filter
+    result = result.filter(p => hasColor(p, selectedColors));
     
     // Sort
     switch (sortBy) {
@@ -128,7 +246,8 @@ export default function Collection() {
     }
     
     setFilteredProducts(result);
-  }, [products, sortBy, priceRange]);
+  }, [products, sortBy, priceRange, blouseFilter, selectedColors]);
+
 
   const handleAddToCart = (product: ShopifyProduct) => {
     const variant = product.node.variants.edges[0]?.node;
@@ -159,10 +278,24 @@ export default function Collection() {
     }
   };
 
+  const toggleColor = (color: string) => {
+    setSelectedColors(prev => 
+      prev.includes(color) 
+        ? prev.filter(c => c !== color)
+        : [...prev, color]
+    );
+  };
+
   const clearFilters = () => {
     setPriceRange([0, maxPrice]);
     setSortBy('featured');
+    setBlouseFilter('all');
+    setSelectedColors([]);
   };
+
+  const activeFiltersCount = (priceRange[0] > 0 || priceRange[1] < maxPrice ? 1 : 0) + 
+    (blouseFilter !== 'all' ? 1 : 0) + 
+    selectedColors.length;
 
   if (!config && !searchQuery) {
     return (
@@ -217,9 +350,14 @@ export default function Collection() {
                   <Button variant="outline" size="sm" className="gap-2">
                     <SlidersHorizontal className="w-4 h-4" />
                     Filter
+                    {activeFiltersCount > 0 && (
+                      <span className="bg-accent text-accent-foreground text-xs px-1.5 py-0.5 rounded-full">
+                        {activeFiltersCount}
+                      </span>
+                    )}
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-80">
+                <SheetContent side="left" className="w-80 overflow-y-auto">
                   <SheetHeader>
                     <SheetTitle className="font-heading">Filters</SheetTitle>
                   </SheetHeader>
@@ -241,6 +379,60 @@ export default function Collection() {
                       </div>
                     </div>
 
+                    {/* Blouse Piece Filter */}
+                    <div>
+                      <h3 className="text-sm font-body uppercase tracking-wide mb-4">Blouse Piece</h3>
+                      <div className="space-y-3">
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <Checkbox
+                            checked={blouseFilter === 'all'}
+                            onCheckedChange={() => setBlouseFilter('all')}
+                          />
+                          <span className="text-sm">All Sarees</span>
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <Checkbox
+                            checked={blouseFilter === 'with-blouse'}
+                            onCheckedChange={() => setBlouseFilter('with-blouse')}
+                          />
+                          <span className="text-sm">With Blouse</span>
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <Checkbox
+                            checked={blouseFilter === 'without-blouse'}
+                            onCheckedChange={() => setBlouseFilter('without-blouse')}
+                          />
+                          <span className="text-sm">Without Blouse</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Color Filter */}
+                    {availableColors.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-body uppercase tracking-wide mb-4">Colors</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {availableColors.map(color => (
+                            <button
+                              key={color}
+                              onClick={() => toggleColor(color)}
+                              className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs capitalize transition-all ${
+                                selectedColors.includes(color)
+                                  ? 'border-foreground bg-foreground text-background'
+                                  : 'border-border hover:border-foreground'
+                              }`}
+                            >
+                              <span
+                                className="w-3 h-3 rounded-full border border-border/50"
+                                style={{ backgroundColor: colorMap[color] }}
+                              />
+                              {color}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Clear Filters */}
                     <Button 
                       variant="outline" 
@@ -250,22 +442,43 @@ export default function Collection() {
                         setFilterOpen(false);
                       }}
                     >
-                      Clear Filters
+                      Clear All Filters
                     </Button>
                   </div>
                 </SheetContent>
               </Sheet>
 
-              {/* Active Filters */}
-              {(priceRange[0] > 0 || priceRange[1] < maxPrice) && (
-                <div className="hidden md:flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">Price:</span>
-                  <span className="text-xs bg-secondary px-2 py-1 rounded flex items-center gap-1">
-                    ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
-                    <button onClick={() => setPriceRange([0, maxPrice])}>
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
+              {/* Active Filters Display */}
+              {activeFiltersCount > 0 && (
+                <div className="hidden md:flex items-center gap-2 flex-wrap">
+                  {(priceRange[0] > 0 || priceRange[1] < maxPrice) && (
+                    <span className="text-xs bg-secondary px-2 py-1 rounded flex items-center gap-1">
+                      ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
+                      <button onClick={() => setPriceRange([0, maxPrice])}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {blouseFilter !== 'all' && (
+                    <span className="text-xs bg-secondary px-2 py-1 rounded flex items-center gap-1 capitalize">
+                      {blouseFilter === 'with-blouse' ? 'With Blouse' : 'Without Blouse'}
+                      <button onClick={() => setBlouseFilter('all')}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {selectedColors.map(color => (
+                    <span key={color} className="text-xs bg-secondary px-2 py-1 rounded flex items-center gap-1 capitalize">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full border border-border/50"
+                        style={{ backgroundColor: colorMap[color] }}
+                      />
+                      {color}
+                      <button onClick={() => toggleColor(color)}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
                 </div>
               )}
             </div>
@@ -299,22 +512,73 @@ export default function Collection() {
             </div>
           </div>
 
-          {/* Desktop Price Filter - Inline */}
-          <div className="hidden md:flex items-center gap-6 mb-8 p-4 bg-secondary/30 rounded-sm">
-            <span className="text-sm font-body uppercase tracking-wide">Price:</span>
-            <div className="flex-1 max-w-md">
-              <Slider
-                value={priceRange}
-                min={0}
-                max={maxPrice}
-                step={500}
-                onValueChange={(value) => setPriceRange(value as [number, number])}
-              />
+          {/* Desktop Filters - Inline */}
+          <div className="hidden md:block mb-8 p-4 bg-secondary/30 rounded-sm space-y-4">
+            {/* Price */}
+            <div className="flex items-center gap-6">
+              <span className="text-sm font-body uppercase tracking-wide w-24">Price:</span>
+              <div className="flex-1 max-w-md">
+                <Slider
+                  value={priceRange}
+                  min={0}
+                  max={maxPrice}
+                  step={500}
+                  onValueChange={(value) => setPriceRange(value as [number, number])}
+                />
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground w-44 justify-end">
+                <span>₹{priceRange[0].toLocaleString()}</span>
+                <span>-</span>
+                <span>₹{priceRange[1].toLocaleString()}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>₹{priceRange[0].toLocaleString()}</span>
-              <span>-</span>
-              <span>₹{priceRange[1].toLocaleString()}</span>
+
+            {/* Blouse Piece & Colors */}
+            <div className="flex flex-wrap items-start gap-6 pt-2 border-t border-border/50">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-body uppercase tracking-wide">Blouse:</span>
+                <div className="flex gap-2">
+                  {(['all', 'with-blouse', 'without-blouse'] as BlouseFilter[]).map(filter => (
+                    <button
+                      key={filter}
+                      onClick={() => setBlouseFilter(filter)}
+                      className={`px-3 py-1 text-xs rounded-full border transition-all ${
+                        blouseFilter === filter
+                          ? 'border-foreground bg-foreground text-background'
+                          : 'border-border hover:border-foreground'
+                      }`}
+                    >
+                      {filter === 'all' ? 'All' : filter === 'with-blouse' ? 'With Blouse' : 'Without Blouse'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {availableColors.length > 0 && (
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-sm font-body uppercase tracking-wide">Colors:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {availableColors.slice(0, 12).map(color => (
+                      <button
+                        key={color}
+                        onClick={() => toggleColor(color)}
+                        title={color}
+                        className={`w-6 h-6 rounded-full border-2 transition-all ${
+                          selectedColors.includes(color)
+                            ? 'border-foreground ring-2 ring-foreground ring-offset-2'
+                            : 'border-border/50 hover:border-foreground'
+                        }`}
+                        style={{ backgroundColor: colorMap[color] }}
+                      />
+                    ))}
+                    {availableColors.length > 12 && (
+                      <span className="text-xs text-muted-foreground self-center ml-1">
+                        +{availableColors.length - 12} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
