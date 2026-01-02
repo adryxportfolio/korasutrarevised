@@ -9,7 +9,7 @@ import tussarImg from '@/assets/tussar.jpeg';
 import jamdaniImg from '@/assets/jamdani.jpeg';
 import linenImg from '@/assets/linen.jpeg';
 
-const DUKAAN_STORE = 'https://mydukaan.io/korasutra';
+const DUKAAN_STORE = 'https://shop.korasutra.com';
 
 const collections = [
   {
@@ -17,42 +17,42 @@ const collections = [
     name: 'Block Print',
     description: 'Hand-printed artistry on fine fabrics',
     image: blockPrintImg,
-    href: 'https://mydukaan.io/korasutra/categories/block-print-92',
+    href: 'https://shop.korasutra.com/categories/block-print-92',
   },
   {
     id: 2,
     name: 'Kantha Stitch',
     description: 'Traditional embroidery meets modern elegance',
     image: kanthaImg,
-    href: 'https://mydukaan.io/korasutra/categories/kantha-stitch-13',
+    href: 'https://shop.korasutra.com/categories/kantha-stitch-13',
   },
   {
     id: 3,
     name: 'Muslin',
     description: 'Feather-light fabric with timeless grace',
     image: muslinImg,
-    href: 'https://mydukaan.io/korasutra/categories/muslin-143',
+    href: 'https://shop.korasutra.com/categories/muslin-143',
   },
   {
     id: 4,
     name: 'Tussar',
     description: 'Natural tussar silk with earthy elegance',
     image: tussarImg,
-    href: 'https://mydukaan.io/korasutra/categories/tussar-109',
+    href: 'https://shop.korasutra.com/categories/tussar-109',
   },
   {
     id: 5,
     name: 'Jamdani',
     description: 'Intricate muslin weaves from Bengal',
     image: jamdaniImg,
-    href: 'https://mydukaan.io/korasutra/categories/jamdani-401',
+    href: 'https://shop.korasutra.com/categories/jamdani-401',
   },
   {
     id: 6,
     name: 'Linen',
     description: 'Breathable comfort with refined style',
     image: linenImg,
-    href: 'https://mydukaan.io/korasutra/categories/linen-745',
+    href: 'https://shop.korasutra.com/categories/linen-745',
   }
 ];
 

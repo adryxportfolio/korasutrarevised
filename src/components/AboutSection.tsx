@@ -30,7 +30,7 @@ export function AboutSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section ref={ref} className="py-24 bg-background relative overflow-hidden">
+    <section id="about-section" ref={ref} className="py-24 bg-background relative overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute top-0 right-0 w-1/2 h-full opacity-5">
         <div className="absolute inset-0" style={{

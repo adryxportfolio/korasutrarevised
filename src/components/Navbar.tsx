@@ -4,14 +4,14 @@ import { Menu, X, Search, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 
-const DUKAAN_STORE = 'https://mydukaan.io/korasutra';
+const DUKAAN_STORE = 'https://shop.korasutra.com';
 
 const mobileNavLinks = [
   { name: 'Home', href: '/', isInternal: true },
-  { name: 'All Collections', href: 'https://mydukaan.io/korasutra/categories/default', isInternal: false },
-  { name: 'Fabrics', href: 'https://mydukaan.io/korasutra/categories/fabric-3417', isInternal: false },
-  { name: 'Patterns', href: 'https://mydukaan.io/korasutra/categories/pattern', isInternal: false },
-  { name: 'Occasions', href: 'https://mydukaan.io/korasutra/categories/occasion', isInternal: false },
+  { name: 'All Collections', href: 'https://shop.korasutra.com/categories/default', isInternal: false },
+  { name: 'Fabrics', href: 'https://shop.korasutra.com/categories/fabric-3417', isInternal: false },
+  { name: 'Patterns', href: 'https://shop.korasutra.com/categories/pattern', isInternal: false },
+  { name: 'Occasions', href: 'https://shop.korasutra.com/categories/occasion', isInternal: false },
 ];
 
 export function Navbar() {

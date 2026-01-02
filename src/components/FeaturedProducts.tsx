@@ -6,7 +6,7 @@ import brownTussarImg from '@/assets/brown-tussar-baluchari.png';
 import pinkTissueImg from '@/assets/pink-tissue-muslin-sequins.png';
 import saree3 from '@/assets/saree-3.jpg';
 import saree4 from '@/assets/saree-4.jpg';
-const DUKAAN_STORE = 'https://mydukaan.io/korasutra';
+const DUKAAN_STORE = 'https://shop.korasutra.com';
 const products = [{
   id: 1,
   name: 'Brown Tussar Baluchari',
