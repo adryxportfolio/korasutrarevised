@@ -274,7 +274,7 @@ export default function ProductDetail() {
 
   const handleEnquiry = () => {
     const message = `Hi, I'm interested in ${product?.title}. Could you provide more details?`;
-    window.open(`https://wa.me/919876543210?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/917995862266?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   if (loading) {

@@ -320,29 +320,29 @@ export default function Collection() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-28 pb-16">
-        <div className="container mx-auto px-4 md:px-6">
+      <main className="min-h-screen pt-24 md:pt-28 pb-16 overflow-x-hidden">
+        <div className="container mx-auto px-3 md:px-6 max-w-full">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6 font-body">
-            <Link to="/" className="hover:text-foreground transition-colors">
+          <nav className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6 font-body">
+            <Link to="/" className="hover:text-foreground transition-colors flex-shrink-0">
               Home
             </Link>
             <span>/</span>
-            <span className="text-foreground">{title}</span>
+            <span className="text-foreground truncate">{title}</span>
           </nav>
 
           {/* Collection Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading tracking-wide mb-4">
+          <div className="text-center mb-4 md:mb-8">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-heading tracking-wide mb-2 md:mb-4">
               {title}
             </h1>
-            <p className="text-muted-foreground font-body max-w-2xl mx-auto">
+            <p className="text-xs md:text-base text-muted-foreground font-body max-w-2xl mx-auto">
               {description}
             </p>
           </div>
 
           {/* Filter & Sort Bar */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+          <div className="flex items-center justify-between mb-4 md:mb-6 pb-3 md:pb-4 border-b border-border gap-2">
             <div className="flex items-center gap-3">
               {/* Filter Button - Mobile Sheet */}
               <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
@@ -528,63 +528,78 @@ export default function Collection() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {filteredProducts.map(({ node }, index) => (
-                <motion.div
-                  key={node.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.03 }}
-                  className="group"
-                >
-                  <div className="relative">
-                    <Link to={`/product/${node.handle}`}>
-                      <div className="aspect-[3/4] overflow-hidden bg-secondary/20 mb-3 relative">
-                        {node.images.edges[0]?.node && (
-                          <img
-                            src={node.images.edges[0].node.url}
-                            alt={node.images.edges[0].node.altText || node.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        )}
-                        {/* Quick Add Button */}
-                        <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            size="sm"
-                            className="w-full text-xs"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleAddToCart({ node });
-                            }}
-                          >
-                            <ShoppingBag className="w-3 h-3 mr-1" />
-                            Quick Add
-                          </Button>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6">
+              {filteredProducts.map(({ node }, index) => {
+                const productHasBlouse = hasBlouse({ node });
+                return (
+                  <motion.div
+                    key={node.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    className="group"
+                  >
+                    <div className="relative">
+                      <Link to={`/product/${node.handle}`}>
+                        <div className="aspect-[3/4] overflow-hidden bg-secondary/20 mb-2 relative rounded-sm">
+                          {node.images.edges[0]?.node && (
+                            <img
+                              src={node.images.edges[0].node.url}
+                              alt={node.images.edges[0].node.altText || node.title}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          )}
+                          
+                          {/* NEW Badge - top left */}
+                          {index < 4 && (
+                            <span className="absolute top-2 left-2 bg-foreground text-background text-[10px] md:text-xs px-2 py-0.5 font-body uppercase tracking-wide">
+                              NEW
+                            </span>
+                          )}
+                          
+                          {/* View Button - bottom right */}
+                          <div className="absolute bottom-2 right-2">
+                            <span className="flex items-center gap-1 bg-background/90 backdrop-blur-sm text-foreground text-[10px] md:text-xs px-2 py-1 rounded-full font-body">
+                              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 5C5.636 5 2 12 2 12s3.636 7 10 7 10-7 10-7-3.636-7-10-7z"/>
+                              </svg>
+                              view
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
+                      </Link>
+                      
+                      {/* Wishlist Button */}
+                      <button
+                        onClick={() => handleWishlistToggle({ node })}
+                        className={`absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-full transition-all shadow-sm ${
+                          isInWishlist(node.id) ? 'text-red-500' : 'text-foreground'
+                        }`}
+                      >
+                        <Heart className={`w-4 h-4 ${isInWishlist(node.id) ? 'fill-current' : ''}`} />
+                      </button>
+                    </div>
                     
-                    {/* Wishlist Button */}
-                    <button
-                      onClick={() => handleWishlistToggle({ node })}
-                      className={`absolute top-2 right-2 p-2 bg-background/80 backdrop-blur-sm rounded-full transition-all ${
-                        isInWishlist(node.id) ? 'text-red-500' : 'text-foreground opacity-0 group-hover:opacity-100'
-                      }`}
-                    >
-                      <Heart className={`w-4 h-4 ${isInWishlist(node.id) ? 'fill-current' : ''}`} />
-                    </button>
-                  </div>
-                  
-                  <Link to={`/product/${node.handle}`}>
-                    <h3 className="font-heading text-sm md:text-base text-foreground group-hover:text-accent transition-colors line-clamp-2">
-                      {node.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
-                    </p>
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link to={`/product/${node.handle}`} className="block">
+                      <h3 className="font-heading text-xs md:text-sm text-foreground group-hover:text-accent transition-colors line-clamp-2 uppercase leading-tight">
+                        {node.title}
+                      </h3>
+                      
+                      {/* Blouse Badge */}
+                      {productHasBlouse && (
+                        <span className="inline-block mt-1 text-[10px] md:text-xs px-2 py-0.5 border border-border text-muted-foreground font-body">
+                          Saree with blouse piece
+                        </span>
+                      )}
+                      
+                      <p className="text-sm md:text-base font-heading mt-1">
+                        {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
+                      </p>
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </div>
