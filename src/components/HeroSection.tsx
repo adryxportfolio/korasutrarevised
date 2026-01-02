@@ -137,12 +137,15 @@ export function HeroSection() {
             duration: 0.6,
             delay: 0.9
           }} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <a href="https://mydukaan.io/korasutra" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
+              <a href="https://shop.korasutra.com" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
                 Explore Collection
               </a>
-              <a href="/about" className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-foreground font-body text-sm tracking-wide uppercase rounded-sm hover:bg-foreground hover:text-background transition-colors">
+              <button 
+                onClick={() => document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' })}
+                className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-foreground font-body text-sm tracking-wide uppercase rounded-sm hover:bg-foreground hover:text-background transition-colors"
+              >
                 Our Story
-              </a>
+              </button>
             </motion.div>
           </motion.div>
 
