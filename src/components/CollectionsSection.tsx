@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import blockPrintImg from '@/assets/block-print.jpeg';
 import kanthaImg from '@/assets/kantha.jpeg';
 import muslinImg from '@/assets/muslin.jpeg';
@@ -9,50 +10,49 @@ import tussarImg from '@/assets/tussar.jpeg';
 import jamdaniImg from '@/assets/jamdani.jpeg';
 import linenImg from '@/assets/linen.jpeg';
 
-const DUKAAN_STORE = 'https://shop.korasutra.com';
-
+// Internal routes only - no external links
 const collections = [
   {
     id: 1,
     name: 'Block Print',
     description: 'Hand-printed artistry on fine fabrics',
     image: blockPrintImg,
-    href: 'https://shop.korasutra.com/categories/block-print-92',
+    href: '/collections/block-print',
   },
   {
     id: 2,
     name: 'Kantha Stitch',
     description: 'Traditional embroidery meets modern elegance',
     image: kanthaImg,
-    href: 'https://shop.korasutra.com/categories/kantha-stitch-13',
+    href: '/collections/kantha-stitch',
   },
   {
     id: 3,
     name: 'Muslin',
     description: 'Feather-light fabric with timeless grace',
     image: muslinImg,
-    href: 'https://shop.korasutra.com/categories/muslin-143',
+    href: '/collections/muslin',
   },
   {
     id: 4,
     name: 'Tussar',
     description: 'Natural tussar silk with earthy elegance',
     image: tussarImg,
-    href: 'https://shop.korasutra.com/categories/tussar-109',
+    href: '/collections/tussar',
   },
   {
     id: 5,
     name: 'Jamdani',
     description: 'Intricate muslin weaves from Bengal',
     image: jamdaniImg,
-    href: 'https://shop.korasutra.com/categories/jamdani-401',
+    href: '/collections/jamdani',
   },
   {
     id: 6,
     name: 'Linen',
     description: 'Breathable comfort with refined style',
     image: linenImg,
-    href: 'https://shop.korasutra.com/categories/linen-745',
+    href: '/collections/linen',
   }
 ];
 
@@ -64,8 +64,8 @@ function CollectionCard({
   isMobile?: boolean;
 }) {
   return (
-    <a 
-      href={collection.href} 
+    <Link 
+      to={collection.href} 
       className={`block flex-shrink-0 ${isMobile ? 'w-[75vw] max-w-[280px]' : 'w-full md:w-[calc(33.333%-1rem)]'}`}
     >
       <div className="group relative cursor-pointer">
@@ -109,7 +109,7 @@ function CollectionCard({
           <div className="absolute top-3 right-3 md:top-4 md:right-4 w-6 h-6 md:w-8 md:h-8 border-t-2 border-r-2 border-primary-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -293,6 +293,16 @@ export function CollectionsSection() {
               Swipe to explore collections
             </p>
           )}
+        </div>
+
+        {/* Explore Collection Button */}
+        <div className="text-center mt-10">
+          <Link
+            to="/collections/all"
+            className="inline-block px-8 py-3 border border-foreground text-foreground font-body uppercase tracking-widest text-sm hover:bg-foreground hover:text-background transition-colors"
+          >
+            Explore Collection
+          </Link>
         </div>
       </div>
     </section>
