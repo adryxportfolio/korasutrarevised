@@ -67,6 +67,41 @@ const StarRating = ({ rating, size = 'sm', interactive = false, onRate }: {
   );
 };
 
+// Rate limiting constants
+const REVIEW_COOLDOWN_MS = 3600000; // 1 hour
+const HELPFUL_COOLDOWN_MS = 60000; // 1 minute per review
+
+const getReviewCooldownKey = (productHandle: string) => `review_cooldown_${productHandle}`;
+const getHelpfulCooldownKey = (reviewId: string) => `helpful_cooldown_${reviewId}`;
+
+const canSubmitReview = (productHandle: string): boolean => {
+  const key = getReviewCooldownKey(productHandle);
+  const lastSubmit = localStorage.getItem(key);
+  if (lastSubmit && Date.now() - parseInt(lastSubmit) < REVIEW_COOLDOWN_MS) {
+    return false;
+  }
+  return true;
+};
+
+const setReviewCooldown = (productHandle: string) => {
+  const key = getReviewCooldownKey(productHandle);
+  localStorage.setItem(key, Date.now().toString());
+};
+
+const canMarkHelpful = (reviewId: string): boolean => {
+  const key = getHelpfulCooldownKey(reviewId);
+  const lastMark = localStorage.getItem(key);
+  if (lastMark && Date.now() - parseInt(lastMark) < HELPFUL_COOLDOWN_MS) {
+    return false;
+  }
+  return true;
+};
+
+const setHelpfulCooldown = (reviewId: string) => {
+  const key = getHelpfulCooldownKey(reviewId);
+  localStorage.setItem(key, Date.now().toString());
+};
+
 export const ProductReviews = ({ productId, productHandle, productTitle }: ProductReviewsProps) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<ReviewStats | null>(null);
@@ -74,10 +109,9 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
   const [showWriteReview, setShowWriteReview] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5);
   
-  // Form state
+  // Form state - removed email field for privacy
   const [formRating, setFormRating] = useState(5);
   const [formName, setFormName] = useState('');
-  const [formEmail, setFormEmail] = useState('');
   const [formTitle, setFormTitle] = useState('');
   const [formContent, setFormContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,9 +123,10 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
 
   const fetchReviews = async () => {
     try {
+      // Only select needed columns - exclude customer_email for privacy
       const { data, error } = await supabase
         .from('reviews')
-        .select('*')
+        .select('id, customer_name, rating, title, content, is_verified_purchase, helpful_count, created_at')
         .eq('product_handle', productHandle)
         .eq('is_approved', true)
         .order('created_at', { ascending: false });
@@ -127,6 +162,12 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
       return;
     }
 
+    // Rate limiting check
+    if (!canSubmitReview(productHandle)) {
+      toast.error('You can only submit one review per product per hour. Please try again later.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { error } = await supabase
@@ -135,7 +176,6 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
           product_id: productId,
           product_handle: productHandle,
           customer_name: formName.trim(),
-          customer_email: formEmail.trim() || null,
           rating: formRating,
           title: formTitle.trim() || null,
           content: formContent.trim(),
@@ -143,11 +183,13 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
 
       if (error) throw error;
 
+      // Set rate limit cooldown
+      setReviewCooldown(productHandle);
+
       toast.success('Review submitted successfully!');
       setShowWriteReview(false);
       setFormRating(5);
       setFormName('');
-      setFormEmail('');
       setFormTitle('');
       setFormContent('');
       
@@ -163,6 +205,12 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
   };
 
   const handleHelpful = async (reviewId: string) => {
+    // Rate limiting check for helpful button
+    if (!canMarkHelpful(reviewId)) {
+      toast.error('You already marked this review as helpful');
+      return;
+    }
+
     try {
       const review = reviews.find(r => r.id === reviewId);
       if (!review) return;
@@ -173,6 +221,9 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
         .eq('id', reviewId);
 
       if (error) throw error;
+      
+      // Set cooldown to prevent spam
+      setHelpfulCooldown(reviewId);
       
       setReviews(reviews.map(r => 
         r.id === reviewId ? { ...r, helpful_count: r.helpful_count + 1 } : r
@@ -251,16 +302,6 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="Enter your name"
                   required
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-2 block">Email (optional)</label>
-                <Input
-                  type="email"
-                  value={formEmail}
-                  onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="Enter your email"
                 />
               </div>
               
