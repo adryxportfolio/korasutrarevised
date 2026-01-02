@@ -123,12 +123,11 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
 
   const fetchReviews = async () => {
     try {
-      // Only select needed columns - exclude customer_email for privacy
+      // Use the secure public view that excludes customer_email
       const { data, error } = await supabase
-        .from('reviews')
+        .from('reviews_public')
         .select('id, customer_name, rating, title, content, is_verified_purchase, helpful_count, created_at')
         .eq('product_handle', productHandle)
-        .eq('is_approved', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
