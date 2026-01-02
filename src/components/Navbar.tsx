@@ -1,24 +1,56 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, ChevronRight } from 'lucide-react';
+import { Menu, X, Search, User, ShoppingBag, ChevronDown, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 
-const DUKAAN_STORE = 'https://shop.korasutra.com';
+const SHOPIFY_STORE = 'https://shop.korasutra.com';
 
-const mobileNavLinks = [
-  { name: 'Home', href: '/', isInternal: true },
-  { name: 'All Collections', href: 'https://shop.korasutra.com/categories/default', isInternal: false },
-  { name: 'Fabrics', href: 'https://shop.korasutra.com/categories/fabric-3417', isInternal: false },
-  { name: 'Patterns', href: 'https://shop.korasutra.com/categories/pattern', isInternal: false },
-  { name: 'Occasions', href: 'https://shop.korasutra.com/categories/occasion', isInternal: false },
-];
+// Collection categories with subcategories
+const collectionCategories = {
+  fabric: {
+    label: 'Shop by Fabric',
+    items: [
+      { name: 'Tussar', href: `${SHOPIFY_STORE}/collections/tussar` },
+      { name: 'Matka', href: `${SHOPIFY_STORE}/collections/matka` },
+      { name: 'Muslin', href: `${SHOPIFY_STORE}/collections/muslin` },
+      { name: 'Pure Silk', href: `${SHOPIFY_STORE}/collections/pure-silk` },
+      { name: 'Katan Silk', href: `${SHOPIFY_STORE}/collections/katan-silk` },
+      { name: 'Linen', href: `${SHOPIFY_STORE}/collections/linen` },
+      { name: 'Cotton', href: `${SHOPIFY_STORE}/collections/cotton` },
+    ],
+  },
+  patterns: {
+    label: 'Shop by Patterns',
+    items: [
+      { name: 'Jamdani', href: `${SHOPIFY_STORE}/collections/jamdani` },
+      { name: 'Kantha Stitch', href: `${SHOPIFY_STORE}/collections/kantha-stitch` },
+      { name: 'Baluchari', href: `${SHOPIFY_STORE}/collections/baluchari` },
+      { name: 'Hand Paint', href: `${SHOPIFY_STORE}/collections/hand-paint` },
+      { name: 'Block Print', href: `${SHOPIFY_STORE}/collections/block-print` },
+      { name: 'Batik', href: `${SHOPIFY_STORE}/collections/batik` },
+      { name: 'Digital Print', href: `${SHOPIFY_STORE}/collections/digital-print` },
+      { name: 'Paithani', href: `${SHOPIFY_STORE}/collections/paithani` },
+    ],
+  },
+  occasions: {
+    label: 'Shop by Occasions',
+    items: [
+      { name: 'Mummy ki Almari (Traditional)', href: `${SHOPIFY_STORE}/collections/traditional` },
+      { name: 'Bas Yun Hi (Casual)', href: `${SHOPIFY_STORE}/collections/casual` },
+      { name: 'Desk Se Dil Tak (Office Wear)', href: `${SHOPIFY_STORE}/collections/office-wear` },
+      { name: 'Aj Main Upar (Party Wear)', href: `${SHOPIFY_STORE}/collections/party-wear` },
+    ],
+  },
+};
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [collectionsExpanded, setCollectionsExpanded] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,8 +75,12 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `${DUKAAN_STORE}?search=${encodeURIComponent(searchQuery.trim())}`;
+      window.location.href = `${SHOPIFY_STORE}/search?q=${encodeURIComponent(searchQuery.trim())}`;
     }
+  };
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategory(expandedCategory === category ? null : category);
   };
 
   return (
@@ -64,48 +100,49 @@ export function Navbar() {
 
         <nav className="container mx-auto px-4 md:px-6 py-4 bg-transparent">
           <div className="flex items-center justify-between flex-nowrap">
-            {/* Mobile: Search Left | Desktop: Hamburger Left */}
+            {/* Left: Hamburger Menu */}
             <div className="flex items-center shrink-0">
-              {/* Hamburger - Hidden on mobile, visible on desktop */}
               <button
                 onClick={() => setIsOpen(true)}
-                className="hidden md:flex p-2 hover:bg-secondary/50 rounded-md transition-colors"
+                className="p-2 hover:bg-secondary/50 rounded-md transition-colors"
                 aria-label="Open menu"
               >
                 <Menu className="w-6 h-6" />
               </button>
-              
-              {/* Search - Visible on mobile (left side), hidden on desktop */}
-              <button
-                onClick={() => setSearchOpen(!searchOpen)}
-                className="md:hidden p-2 hover:bg-secondary/50 rounded-full transition-colors"
-                aria-label="Search"
-              >
-                <Search className="w-5 h-5" />
-              </button>
             </div>
 
-            {/* Logo - Centered */}
+            {/* Logo - Centered, slightly larger */}
             <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-              <img src={logo} alt="Kora Sutra" className="h-12 md:h-18 w-auto" />
+              <img src={logo} alt="Kora Sutra" className="h-14 md:h-20 w-auto" />
             </Link>
 
-            {/* CTA - Right */}
-            <div className="flex items-center space-x-2 md:space-x-3 shrink-0">
-              {/* Search - Hidden on mobile, visible on desktop */}
+            {/* Right: Account, Search, Cart */}
+            <div className="flex items-center space-x-1 md:space-x-2 shrink-0">
+              {/* Account */}
+              <a
+                href={`${SHOPIFY_STORE}/account`}
+                className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
+                aria-label="Account"
+              >
+                <User className="w-5 h-5" />
+              </a>
+              
+              {/* Search */}
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="hidden md:flex p-2 hover:bg-secondary/50 rounded-full transition-colors"
+                className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5" />
               </button>
+              
+              {/* Cart */}
               <a
-                href={DUKAAN_STORE}
-                className="px-2 md:px-4 py-2 bg-primary text-primary-foreground text-xs md:text-sm font-body tracking-wide rounded-sm hover:bg-primary/90 transition-colors flex items-center gap-1 whitespace-nowrap"
+                href={`${SHOPIFY_STORE}/cart`}
+                className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
+                aria-label="Cart"
               >
-                <span className="hidden sm:inline">Continue to</span> Store
-                <ChevronRight className="w-4 h-4" />
+                <ShoppingBag className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -165,10 +202,10 @@ export function Navbar() {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-[70] shadow-2xl"
+            className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-[70] shadow-2xl flex flex-col"
           >
             {/* Sidebar Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border">
+            <div className="flex items-center justify-between p-6 border-b border-border shrink-0">
               <img src={logo} alt="Kora Sutra" className="h-12 w-auto" />
               <button
                 onClick={() => setIsOpen(false)}
@@ -180,49 +217,182 @@ export function Navbar() {
             </div>
 
             {/* Navigation Links */}
-            <nav className="p-6 overflow-y-auto h-[calc(100%-180px)]">
+            <nav className="flex-1 overflow-y-auto p-6">
               <ul className="space-y-1">
-                {mobileNavLinks.map((link, index) => (
-                  <motion.li
-                    key={link.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                {/* Home */}
+                <li>
+                  <Link
+                    to="/"
+                    className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
+                    onClick={() => setIsOpen(false)}
                   >
-                    {link.isInternal ? (
-                      <Link
-                        to={link.href}
-                        className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors group border-b border-border/50"
-                        onClick={() => setIsOpen(false)}
+                    Home
+                  </Link>
+                </li>
+
+                {/* Collection - Expandable */}
+                <li>
+                  <button
+                    onClick={() => setCollectionsExpanded(!collectionsExpanded)}
+                    className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
+                  >
+                    Collection
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${collectionsExpanded ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {collectionsExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
                       >
-                        {link.name}
-                        <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                      </Link>
-                    ) : (
-                      <a
-                        href={link.href}
-                        className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors group border-b border-border/50"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {link.name}
-                        <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                      </a>
+                        <div className="pl-4 py-2 space-y-2">
+                          {/* Shop by Fabric */}
+                          <div>
+                            <button
+                              onClick={() => toggleCategory('fabric')}
+                              className="flex items-center justify-between w-full py-2 text-base font-body text-foreground/80 hover:text-accent transition-colors"
+                            >
+                              {collectionCategories.fabric.label}
+                              <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'fabric' ? 'rotate-90' : ''}`} />
+                            </button>
+                            <AnimatePresence>
+                              {expandedCategory === 'fabric' && (
+                                <motion.ul
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="overflow-hidden pl-4 space-y-1"
+                                >
+                                  {collectionCategories.fabric.items.map((item) => (
+                                    <li key={item.name}>
+                                      <a
+                                        href={item.href}
+                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors"
+                                        onClick={() => setIsOpen(false)}
+                                      >
+                                        {item.name}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </motion.ul>
+                              )}
+                            </AnimatePresence>
+                          </div>
+
+                          {/* Shop by Patterns */}
+                          <div>
+                            <button
+                              onClick={() => toggleCategory('patterns')}
+                              className="flex items-center justify-between w-full py-2 text-base font-body text-foreground/80 hover:text-accent transition-colors"
+                            >
+                              {collectionCategories.patterns.label}
+                              <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'patterns' ? 'rotate-90' : ''}`} />
+                            </button>
+                            <AnimatePresence>
+                              {expandedCategory === 'patterns' && (
+                                <motion.ul
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="overflow-hidden pl-4 space-y-1"
+                                >
+                                  {collectionCategories.patterns.items.map((item) => (
+                                    <li key={item.name}>
+                                      <a
+                                        href={item.href}
+                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors"
+                                        onClick={() => setIsOpen(false)}
+                                      >
+                                        {item.name}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </motion.ul>
+                              )}
+                            </AnimatePresence>
+                          </div>
+
+                          {/* Shop by Occasions */}
+                          <div>
+                            <button
+                              onClick={() => toggleCategory('occasions')}
+                              className="flex items-center justify-between w-full py-2 text-base font-body text-foreground/80 hover:text-accent transition-colors"
+                            >
+                              {collectionCategories.occasions.label}
+                              <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'occasions' ? 'rotate-90' : ''}`} />
+                            </button>
+                            <AnimatePresence>
+                              {expandedCategory === 'occasions' && (
+                                <motion.ul
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="overflow-hidden pl-4 space-y-1"
+                                >
+                                  {collectionCategories.occasions.items.map((item) => (
+                                    <li key={item.name}>
+                                      <a
+                                        href={item.href}
+                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors"
+                                        onClick={() => setIsOpen(false)}
+                                      >
+                                        {item.name}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </motion.ul>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        </div>
+                      </motion.div>
                     )}
-                  </motion.li>
-                ))}
+                  </AnimatePresence>
+                </li>
+
+                {/* Best Sellers */}
+                <li>
+                  <a
+                    href={`${SHOPIFY_STORE}/collections/best-sellers`}
+                    className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Best Sellers
+                  </a>
+                </li>
+
+                {/* About Us */}
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left"
+                  >
+                    About Us
+                  </button>
+                </li>
+
+                {/* Contact */}
+                <li>
+                  <Link
+                    to="/contact"
+                    className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </nav>
-
-            {/* Sidebar Footer */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-border bg-secondary/30">
-              <a
-                href={DUKAAN_STORE}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-primary-foreground text-sm font-body tracking-wide rounded-sm hover:bg-primary/90 transition-colors"
-              >
-                Continue to Store
-                <ChevronRight className="w-4 h-4" />
-              </a>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

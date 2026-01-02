@@ -66,7 +66,7 @@ function CollectionCard({
   return (
     <a 
       href={collection.href} 
-      className={`block flex-shrink-0 ${isMobile ? 'w-[85vw] max-w-[320px]' : 'w-full md:w-[calc(33.333%-1rem)]'}`}
+      className={`block flex-shrink-0 ${isMobile ? 'w-[75vw] max-w-[280px]' : 'w-full md:w-[calc(33.333%-1rem)]'}`}
     >
       <div className="group relative cursor-pointer">
         <div className="relative aspect-[3/4] overflow-hidden rounded-sm">
@@ -81,20 +81,20 @@ function CollectionCard({
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
           
           {/* Content */}
-          <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6">
-            <span className="text-xs tracking-[0.2em] text-primary-foreground/70 uppercase mb-2 font-body">
+          <div className="absolute inset-0 flex flex-col justify-end p-3 md:p-6">
+            <span className="text-xs tracking-[0.15em] md:tracking-[0.2em] text-primary-foreground/70 uppercase mb-1 md:mb-2 font-body">
               Collection
             </span>
             
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-heading text-primary-foreground mb-2">
+            <h3 className="text-lg md:text-2xl lg:text-3xl font-heading text-primary-foreground mb-1 md:mb-2 break-words hyphens-auto">
               {collection.name}
             </h3>
             
-            <p className={`text-sm text-primary-foreground/80 font-body mb-4 ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500'}`}>
+            <p className={`text-xs md:text-sm text-primary-foreground/80 font-body mb-2 md:mb-4 line-clamp-2 ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500'}`}>
               {collection.description}
             </p>
             
-            <div className={`flex items-center gap-2 text-primary-foreground/90 text-sm font-body tracking-wide ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100'}`}>
+            <div className={`flex items-center gap-2 text-primary-foreground/90 text-xs md:text-sm font-body tracking-wide ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100'}`}>
               <span>View Collection</span>
               <motion.span
                 animate={{ x: [0, 5, 0] }}
@@ -106,7 +106,7 @@ function CollectionCard({
           </div>
 
           {/* Decorative Corner */}
-          <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-primary-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute top-3 right-3 md:top-4 md:right-4 w-6 h-6 md:w-8 md:h-8 border-t-2 border-r-2 border-primary-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
       </div>
     </a>
@@ -239,8 +239,8 @@ export function CollectionsSection() {
               onTouchEnd={onTouchEnd}
             >
               <motion.div
-                className="flex gap-4 px-2"
-                animate={{ x: `calc(-${currentIndex * 85}vw - ${currentIndex * 16}px + ${currentIndex > 0 ? '7.5vw' : '0px'})` }}
+                className="flex gap-3 px-4"
+                animate={{ x: `calc(-${currentIndex * 75}vw - ${currentIndex * 12}px + ${currentIndex > 0 ? '12.5vw' : '0px'})` }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
                 {collections.map((collection) => (
