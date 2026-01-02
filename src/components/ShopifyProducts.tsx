@@ -1,0 +1,151 @@
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { ShoppingBag, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
+import { useCartStore } from '@/stores/cartStore';
+import { toast } from 'sonner';
+
+export function ShopifyProducts() {
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const addItem = useCartStore(state => state.addItem);
+
+  useEffect(() => {
+    async function loadProducts() {
+      setLoading(true);
+      const data = await fetchProducts(20);
+      setProducts(data);
+      setLoading(false);
+    }
+    loadProducts();
+  }, []);
+
+  const handleAddToCart = (product: ShopifyProduct, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const variant = product.node.variants.edges[0]?.node;
+    if (!variant) return;
+
+    addItem({
+      product,
+      variantId: variant.id,
+      variantTitle: variant.title,
+      price: variant.price,
+      quantity: 1,
+      selectedOptions: variant.selectedOptions || [],
+    });
+
+    toast.success('Added to cart', {
+      description: product.node.title,
+      position: 'top-center',
+    });
+  };
+
+  if (loading) {
+    return (
+      <section className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
+              Our Collection
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-light">
+              Shop <span className="italic text-accent">Sarees</span>
+            </h2>
+          </div>
+          
+          <div className="text-center py-16 bg-secondary/20 rounded-sm">
+            <ShoppingBag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-heading mb-2">No products yet</h3>
+            <p className="text-muted-foreground font-body max-w-md mx-auto">
+              Products are being added to the store. Check back soon!
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="py-16 md:py-24 bg-background">
+      <div className="container mx-auto px-4 md:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
+            Our Collection
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-light">
+            Shop <span className="italic text-accent">Sarees</span>
+          </h2>
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {products.map((product, index) => (
+            <motion.div
+              key={product.node.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <Link 
+                to={`/product/${product.node.handle}`}
+                className="group block"
+              >
+                <div className="relative aspect-[3/4] overflow-hidden rounded-sm bg-secondary/20">
+                  {product.node.images.edges[0]?.node && (
+                    <img
+                      src={product.node.images.edges[0].node.url}
+                      alt={product.node.images.edges[0].node.altText || product.node.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
+                  
+                  {/* Quick Add Button */}
+                  <button
+                    onClick={(e) => handleAddToCart(product, e)}
+                    className="absolute bottom-3 left-3 right-3 py-2 bg-background/90 backdrop-blur-sm text-foreground text-sm font-body tracking-wide rounded-sm opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2 hover:bg-background"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    Add to Cart
+                  </button>
+                </div>
+                
+                <div className="mt-3 space-y-1">
+                  <h3 className="font-heading text-sm md:text-base truncate group-hover:text-accent transition-colors">
+                    {product.node.title}
+                  </h3>
+                  <p className="text-sm font-body text-muted-foreground">
+                    {formatPrice(
+                      product.node.priceRange.minVariantPrice.amount,
+                      product.node.priceRange.minVariantPrice.currencyCode
+                    )}
+                  </p>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

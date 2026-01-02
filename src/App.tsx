@@ -15,6 +15,7 @@ import Returns from "./pages/Returns";
 import SizeGuide from "./pages/SizeGuide";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import ProductDetail from "./pages/ProductDetail";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/product/:handle" element={<ProductDetail />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/cookies" element={<Cookies />} />
