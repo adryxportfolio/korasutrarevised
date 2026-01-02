@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import hero1 from '@/assets/hero-1.jpeg';
 import hero2 from '@/assets/hero-2.jpeg';
 import hero3 from '@/assets/hero-3.jpeg';
@@ -137,9 +138,9 @@ export function HeroSection() {
             duration: 0.6,
             delay: 0.9
           }} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <a href="https://shop.korasutra.com" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
+              <Link to="/collections/all" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
                 Explore Collection
-              </a>
+              </Link>
               <button 
                 onClick={() => document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' })}
                 className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-foreground font-body text-sm tracking-wide uppercase rounded-sm hover:bg-foreground hover:text-background transition-colors"

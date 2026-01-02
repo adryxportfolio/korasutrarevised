@@ -674,6 +674,22 @@ export default function ProductDetail() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
+
+                <AccordionItem value="disclaimer" className="border-b border-border">
+                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                    Disclaimer
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    <div className="space-y-3 text-sm font-body text-foreground/80">
+                      <p>
+                        Some images on this page use AI-generated models to showcase styling and drape.
+                      </p>
+                      <p>
+                        While we strive for accuracy, the actual saree may differ slightly in color tone, weave, border detailing, or finish due to fabric nature, lighting, and digital rendering.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               </Accordion>
             </div>
           </div>
