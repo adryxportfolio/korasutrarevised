@@ -5,11 +5,14 @@ import { ShoppingBag, Loader2, Clock, Heart, Share2 } from 'lucide-react';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
+import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { SwipeableImageGallery } from '@/components/SwipeableImageGallery';
+import { StickyMobileCartBar } from '@/components/StickyMobileCartBar';
+import { RecentlyViewed } from '@/components/RecentlyViewed';
 
 import {
   Accordion,
@@ -168,6 +171,7 @@ export default function ProductDetail() {
   
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
+  const addToRecentlyViewed = useRecentlyViewedStore(state => state.addProduct);
 
   const isWishlisted = product ? isInWishlist(product.id) : false;
 
@@ -191,6 +195,9 @@ export default function ProductDetail() {
           initialOptions[opt.name] = opt.value;
         });
         setSelectedOptions(initialOptions);
+        
+        // Add to recently viewed
+        addToRecentlyViewed({ node: productData });
       }
       setLoading(false);
     }
@@ -312,7 +319,7 @@ export default function ProductDetail() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-28 pb-16 overflow-x-hidden">
+      <main className="min-h-screen pt-28 pb-24 md:pb-16 overflow-x-hidden">
         <div className="container mx-auto px-3 md:px-6 max-w-full overflow-hidden">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6 font-body overflow-hidden">
@@ -581,9 +588,22 @@ export default function ProductDetail() {
             />
           )}
 
+          {/* Recently Viewed Section */}
+          <RecentlyViewed currentHandle={handle} />
+
           {/* Related Products - Bottom */}
           <RelatedProducts currentHandle={handle || ''} products={relatedProducts} />
         </div>
+        
+        {/* Sticky Mobile Cart Bar - add bottom padding to main content */}
+        {currentVariant && (
+          <StickyMobileCartBar
+            price={currentVariant.price}
+            isAvailable={currentVariant.availableForSale}
+            onAddToCart={handleAddToCart}
+            productTitle={product.title}
+          />
+        )}
       </main>
       <Footer />
     </>
