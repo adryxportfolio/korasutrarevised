@@ -212,20 +212,6 @@ export function HeroSection() {
                 {heroSlides.map((_, index) => <button key={index} onClick={() => setCurrentSlide(index)} className={`w-2 h-2 rounded-full transition-all ${currentSlide === index ? 'bg-accent w-6' : 'bg-background/60'}`} />)}
               </div>
 
-              {/* Floating Badge */}
-              <motion.div initial={{
-              opacity: 0,
-              x: 20
-            }} animate={{
-              opacity: 1,
-              x: 0
-            }} transition={{
-              duration: 0.6,
-              delay: 1.2
-            }} className="absolute -right-4 top-1/4 bg-background shadow-elegant rounded-sm p-4">
-                <span className="text-xs tracking-widest uppercase text-muted-foreground block">Handcrafted</span>
-                <span className="text-2xl font-heading italic text-accent">Heritage</span>
-              </motion.div>
             </div>
           </motion.div>
         </div>
