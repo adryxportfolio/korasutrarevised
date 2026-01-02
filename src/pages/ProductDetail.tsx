@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ShoppingBag, Loader2, MessageCircle, Clock, Heart, Share2, Check, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingBag, Loader2, Clock, Heart, Share2 } from 'lucide-react';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import {
   Accordion,
   AccordionContent,
@@ -165,7 +165,7 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const [fallAndEdging, setFallAndEdging] = useState(true);
+  
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
 
@@ -420,52 +420,49 @@ export default function ProductDetail() {
             </div>
 
             {/* Right Side - Product Info SUTA Style */}
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {/* Title Row with Share & Wishlist */}
-              <div className="flex items-start justify-between gap-4">
-                <h1 className="text-2xl md:text-3xl lg:text-4xl font-heading tracking-wide uppercase flex-1">
+              <div className="flex items-start justify-between gap-3">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-heading tracking-wide uppercase flex-1 leading-tight">
                   {product.title}
                 </h1>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-1 flex-shrink-0">
                   <button
                     onClick={handleShare}
                     className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
                     aria-label="Share"
                   >
-                    <Share2 className="w-5 h-5" />
+                    <Share2 className="w-4 h-4 md:w-5 md:h-5" />
                   </button>
                   <button
                     onClick={handleWishlistToggle}
                     className={`p-2 hover:bg-secondary/50 rounded-full transition-colors ${isWishlisted ? 'text-red-500' : ''}`}
                     aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                   >
-                    <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
+                    <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isWishlisted ? 'fill-current' : ''}`} />
                   </button>
                 </div>
               </div>
 
               {/* Tags / Badges Row */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 border border-border text-xs font-body tracking-wide">
+              <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
+                <span className="px-2 md:px-3 py-1 border border-border text-xs font-body tracking-wide">
                   Saree
                 </span>
                 {productDetails['Fabric'] && (
-                  <span className="px-3 py-1 border border-border text-xs font-body tracking-wide">
+                  <span className="px-2 md:px-3 py-1 border border-border text-xs font-body tracking-wide">
                     {productDetails['Fabric']}
                   </span>
                 )}
-                <button className="text-xs text-muted-foreground underline font-body ml-1">
-                  more i
-                </button>
               </div>
 
               {/* Short Description */}
-              <p className="text-sm text-muted-foreground font-body line-clamp-2">
+              <p className="text-xs md:text-sm text-muted-foreground font-body line-clamp-2">
                 {product.description?.substring(0, 100) || 'Handcrafted saree with exquisite detailing'}
               </p>
 
               {/* Price & Top Rated Badge */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <div>
                   <p className="text-xl md:text-2xl font-heading">
                     {currentVariant && formatPrice(currentVariant.price.amount, currentVariant.price.currencyCode)}
@@ -479,32 +476,32 @@ export default function ProductDetail() {
 
               {/* Stock Status */}
               {stockQuantity <= 3 && stockQuantity > 0 && (
-                <p className="text-sm text-red-600 font-body flex items-center gap-1">
+                <p className="text-xs md:text-sm text-red-600 font-body flex items-center gap-1">
                   🔥 Only {stockQuantity} left in stock — SELLING FAST!
                 </p>
               )}
 
               {/* Variant Options */}
               {product.options.filter(opt => opt.name !== 'Title').map((option) => (
-                <div key={option.name} className="space-y-3">
+                <div key={option.name} className="space-y-2 md:space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-body uppercase tracking-wide">
+                    <label className="text-xs md:text-sm font-body uppercase tracking-wide">
                       {option.name}:
                     </label>
                     {option.name.toLowerCase() === 'size' && (
-                      <Link to="/size-guide" className="text-sm text-accent hover:underline">
+                      <Link to="/size-guide" className="text-xs md:text-sm text-accent hover:underline">
                         Size chart
                       </Link>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2">
                     {option.values.map((value) => {
                       const isSelected = selectedOptions[option.name] === value;
                       return (
                         <button
                           key={value}
                           onClick={() => handleOptionChange(option.name, value)}
-                          className={`min-w-[40px] px-4 py-2 text-sm font-body border transition-all ${
+                          className={`min-w-[36px] md:min-w-[40px] px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-body border transition-all ${
                             isSelected
                               ? 'border-foreground bg-foreground text-background'
                               : 'border-border hover:border-foreground'
@@ -518,18 +515,18 @@ export default function ProductDetail() {
                 </div>
               ))}
 
-              {/* Add-Ons Section - SUTA Style */}
+              {/* Add-Ons Section - Simplified */}
               <div className="border border-border rounded-sm overflow-hidden">
-                <div className="p-4 bg-accent/5 border-b border-border">
+                <div className="p-3 md:p-4 bg-accent/5 border-b border-border">
                   <div className="flex items-center justify-center">
                     <Button
                       onClick={handleAddToCart}
                       disabled={!currentVariant?.availableForSale}
-                      className="w-full h-12 text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90 text-accent-foreground rounded-full"
+                      className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90 text-accent-foreground rounded-full"
                     >
                       {currentVariant?.availableForSale ? (
                         <>
-                          <ShoppingBag className="w-5 h-5 mr-2" />
+                          <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                           Add On
                         </>
                       ) : (
@@ -540,68 +537,29 @@ export default function ProductDetail() {
                 </div>
                 
                 {/* Size Chart Link */}
-                <div className="p-4 border-b border-border">
+                <div className="p-3 md:p-4">
                   <Link to="/size-guide" className="text-sm text-accent hover:underline font-body">
                     Size chart
                   </Link>
                 </div>
-
-                {/* Pre-Drape Service */}
-                <div className="p-4 border-b border-border">
-                  <div className="flex items-center gap-3">
-                    <Checkbox id="pre-drape" />
-                    <label htmlFor="pre-drape" className="text-sm font-body cursor-pointer flex-1">
-                      Pre-Drape Service (+Rs. 1,499.00)
-                      <span className="block text-xs text-muted-foreground">MRP Inclusive of all taxes</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Gifting and Packaging */}
-                <div className="p-4 border-b border-border">
-                  <button className="flex items-center gap-2 text-sm font-body w-full text-left">
-                    <Plus className="w-4 h-4" />
-                    Gifting and Packaging
-                  </button>
-                </div>
-
-                {/* Fall & Edging - Free */}
-                <div className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Checkbox 
-                        id="fall-edging" 
-                        checked={fallAndEdging}
-                        onCheckedChange={(checked) => setFallAndEdging(checked as boolean)}
-                      />
-                      <label htmlFor="fall-edging" className="text-sm font-body cursor-pointer">
-                        Fall & Edging
-                        <span className="block text-xs text-muted-foreground">Every saree comes with fall and edging</span>
-                      </label>
-                    </div>
-                    <span className="px-3 py-1 bg-green-600 text-white text-xs font-body rounded">
-                      Free
-                    </span>
-                  </div>
-                </div>
               </div>
 
               {/* Delivery Info */}
-              <div className="flex items-center gap-2 text-sm text-accent py-2">
-                <Clock className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-xs md:text-sm text-accent py-2">
+                <Clock className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 <span className="font-body tracking-wide">5-7 DAYS DELIVERY WITHIN INDIA</span>
               </div>
 
               {/* Offers Section */}
-              <div className="border border-border rounded-sm p-4 bg-green-50">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm">🎁</span>
-                  <span className="text-sm font-body font-medium">Offers</span>
+              <div className="border border-border rounded-sm p-3 md:p-4 bg-green-50">
+                <div className="flex items-center gap-2 mb-1.5 md:mb-2">
+                  <span className="text-xs md:text-sm">🎁</span>
+                  <span className="text-xs md:text-sm font-body font-medium">Offers</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-body font-semibold">KORA5 📋</p>
-                    <p className="text-xs text-muted-foreground">5% OFF upto ₹1000 | Minimum purchase of ₹4499</p>
+                    <p className="text-xs md:text-sm font-body font-semibold">KORA5 📋</p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground">5% OFF upto ₹1000 | Min. purchase ₹4499</p>
                   </div>
                 </div>
               </div>
@@ -610,7 +568,7 @@ export default function ProductDetail() {
               <Button
                 onClick={handleAddToCart}
                 disabled={!currentVariant?.availableForSale}
-                className="w-full h-14 text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90"
+                className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90"
                 size="lg"
               >
                 {currentVariant?.availableForSale ? 'Add to Cart' : 'Sold Out'}
@@ -620,9 +578,9 @@ export default function ProductDetail() {
               <SimilarProducts currentHandle={handle || ''} products={relatedProducts} />
 
               {/* Accordion Sections - SUTA Style */}
-              <Accordion type="multiple" className="w-full border-t border-border mt-6">
+              <Accordion type="multiple" className="w-full border-t border-border mt-4 md:mt-6">
                 <AccordionItem value="details" className="border-b border-border">
-                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                  <AccordionTrigger className="text-xs md:text-sm font-body uppercase tracking-widest py-3 md:py-4 hover:no-underline">
                     Details
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
@@ -636,7 +594,7 @@ export default function ProductDetail() {
                 </AccordionItem>
 
                 <AccordionItem value="story" className="border-b border-border">
-                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                  <AccordionTrigger className="text-xs md:text-sm font-body uppercase tracking-widest py-3 md:py-4 hover:no-underline">
                     Story
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
@@ -648,7 +606,7 @@ export default function ProductDetail() {
                 </AccordionItem>
 
                 <AccordionItem value="description" className="border-b border-border">
-                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                  <AccordionTrigger className="text-xs md:text-sm font-body uppercase tracking-widest py-3 md:py-4 hover:no-underline">
                     Description
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
@@ -659,7 +617,7 @@ export default function ProductDetail() {
                 </AccordionItem>
 
                 <AccordionItem value="manufacturing" className="border-b border-border">
-                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                  <AccordionTrigger className="text-xs md:text-sm font-body uppercase tracking-widest py-3 md:py-4 hover:no-underline">
                     Manufacturing Information
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
@@ -671,7 +629,7 @@ export default function ProductDetail() {
                 </AccordionItem>
 
                 <AccordionItem value="return" className="border-b border-border">
-                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                  <AccordionTrigger className="text-xs md:text-sm font-body uppercase tracking-widest py-3 md:py-4 hover:no-underline">
                     Return & Exchange Policy
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
@@ -688,7 +646,7 @@ export default function ProductDetail() {
                 </AccordionItem>
 
                 <AccordionItem value="disclaimer" className="border-b border-border">
-                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                  <AccordionTrigger className="text-xs md:text-sm font-body uppercase tracking-widest py-3 md:py-4 hover:no-underline">
                     Disclaimer
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
