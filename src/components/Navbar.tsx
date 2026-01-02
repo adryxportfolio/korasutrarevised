@@ -1,46 +1,44 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Search, User, ChevronDown, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { CartDrawer } from '@/components/CartDrawer';
 
-const SHOPIFY_STORE = 'https://shop.korasutra.com';
-
-// Collection categories with subcategories
+// Collection categories with subcategories - ALL INTERNAL ROUTES
 const collectionCategories = {
   fabric: {
     label: 'Shop by Fabric',
     items: [
-      { name: 'Tussar', href: `${SHOPIFY_STORE}/collections/tussar` },
-      { name: 'Matka', href: `${SHOPIFY_STORE}/collections/matka` },
-      { name: 'Muslin', href: `${SHOPIFY_STORE}/collections/muslin` },
-      { name: 'Pure Silk', href: `${SHOPIFY_STORE}/collections/pure-silk` },
-      { name: 'Katan Silk', href: `${SHOPIFY_STORE}/collections/katan-silk` },
-      { name: 'Linen', href: `${SHOPIFY_STORE}/collections/linen` },
-      { name: 'Cotton', href: `${SHOPIFY_STORE}/collections/cotton` },
+      { name: 'Tussar', href: '/collections/tussar' },
+      { name: 'Matka', href: '/collections/matka' },
+      { name: 'Muslin', href: '/collections/muslin' },
+      { name: 'Pure Silk', href: '/collections/pure-silk' },
+      { name: 'Katan Silk', href: '/collections/katan-silk' },
+      { name: 'Linen', href: '/collections/linen' },
+      { name: 'Cotton', href: '/collections/cotton' },
     ],
   },
   patterns: {
     label: 'Shop by Patterns',
     items: [
-      { name: 'Jamdani', href: `${SHOPIFY_STORE}/collections/jamdani` },
-      { name: 'Kantha Stitch', href: `${SHOPIFY_STORE}/collections/kantha-stitch` },
-      { name: 'Baluchari', href: `${SHOPIFY_STORE}/collections/baluchari` },
-      { name: 'Hand Paint', href: `${SHOPIFY_STORE}/collections/hand-paint` },
-      { name: 'Block Print', href: `${SHOPIFY_STORE}/collections/block-print` },
-      { name: 'Batik', href: `${SHOPIFY_STORE}/collections/batik` },
-      { name: 'Digital Print', href: `${SHOPIFY_STORE}/collections/digital-print` },
-      { name: 'Paithani', href: `${SHOPIFY_STORE}/collections/paithani` },
+      { name: 'Jamdani', href: '/collections/jamdani' },
+      { name: 'Kantha Stitch', href: '/collections/kantha-stitch' },
+      { name: 'Baluchari', href: '/collections/baluchari' },
+      { name: 'Hand Paint', href: '/collections/hand-paint' },
+      { name: 'Block Print', href: '/collections/block-print' },
+      { name: 'Batik', href: '/collections/batik' },
+      { name: 'Digital Print', href: '/collections/digital-print' },
+      { name: 'Paithani', href: '/collections/paithani' },
     ],
   },
   occasions: {
     label: 'Shop by Occasions',
     items: [
-      { name: 'Mummy ki Almari (Traditional)', href: `${SHOPIFY_STORE}/collections/traditional` },
-      { name: 'Bas Yun Hi (Casual)', href: `${SHOPIFY_STORE}/collections/casual` },
-      { name: 'Desk Se Dil Tak (Office Wear)', href: `${SHOPIFY_STORE}/collections/office-wear` },
-      { name: 'Aj Main Upar (Party Wear)', href: `${SHOPIFY_STORE}/collections/party-wear` },
+      { name: 'Mummy ki Almari (Traditional)', href: '/collections/traditional' },
+      { name: 'Bas Yun Hi (Casual)', href: '/collections/casual' },
+      { name: 'Desk Se Dil Tak (Office Wear)', href: '/collections/office-wear' },
+      { name: 'Aj Main Upar (Party Wear)', href: '/collections/party-wear' },
     ],
   },
 };
@@ -52,6 +50,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [collectionsExpanded, setCollectionsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,12 +75,20 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `${SHOPIFY_STORE}/search?q=${encodeURIComponent(searchQuery.trim())}`;
+      // Navigate to collections page with search
+      navigate(`/collections/all?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery('');
     }
   };
 
   const toggleCategory = (category: string) => {
     setExpandedCategory(expandedCategory === category ? null : category);
+  };
+
+  const handleNavigation = (href: string) => {
+    setIsOpen(false);
+    navigate(href);
   };
 
   return (
@@ -119,14 +126,14 @@ export function Navbar() {
 
             {/* Right: Account, Search, Cart */}
             <div className="flex items-center space-x-1 md:space-x-2 shrink-0">
-              {/* Account */}
-              <a
-                href={`${SHOPIFY_STORE}/account`}
+              {/* Account - Internal route */}
+              <Link
+                to="/contact"
                 className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
-                aria-label="Account"
+                aria-label="Contact"
               >
                 <User className="w-5 h-5" />
-              </a>
+              </Link>
               
               {/* Search */}
               <button
@@ -216,13 +223,12 @@ export function Navbar() {
               <ul className="space-y-1">
                 {/* Home */}
                 <li>
-                  <Link
-                    to="/"
-                    className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
-                    onClick={() => setIsOpen(false)}
+                  <button
+                    onClick={() => handleNavigation('/')}
+                    className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left"
                   >
                     Home
-                  </Link>
+                  </button>
                 </li>
 
                 {/* Collection - Expandable */}
@@ -265,13 +271,12 @@ export function Navbar() {
                                 >
                                   {collectionCategories.fabric.items.map((item) => (
                                     <li key={item.name}>
-                                      <a
-                                        href={item.href}
-                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors"
-                                        onClick={() => setIsOpen(false)}
+                                      <button
+                                        onClick={() => handleNavigation(item.href)}
+                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left"
                                       >
                                         {item.name}
-                                      </a>
+                                      </button>
                                     </li>
                                   ))}
                                 </motion.ul>
@@ -299,13 +304,12 @@ export function Navbar() {
                                 >
                                   {collectionCategories.patterns.items.map((item) => (
                                     <li key={item.name}>
-                                      <a
-                                        href={item.href}
-                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors"
-                                        onClick={() => setIsOpen(false)}
+                                      <button
+                                        onClick={() => handleNavigation(item.href)}
+                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left"
                                       >
                                         {item.name}
-                                      </a>
+                                      </button>
                                     </li>
                                   ))}
                                 </motion.ul>
@@ -333,13 +337,12 @@ export function Navbar() {
                                 >
                                   {collectionCategories.occasions.items.map((item) => (
                                     <li key={item.name}>
-                                      <a
-                                        href={item.href}
-                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors"
-                                        onClick={() => setIsOpen(false)}
+                                      <button
+                                        onClick={() => handleNavigation(item.href)}
+                                        className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left"
                                       >
                                         {item.name}
-                                      </a>
+                                      </button>
                                     </li>
                                   ))}
                                 </motion.ul>
@@ -352,15 +355,14 @@ export function Navbar() {
                   </AnimatePresence>
                 </li>
 
-                {/* Best Sellers */}
+                {/* Best Sellers - Internal route */}
                 <li>
-                  <a
-                    href={`${SHOPIFY_STORE}/collections/best-sellers`}
-                    className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
-                    onClick={() => setIsOpen(false)}
+                  <button
+                    onClick={() => handleNavigation('/collections/best-sellers')}
+                    className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left"
                   >
                     Best Sellers
-                  </a>
+                  </button>
                 </li>
 
                 {/* About Us */}
@@ -378,13 +380,12 @@ export function Navbar() {
 
                 {/* Contact */}
                 <li>
-                  <Link
-                    to="/contact"
-                    className="flex items-center justify-between py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
-                    onClick={() => setIsOpen(false)}
+                  <button
+                    onClick={() => handleNavigation('/contact')}
+                    className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left"
                   >
                     Contact
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </nav>
