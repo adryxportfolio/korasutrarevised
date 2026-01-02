@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ShoppingBag, Loader2, MessageCircle, Truck, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingBag, Loader2, MessageCircle, Clock, Heart, Share2, Check, Plus } from 'lucide-react';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
+import { useWishlistStore } from '@/stores/wishlistStore';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Accordion,
   AccordionContent,
@@ -19,7 +21,6 @@ import {
 function parseProductDetails(description: string): Record<string, string> {
   const details: Record<string, string> = {};
   
-  // Common patterns to look for in saree descriptions
   const patterns = [
     { key: 'Fabric', regex: /fabric[:\s]*([^,\n.]+)/i },
     { key: 'Length', regex: /length[:\s]*([^,\n.]+)/i },
@@ -69,7 +70,42 @@ function ProductDetailsTable({ details }: { details: Record<string, string> }) {
   );
 }
 
-// Related Products Component
+// Similar Products Component - SUTA Style
+function SimilarProducts({ currentHandle, products }: { currentHandle: string; products: ShopifyProduct[] }) {
+  const filteredProducts = products.filter(p => p.node.handle !== currentHandle).slice(0, 4);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  if (filteredProducts.length === 0) return null;
+
+  return (
+    <div className="border border-border rounded-sm p-4 mt-6">
+      <h3 className="text-center text-sm font-body uppercase tracking-widest mb-4 border-b border-border pb-3">
+        Similar Products
+      </h3>
+      <div className="flex gap-3 overflow-x-auto pb-2">
+        {filteredProducts.map(({ node }) => (
+          <Link
+            key={node.id}
+            to={`/product/${node.handle}`}
+            className="flex-shrink-0 w-24"
+          >
+            <div className="aspect-[3/4] overflow-hidden bg-secondary/20 rounded-sm">
+              {node.images.edges[0]?.node && (
+                <img
+                  src={node.images.edges[0].node.url}
+                  alt={node.images.edges[0].node.altText || node.title}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                />
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// You May Also Like Section - Bottom of page
 function RelatedProducts({ currentHandle, products }: { currentHandle: string; products: ShopifyProduct[] }) {
   const filteredProducts = products.filter(p => p.node.handle !== currentHandle).slice(0, 8);
   
@@ -117,7 +153,11 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [fallAndEdging, setFallAndEdging] = useState(true);
   const addItem = useCartStore(state => state.addItem);
+  const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
+
+  const isWishlisted = product ? isInWishlist(product.id) : false;
 
   useEffect(() => {
     async function loadProduct() {
@@ -184,6 +224,36 @@ export default function ProductDetail() {
     });
   };
 
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+      toast.success('Removed from wishlist', { position: 'top-center' });
+    } else {
+      addToWishlist({ node: product });
+      toast.success('Added to wishlist', { position: 'top-center' });
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product?.title,
+          url: url,
+        });
+      } catch {
+        navigator.clipboard.writeText(url);
+        toast.success('Link copied!', { position: 'top-center' });
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      toast.success('Link copied!', { position: 'top-center' });
+    }
+  };
+
   const handleEnquiry = () => {
     const message = `Hi, I'm interested in ${product?.title}. Could you provide more details?`;
     window.open(`https://wa.me/919876543210?text=${encodeURIComponent(message)}`, '_blank');
@@ -235,6 +305,8 @@ export default function ProductDetail() {
   const currentVariant = getCurrentVariant();
   const images = product.images.edges;
   const productDetails = parseProductDetails(product.description);
+  const priceAmount = parseFloat(currentVariant?.price.amount || '0');
+  const stockQuantity = 1; // Placeholder - could be from inventory API
 
   return (
     <>
@@ -250,8 +322,8 @@ export default function ProductDetail() {
             <span className="text-foreground">{product.title}</span>
           </nav>
 
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
-            {/* Image Gallery - SUTA Style with vertical thumbnails */}
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+            {/* Left Side - Image Gallery SUTA Style */}
             <div className="flex gap-4">
               {/* Vertical Thumbnails - Desktop */}
               {images.length > 1 && (
@@ -335,15 +407,33 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Product Info - SUTA Style */}
-            <div className="space-y-6">
-              {/* Title */}
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-heading tracking-wide uppercase">
-                {product.title}
-              </h1>
+            {/* Right Side - Product Info SUTA Style */}
+            <div className="space-y-4">
+              {/* Title Row with Share & Wishlist */}
+              <div className="flex items-start justify-between gap-4">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-heading tracking-wide uppercase flex-1">
+                  {product.title}
+                </h1>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={handleShare}
+                    className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
+                    aria-label="Share"
+                  >
+                    <Share2 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={handleWishlistToggle}
+                    className={`p-2 hover:bg-secondary/50 rounded-full transition-colors ${isWishlisted ? 'text-red-500' : ''}`}
+                    aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                  >
+                    <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
+                  </button>
+                </div>
+              </div>
 
-              {/* Tags / Badges */}
-              <div className="flex flex-wrap gap-2">
+              {/* Tags / Badges Row */}
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="px-3 py-1 border border-border text-xs font-body tracking-wide">
                   Saree
                 </span>
@@ -352,15 +442,35 @@ export default function ProductDetail() {
                     {productDetails['Fabric']}
                   </span>
                 )}
+                <button className="text-xs text-muted-foreground underline font-body ml-1">
+                  more i
+                </button>
               </div>
 
-              {/* Price */}
-              <div className="space-y-1">
-                <p className="text-xl md:text-2xl font-heading">
-                  {currentVariant && formatPrice(currentVariant.price.amount, currentVariant.price.currencyCode)}
-                </p>
-                <p className="text-xs text-muted-foreground">MRP Inclusive of all taxes</p>
+              {/* Short Description */}
+              <p className="text-sm text-muted-foreground font-body line-clamp-2">
+                {product.description?.substring(0, 100) || 'Handcrafted saree with exquisite detailing'}
+              </p>
+
+              {/* Price & Top Rated Badge */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xl md:text-2xl font-heading">
+                    {currentVariant && formatPrice(currentVariant.price.amount, currentVariant.price.currencyCode)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">MRP Inclusive of all taxes</p>
+                </div>
+                <span className="px-3 py-1 bg-foreground text-background text-xs font-body uppercase tracking-wide">
+                  Top Rated
+                </span>
               </div>
+
+              {/* Stock Status */}
+              {stockQuantity <= 3 && stockQuantity > 0 && (
+                <p className="text-sm text-red-600 font-body flex items-center gap-1">
+                  🔥 Only {stockQuantity} left in stock — SELLING FAST!
+                </p>
+              )}
 
               {/* Variant Options */}
               {product.options.filter(opt => opt.name !== 'Title').map((option) => (
@@ -396,43 +506,109 @@ export default function ProductDetail() {
                 </div>
               ))}
 
+              {/* Add-Ons Section - SUTA Style */}
+              <div className="border border-border rounded-sm overflow-hidden">
+                <div className="p-4 bg-accent/5 border-b border-border">
+                  <div className="flex items-center justify-center">
+                    <Button
+                      onClick={handleAddToCart}
+                      disabled={!currentVariant?.availableForSale}
+                      className="w-full h-12 text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90 text-accent-foreground rounded-full"
+                    >
+                      {currentVariant?.availableForSale ? (
+                        <>
+                          <ShoppingBag className="w-5 h-5 mr-2" />
+                          Add On
+                        </>
+                      ) : (
+                        'Sold Out'
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Size Chart Link */}
+                <div className="p-4 border-b border-border">
+                  <Link to="/size-guide" className="text-sm text-accent hover:underline font-body">
+                    Size chart
+                  </Link>
+                </div>
+
+                {/* Pre-Drape Service */}
+                <div className="p-4 border-b border-border">
+                  <div className="flex items-center gap-3">
+                    <Checkbox id="pre-drape" />
+                    <label htmlFor="pre-drape" className="text-sm font-body cursor-pointer flex-1">
+                      Pre-Drape Service (+Rs. 1,499.00)
+                      <span className="block text-xs text-muted-foreground">MRP Inclusive of all taxes</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Gifting and Packaging */}
+                <div className="p-4 border-b border-border">
+                  <button className="flex items-center gap-2 text-sm font-body w-full text-left">
+                    <Plus className="w-4 h-4" />
+                    Gifting and Packaging
+                  </button>
+                </div>
+
+                {/* Fall & Edging - Free */}
+                <div className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Checkbox 
+                        id="fall-edging" 
+                        checked={fallAndEdging}
+                        onCheckedChange={(checked) => setFallAndEdging(checked as boolean)}
+                      />
+                      <label htmlFor="fall-edging" className="text-sm font-body cursor-pointer">
+                        Fall & Edging
+                        <span className="block text-xs text-muted-foreground">Every saree comes with fall and edging</span>
+                      </label>
+                    </div>
+                    <span className="px-3 py-1 bg-green-600 text-white text-xs font-body rounded">
+                      Free
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               {/* Delivery Info */}
-              <div className="flex items-center gap-2 text-sm text-accent">
+              <div className="flex items-center gap-2 text-sm text-accent py-2">
                 <Clock className="w-4 h-4" />
                 <span className="font-body tracking-wide">5-7 DAYS DELIVERY WITHIN INDIA</span>
               </div>
 
-              {/* Actions */}
-              <div className="space-y-3 pt-2">
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={!currentVariant?.availableForSale}
-                  className="w-full h-14 text-base font-body uppercase tracking-widest"
-                  size="lg"
-                >
-                  {currentVariant?.availableForSale ? (
-                    <>
-                      <ShoppingBag className="w-5 h-5 mr-2" />
-                      Add to Cart
-                    </>
-                  ) : (
-                    'Sold Out'
-                  )}
-                </Button>
-                
-                <Button
-                  onClick={handleEnquiry}
-                  variant="outline"
-                  size="lg"
-                  className="w-full h-12 text-sm font-body uppercase tracking-wide"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Enquiry on WhatsApp
-                </Button>
+              {/* Offers Section */}
+              <div className="border border-border rounded-sm p-4 bg-green-50">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm">🎁</span>
+                  <span className="text-sm font-body font-medium">Offers</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-body font-semibold">KORA5 📋</p>
+                    <p className="text-xs text-muted-foreground">5% OFF upto ₹1000 | Minimum purchase of ₹4499</p>
+                  </div>
+                </div>
               </div>
 
+              {/* Add to Cart Button - Large */}
+              <Button
+                onClick={handleAddToCart}
+                disabled={!currentVariant?.availableForSale}
+                className="w-full h-14 text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90"
+                size="lg"
+              >
+                {currentVariant?.availableForSale ? 'Add to Cart' : 'Sold Out'}
+              </Button>
+
+              {/* Similar Products */}
+              <SimilarProducts currentHandle={handle || ''} products={relatedProducts} />
+
               {/* Accordion Sections - SUTA Style */}
-              <Accordion type="multiple" className="w-full border-t border-border">
+              <Accordion type="multiple" className="w-full border-t border-border mt-6">
                 <AccordionItem value="details" className="border-b border-border">
                   <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
                     Details
@@ -444,6 +620,18 @@ export default function ProductDetail() {
                         Product details will be available soon.
                       </p>
                     )}
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="story" className="border-b border-border">
+                  <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
+                    Story
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    <p className="font-body text-foreground/80 leading-relaxed text-sm">
+                      Each saree tells a story of tradition, craftsmanship, and the skilled artisans who create these masterpieces. 
+                      This piece is handcrafted with love and dedication, preserving centuries-old techniques.
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
 
@@ -470,16 +658,12 @@ export default function ProductDetail() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="shipping" className="border-b border-border">
+                <AccordionItem value="return" className="border-b border-border">
                   <AccordionTrigger className="text-sm font-body uppercase tracking-widest py-4 hover:no-underline">
-                    Shipping & Returns
+                    Return & Exchange Policy
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
                     <div className="space-y-3 text-sm font-body text-foreground/80">
-                      <div className="flex items-start gap-2">
-                        <Truck className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                        <p>Free shipping on all orders within India</p>
-                      </div>
                       <p>
                         We offer easy returns and exchanges within 10 days of delivery. 
                         Items must be unused with all tags attached.
@@ -494,7 +678,7 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          {/* Related Products */}
+          {/* Related Products - Bottom */}
           <RelatedProducts currentHandle={handle || ''} products={relatedProducts} />
         </div>
       </main>

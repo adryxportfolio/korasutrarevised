@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, User, ChevronDown, ChevronRight } from 'lucide-react';
+import { Menu, X, Search, User, ChevronDown, ChevronRight, Heart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { CartDrawer } from '@/components/CartDrawer';
+import { useWishlistStore } from '@/stores/wishlistStore';
+import { Slider } from '@/components/ui/slider';
+import { Badge } from '@/components/ui/badge';
 
 // Collection categories with subcategories - ALL INTERNAL ROUTES
 const collectionCategories = {
@@ -50,7 +53,10 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [collectionsExpanded, setCollectionsExpanded] = useState(false);
+  const [priceFilterExpanded, setPriceFilterExpanded] = useState(false);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const navigate = useNavigate();
+  const wishlistCount = useWishlistStore(state => state.getTotalItems());
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,7 +81,6 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Navigate to collections page with search
       navigate(`/collections/all?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchOpen(false);
       setSearchQuery('');
@@ -89,6 +94,11 @@ export function Navbar() {
   const handleNavigation = (href: string) => {
     setIsOpen(false);
     navigate(href);
+  };
+
+  const handlePriceFilterApply = () => {
+    setIsOpen(false);
+    navigate(`/collections/all?minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`);
   };
 
   return (
@@ -124,8 +134,22 @@ export function Navbar() {
               <img src={logo} alt="Kora Sutra" className="h-14 md:h-20 w-auto" />
             </Link>
 
-            {/* Right: Account, Search, Cart */}
+            {/* Right: Wishlist, Account, Search, Cart */}
             <div className="flex items-center space-x-1 md:space-x-2 shrink-0">
+              {/* Wishlist */}
+              <Link
+                to="/wishlist"
+                className="p-2 hover:bg-secondary/50 rounded-full transition-colors relative"
+                aria-label="Wishlist"
+              >
+                <Heart className="w-5 h-5" />
+                {wishlistCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-[10px] bg-accent">
+                    {wishlistCount}
+                  </Badge>
+                )}
+              </Link>
+              
               {/* Account - Internal route */}
               <Link
                 to="/contact"
@@ -229,6 +253,49 @@ export function Navbar() {
                   >
                     Home
                   </button>
+                </li>
+
+                {/* Price Filter */}
+                <li>
+                  <button
+                    onClick={() => setPriceFilterExpanded(!priceFilterExpanded)}
+                    className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50"
+                  >
+                    Filter by Price
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${priceFilterExpanded ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {priceFilterExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pl-4 py-4 space-y-4">
+                          <Slider
+                            value={priceRange}
+                            min={0}
+                            max={50000}
+                            step={500}
+                            onValueChange={(value) => setPriceRange(value as [number, number])}
+                          />
+                          <div className="flex items-center justify-between text-sm text-muted-foreground">
+                            <span>₹{priceRange[0].toLocaleString()}</span>
+                            <span>₹{priceRange[1].toLocaleString()}</span>
+                          </div>
+                          <button
+                            onClick={handlePriceFilterApply}
+                            className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors"
+                          >
+                            Apply Filter
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </li>
 
                 {/* Collection - Expandable */}
@@ -362,6 +429,23 @@ export function Navbar() {
                     className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left"
                   >
                     Best Sellers
+                  </button>
+                </li>
+
+                {/* Wishlist */}
+                <li>
+                  <button
+                    onClick={() => handleNavigation('/wishlist')}
+                    className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left"
+                  >
+                    <span className="flex items-center gap-2">
+                      Wishlist
+                      {wishlistCount > 0 && (
+                        <Badge className="h-5 px-2 bg-accent text-accent-foreground text-xs">
+                          {wishlistCount}
+                        </Badge>
+                      )}
+                    </span>
                   </button>
                 </li>
 
