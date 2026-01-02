@@ -14,13 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      reviews: {
+        Row: {
+          content: string
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          helpful_count: number | null
+          id: string
+          is_approved: boolean | null
+          is_verified_purchase: boolean | null
+          product_handle: string
+          product_id: string
+          rating: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          helpful_count?: number | null
+          id?: string
+          is_approved?: boolean | null
+          is_verified_purchase?: boolean | null
+          product_handle: string
+          product_id: string
+          rating: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          helpful_count?: number | null
+          id?: string
+          is_approved?: boolean | null
+          is_verified_purchase?: boolean | null
+          product_handle?: string
+          product_id?: string
+          rating?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_product_review_stats: {
+        Args: { p_handle: string }
+        Returns: {
+          average_rating: number
+          rating_1: number
+          rating_2: number
+          rating_3: number
+          rating_4: number
+          rating_5: number
+          total_reviews: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
