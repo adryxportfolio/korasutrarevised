@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { CollectionsSection } from '@/components/CollectionsSection';
-import { FeaturedProducts } from '@/components/FeaturedProducts';
+import { ShopifyProducts } from '@/components/ShopifyProducts';
 import { AboutSection } from '@/components/AboutSection';
 import { TestimonialsSection } from '@/components/TestimonialsSection';
 import { NewsletterSection } from '@/components/NewsletterSection';
@@ -37,7 +37,7 @@ const Index = () => {
         <main>
           <HeroSection />
           <CollectionsSection />
-          <FeaturedProducts />
+          <ShopifyProducts />
           <AboutSection />
           <TestimonialsSection />
           <NewsletterSection />

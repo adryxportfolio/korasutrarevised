@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, User, ShoppingBag, ChevronDown, ChevronRight } from 'lucide-react';
+import { Menu, X, Search, User, ChevronDown, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
+import { CartDrawer } from '@/components/CartDrawer';
 
 const SHOPIFY_STORE = 'https://shop.korasutra.com';
 
@@ -137,13 +138,7 @@ export function Navbar() {
               </button>
               
               {/* Cart */}
-              <a
-                href={`${SHOPIFY_STORE}/cart`}
-                className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
-                aria-label="Cart"
-              >
-                <ShoppingBag className="w-5 h-5" />
-              </a>
+              <CartDrawer />
             </div>
           </div>
 
