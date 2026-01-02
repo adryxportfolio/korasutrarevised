@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { ProductReviews } from '@/components/ProductReviews';
 
 // Parse product description to extract structured details
 function parseProductDetails(description: string): Record<string, string> {
@@ -693,6 +694,15 @@ export default function ProductDetail() {
               </Accordion>
             </div>
           </div>
+
+          {/* Customer Reviews Section */}
+          {product && (
+            <ProductReviews 
+              productId={product.id}
+              productHandle={product.handle}
+              productTitle={product.title}
+            />
+          )}
 
           {/* Related Products - Bottom */}
           <RelatedProducts currentHandle={handle || ''} products={relatedProducts} />
