@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User } from "lucide-react";
+import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, Package, MapPin } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
 
@@ -30,6 +30,10 @@ export const CartDrawer = () => {
 
   const handleShopifyLogin = () => {
     window.open('https://korasutrarevised-iv76s.myshopify.com/account/login', '_blank');
+  };
+
+  const handleViewAccount = () => {
+    window.open('https://korasutrarevised-iv76s.myshopify.com/account', '_blank');
   };
 
   const handleCheckout = async () => {
@@ -147,6 +151,7 @@ export const CartDrawer = () => {
                   </span>
                 </div>
                 
+                {/* Continue as Guest / Checkout Button */}
                 <Button 
                   onClick={handleCheckout}
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90" 
@@ -161,7 +166,7 @@ export const CartDrawer = () => {
                   ) : (
                     <>
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Checkout
+                      Continue as Guest
                     </>
                   )}
                 </Button>
@@ -176,6 +181,28 @@ export const CartDrawer = () => {
                   <User className="w-4 h-4 mr-2" />
                   Sign In / Sign Up
                 </Button>
+
+                {/* Account Links for logged-in users */}
+                <div className="flex gap-2 pt-2 border-t border-border/50">
+                  <Button 
+                    onClick={handleViewAccount}
+                    variant="ghost"
+                    className="flex-1 text-xs"
+                    size="sm"
+                  >
+                    <Package className="w-3 h-3 mr-1" />
+                    Order History
+                  </Button>
+                  <Button 
+                    onClick={handleViewAccount}
+                    variant="ghost"
+                    className="flex-1 text-xs"
+                    size="sm"
+                  >
+                    <MapPin className="w-3 h-3 mr-1" />
+                    Saved Addresses
+                  </Button>
+                </div>
               </div>
             </>
           )}
