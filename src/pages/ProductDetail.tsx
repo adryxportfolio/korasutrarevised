@@ -24,15 +24,12 @@ function parseProductDetails(description: string): Record<string, string> {
   
   const patterns = [
     { key: 'Fabric', regex: /fabric[:\s]*([^,\n.]+)/i },
-    { key: 'Length', regex: /length[:\s]*([^,\n.]+)/i },
-    { key: 'Width', regex: /width[:\s]*([^,\n.]+)/i },
     { key: 'Blouse Piece', regex: /blouse\s*piece[:\s]*([^,\n.]+)/i },
     { key: 'Colour', regex: /colou?r[:\s]*([^,\n.]+)/i },
     { key: 'Wash Care', regex: /wash\s*care[:\s]*([^,\n.]+)/i },
     { key: 'Pattern', regex: /pattern[:\s]*([^,\n.]+)/i },
     { key: 'Occasion', regex: /occasion[:\s]*([^,\n.]+)/i },
     { key: 'Craft', regex: /craft[:\s]*([^,\n.]+)/i },
-    { key: 'Origin', regex: /origin[:\s]*([^,\n.]+)/i },
     { key: 'Weave', regex: /weave[:\s]*([^,\n.]+)/i },
   ];
 
@@ -43,7 +40,21 @@ function parseProductDetails(description: string): Record<string, string> {
     }
   });
 
+  // Always set fixed values for Length and Origin
+  details['Length'] = '6 metres';
+  details['Origin'] = 'Hyderabad';
+
   return details;
+}
+
+// Generate a random stock quantity (1-5) based on product handle for consistency
+function getRandomStock(handle: string): number {
+  let hash = 0;
+  for (let i = 0; i < handle.length; i++) {
+    hash = ((hash << 5) - hash) + handle.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return Math.abs(hash % 5) + 1; // Returns 1-5
 }
 
 // Product Details Table Component
@@ -307,7 +318,7 @@ export default function ProductDetail() {
   const images = product.images.edges;
   const productDetails = parseProductDetails(product.description);
   const priceAmount = parseFloat(currentVariant?.price.amount || '0');
-  const stockQuantity = 1; // Placeholder - could be from inventory API
+  const stockQuantity = handle ? getRandomStock(handle) : 1;
 
   return (
     <>
