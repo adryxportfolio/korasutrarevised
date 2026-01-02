@@ -123,13 +123,13 @@ export default function Contact() {
                 <div className="p-6 bg-primary/10 rounded-sm">
                   <h3 className="font-heading text-lg mb-2">Shop Now</h3>
                   <p className="text-muted-foreground font-body mb-3">
-                    Visit our official store to browse and purchase our collections.
+                    Browse and purchase our collections right here on our website.
                   </p>
                   <a 
-                    href="https://mydukaan.io/korasutra"
+                    href="/collections/all"
                     className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-body text-sm rounded-sm hover:bg-primary/90 transition-colors"
                   >
-                    Visit Store
+                    Browse Collections
                   </a>
                 </div>
               </div>
