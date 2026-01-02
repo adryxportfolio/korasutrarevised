@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ShoppingBag, Loader2, Clock, Heart, Share2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ShoppingBag, Loader2, Clock, Heart, Share2 } from 'lucide-react';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { SwipeableImageGallery } from '@/components/SwipeableImageGallery';
 
 import {
   Accordion,
@@ -162,7 +163,6 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<ShopifyProduct['node'] | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   
@@ -175,7 +175,6 @@ export default function ProductDetail() {
     async function loadProduct() {
       if (!handle) return;
       setLoading(true);
-      setSelectedImage(0);
       
       const [productData, allProducts] = await Promise.all([
         fetchProductByHandle(handle),
@@ -271,16 +270,6 @@ export default function ProductDetail() {
     window.open(`https://wa.me/919876543210?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const navigateImage = (direction: 'prev' | 'next') => {
-    if (!product) return;
-    const total = product.images.edges.length;
-    if (direction === 'prev') {
-      setSelectedImage(prev => (prev - 1 + total) % total);
-    } else {
-      setSelectedImage(prev => (prev + 1) % total);
-    }
-  };
-
   if (loading) {
     return (
       <>
@@ -323,101 +312,20 @@ export default function ProductDetail() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-28 pb-16">
-        <div className="container mx-auto px-4 md:px-6">
+      <main className="min-h-screen pt-28 pb-16 overflow-x-hidden">
+        <div className="container mx-auto px-3 md:px-6 max-w-full overflow-hidden">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6 font-body">
-            <Link to="/" className="hover:text-foreground transition-colors">
+          <nav className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6 font-body overflow-hidden">
+            <Link to="/" className="hover:text-foreground transition-colors flex-shrink-0">
               Home
             </Link>
-            <span>/</span>
-            <span className="text-foreground">{product.title}</span>
+            <span className="flex-shrink-0">/</span>
+            <span className="text-foreground truncate">{product.title}</span>
           </nav>
 
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Left Side - Image Gallery SUTA Style */}
-            <div className="flex gap-4">
-              {/* Vertical Thumbnails - Desktop */}
-              {images.length > 1 && (
-                <div className="hidden md:flex flex-col gap-2 w-20 flex-shrink-0">
-                  {images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`aspect-[3/4] overflow-hidden border-2 transition-all ${
-                        selectedImage === index 
-                          ? 'border-foreground' 
-                          : 'border-transparent hover:border-muted-foreground/50'
-                      }`}
-                    >
-                      <img
-                        src={image.node.url}
-                        alt={image.node.altText || `${product.title} ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
-              
-              {/* Main Image */}
-              <div className="flex-1 relative">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={selectedImage}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="aspect-[3/4] overflow-hidden bg-secondary/20"
-                  >
-                    {images[selectedImage]?.node && (
-                      <img
-                        src={images[selectedImage].node.url}
-                        alt={images[selectedImage].node.altText || product.title}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-                
-                {/* Image Navigation Arrows */}
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={() => navigateImage('prev')}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors"
-                      aria-label="Previous image"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => navigateImage('next')}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors"
-                      aria-label="Next image"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </>
-                )}
-
-                {/* Image Dots - Mobile */}
-                {images.length > 1 && (
-                  <div className="md:hidden flex justify-center gap-2 mt-4">
-                    {images.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImage(index)}
-                        className={`w-2 h-2 rounded-full transition-colors ${
-                          selectedImage === index ? 'bg-foreground' : 'bg-muted-foreground/30'
-                        }`}
-                        aria-label={`Go to image ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+          <div className="grid md:grid-cols-2 gap-4 md:gap-8 lg:gap-12">
+            {/* Left Side - Image Gallery with Swipe */}
+            <SwipeableImageGallery images={images} productTitle={product.title} />
 
             {/* Right Side - Product Info SUTA Style */}
             <div className="space-y-3 md:space-y-4">
