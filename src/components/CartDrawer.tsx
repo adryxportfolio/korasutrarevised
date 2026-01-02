@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
 
@@ -27,6 +27,10 @@ export const CartDrawer = () => {
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
   const currencyCode = items[0]?.price.currencyCode || 'INR';
+
+  const handleShopifyLogin = () => {
+    window.open('https://korasutrarevised-iv76s.myshopify.com/account/login', '_blank');
+  };
 
   const handleCheckout = async () => {
     try {
@@ -160,6 +164,17 @@ export const CartDrawer = () => {
                       Checkout
                     </>
                   )}
+                </Button>
+
+                {/* Sign In / Sign Up Button */}
+                <Button 
+                  onClick={handleShopifyLogin}
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Sign In / Sign Up
                 </Button>
               </div>
             </>

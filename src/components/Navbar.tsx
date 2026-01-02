@@ -150,14 +150,14 @@ export function Navbar() {
                 )}
               </Link>
               
-              {/* Account - Internal route */}
-              <Link
-                to="/contact"
+              {/* Account - Opens Shopify login */}
+              <button
+                onClick={() => window.open('https://korasutrarevised-iv76s.myshopify.com/account/login', '_blank')}
                 className="p-2 hover:bg-secondary/50 rounded-full transition-colors"
-                aria-label="Contact"
+                aria-label="Account"
               >
                 <User className="w-5 h-5" />
-              </Link>
+              </button>
               
               {/* Search */}
               <button
