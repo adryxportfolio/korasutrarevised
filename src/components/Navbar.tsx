@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, User, ChevronDown, ChevronRight, Heart } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, Search, User, ChevronDown, ChevronRight, Heart, Home } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { CartDrawer } from '@/components/CartDrawer';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-
 // Collection categories with subcategories - ALL INTERNAL ROUTES
 const collectionCategories = {
   fabric: {
@@ -56,7 +55,9 @@ export function Navbar() {
   const [priceFilterExpanded, setPriceFilterExpanded] = useState(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const navigate = useNavigate();
+  const location = useLocation();
   const wishlistCount = useWishlistStore(state => state.getTotalItems());
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -134,8 +135,18 @@ export function Navbar() {
               <img src={logo} alt="Kora Sutra" className="h-14 md:h-20 w-auto" />
             </Link>
 
-            {/* Right: Wishlist, Account, Search, Cart */}
+            {/* Right: Home (mobile only, non-home pages), Wishlist, Account, Search, Cart */}
             <div className="flex items-center space-x-1 md:space-x-2 shrink-0">
+              {/* Home - Mobile only, hidden on home page */}
+              {!isHomePage && (
+                <Link
+                  to="/"
+                  className="p-2 hover:bg-secondary/50 rounded-full transition-colors md:hidden"
+                  aria-label="Home"
+                >
+                  <Home className="w-5 h-5" />
+                </Link>
+              )}
               {/* Wishlist */}
               <Link
                 to="/wishlist"
