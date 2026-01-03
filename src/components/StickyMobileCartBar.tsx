@@ -1,8 +1,8 @@
-import { ShoppingBag, MessageCircle } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/shopify';
 
-interface StickyMobileCartBarProps {
+export interface StickyMobileCartBarProps {
   price: {
     amount: string;
     currencyCode: string;
@@ -10,6 +10,7 @@ interface StickyMobileCartBarProps {
   isAvailable: boolean;
   onAddToCart: () => void;
   productTitle: string;
+  isLoading?: boolean;
 }
 
 const WHATSAPP_NUMBER = '917995862266';
@@ -18,7 +19,8 @@ export function StickyMobileCartBar({
   price, 
   isAvailable, 
   onAddToCart,
-  productTitle 
+  productTitle,
+  isLoading = false
 }: StickyMobileCartBarProps) {
   const handleEnquiry = () => {
     const message = `Hi, I'm interested in ${productTitle}. Could you provide more details?`;
@@ -47,16 +49,18 @@ export function StickyMobileCartBar({
           </Button>
           <Button
             onClick={onAddToCart}
-            disabled={!isAvailable}
-            className="h-10 px-4 text-xs font-body uppercase tracking-wider bg-accent hover:bg-accent/90 rounded-full"
+            disabled={!isAvailable || isLoading}
+            className="h-10 px-4 text-xs font-body uppercase tracking-wider bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
           >
-            {isAvailable ? (
+            {!isAvailable ? (
+              'Sold Out'
+            ) : isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
               <>
                 <ShoppingBag className="w-4 h-4 mr-1" />
-                Add
+                Buy Now
               </>
-            ) : (
-              'Sold Out'
             )}
           </Button>
         </div>

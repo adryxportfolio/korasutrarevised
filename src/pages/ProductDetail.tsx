@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, Clock, Heart, Share2, Bell } from 'lucide-react';
-import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
+import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
@@ -221,25 +221,29 @@ export default function ProductDetail() {
     return product?.variants.edges.find(({ node }) => node.id === selectedVariant)?.node;
   };
 
-  const handleAddToCart = () => {
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  const handleBuyNow = async () => {
     if (!product || !selectedVariant) return;
     
     const variant = getCurrentVariant();
     if (!variant) return;
 
-    addItem({
-      product: { node: product },
-      variantId: variant.id,
-      variantTitle: variant.title,
-      price: variant.price,
-      quantity: 1,
-      selectedOptions: variant.selectedOptions || [],
-    });
-
-    toast.success('Added to cart', {
-      description: product.title,
-      position: 'top-center',
-    });
+    setIsCheckingOut(true);
+    try {
+      const checkoutUrl = await createStorefrontCheckout([
+        { variantId: variant.id, quantity: 1 }
+      ]);
+      window.open(checkoutUrl, '_blank');
+    } catch (error) {
+      console.error('Checkout failed:', error);
+      toast.error('Failed to create checkout', {
+        description: 'Please try again',
+        position: 'top-center',
+      });
+    } finally {
+      setIsCheckingOut(false);
+    }
   };
 
   const handleWishlistToggle = () => {
@@ -435,17 +439,22 @@ export default function ProductDetail() {
                 <div className="p-3 md:p-4 bg-accent/5 border-b border-border">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <Button
-                      onClick={handleAddToCart}
-                      disabled={!currentVariant?.availableForSale}
+                      onClick={handleBuyNow}
+                      disabled={!currentVariant?.availableForSale || isCheckingOut}
                       className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
                     >
-                      {currentVariant?.availableForSale ? (
+                      {!currentVariant?.availableForSale ? (
+                        'Sold Out'
+                      ) : isCheckingOut ? (
+                        <>
+                          <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
                         <>
                           <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                           Buy Now
                         </>
-                      ) : (
-                        'Sold Out'
                       )}
                     </Button>
                     {!currentVariant?.availableForSale && (
@@ -497,12 +506,12 @@ export default function ProductDetail() {
 
               {/* Add to Cart Button - Large */}
               <Button
-                onClick={handleAddToCart}
-                disabled={!currentVariant?.availableForSale}
-                className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90"
+                onClick={handleBuyNow}
+                disabled={!currentVariant?.availableForSale || isCheckingOut}
+                className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white"
                 size="lg"
               >
-                {currentVariant?.availableForSale ? 'Add to Cart' : 'Sold Out'}
+                {!currentVariant?.availableForSale ? 'Sold Out' : isCheckingOut ? 'Processing...' : 'Buy Now'}
               </Button>
 
               {/* Similar Products */}
@@ -616,8 +625,9 @@ export default function ProductDetail() {
           <StickyMobileCartBar
             price={currentVariant.price}
             isAvailable={currentVariant.availableForSale}
-            onAddToCart={handleAddToCart}
+            onAddToCart={handleBuyNow}
             productTitle={product.title}
+            isLoading={isCheckingOut}
           />
         )}
       </main>
