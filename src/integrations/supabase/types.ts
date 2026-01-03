@@ -64,53 +64,26 @@ export type Database = {
       }
     }
     Views: {
-      reviews_public: {
-        Row: {
-          content: string | null
-          created_at: string | null
-          customer_name: string | null
-          helpful_count: number | null
-          id: string | null
-          is_approved: boolean | null
-          is_verified_purchase: boolean | null
-          product_handle: string | null
-          product_id: string | null
-          rating: number | null
-          title: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string | null
-          customer_name?: string | null
-          helpful_count?: number | null
-          id?: string | null
-          is_approved?: boolean | null
-          is_verified_purchase?: boolean | null
-          product_handle?: string | null
-          product_id?: string | null
-          rating?: number | null
-          title?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          content?: string | null
-          created_at?: string | null
-          customer_name?: string | null
-          helpful_count?: number | null
-          id?: string | null
-          is_approved?: boolean | null
-          is_verified_purchase?: boolean | null
-          product_handle?: string | null
-          product_id?: string | null
-          rating?: number | null
-          title?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
+      get_approved_reviews: {
+        Args: { p_product_handle?: string }
+        Returns: {
+          content: string
+          created_at: string
+          customer_name: string
+          helpful_count: number
+          id: string
+          is_approved: boolean
+          is_verified_purchase: boolean
+          product_handle: string
+          product_id: string
+          rating: number
+          title: string
+          updated_at: string
+        }[]
+      }
       get_product_review_stats: {
         Args: { p_handle: string }
         Returns: {
@@ -122,6 +95,10 @@ export type Database = {
           rating_5: number
           total_reviews: number
         }[]
+      }
+      increment_review_helpful: {
+        Args: { p_review_id: string }
+        Returns: undefined
       }
     }
     Enums: {
