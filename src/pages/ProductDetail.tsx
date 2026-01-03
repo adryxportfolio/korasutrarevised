@@ -437,12 +437,12 @@ export default function ProductDetail() {
                     <Button
                       onClick={handleAddToCart}
                       disabled={!currentVariant?.availableForSale}
-                      className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-accent hover:bg-accent/90 text-accent-foreground rounded-full"
+                      className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
                     >
                       {currentVariant?.availableForSale ? (
                         <>
                           <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-                          Add On
+                          Buy Now
                         </>
                       ) : (
                         'Sold Out'
