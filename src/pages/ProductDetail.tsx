@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Loader2, Clock, Heart, Share2 } from 'lucide-react';
+import { ShoppingBag, Loader2, Clock, Heart, Share2, Bell } from 'lucide-react';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
@@ -433,7 +433,7 @@ export default function ProductDetail() {
               {/* Add-Ons Section - Simplified */}
               <div className="border border-border rounded-sm overflow-hidden">
                 <div className="p-3 md:p-4 bg-accent/5 border-b border-border">
-                  <div className="flex items-center justify-center">
+                  <div className="flex flex-col items-center justify-center gap-2">
                     <Button
                       onClick={handleAddToCart}
                       disabled={!currentVariant?.availableForSale}
@@ -448,6 +448,22 @@ export default function ProductDetail() {
                         'Sold Out'
                       )}
                     </Button>
+                    {!currentVariant?.availableForSale && (
+                      <a
+                        href={`https://wa.me/917995862266?text=${encodeURIComponent(`Hi, I'm interested in "${product.title}" which is currently out of stock. Please notify me when it's back in stock. Product: ${window.location.href}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full"
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest rounded-full border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white"
+                        >
+                          <Bell className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                          Notify Me
+                        </Button>
+                      </a>
+                    )}
                   </div>
                 </div>
                 
