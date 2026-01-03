@@ -123,12 +123,9 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
 
   const fetchReviews = async () => {
     try {
-      // Use the secure public view that excludes customer_email
+      // Use the secure RPC function that excludes customer_email
       const { data, error } = await supabase
-        .from('reviews_public')
-        .select('id, customer_name, rating, title, content, is_verified_purchase, helpful_count, created_at')
-        .eq('product_handle', productHandle)
-        .order('created_at', { ascending: false });
+        .rpc('get_approved_reviews', { p_product_handle: productHandle });
 
       if (error) throw error;
       setReviews(data || []);
@@ -214,10 +211,9 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
       const review = reviews.find(r => r.id === reviewId);
       if (!review) return;
 
+      // Use the secure RPC function to increment helpful count
       const { error } = await supabase
-        .from('reviews')
-        .update({ helpful_count: review.helpful_count + 1 })
-        .eq('id', reviewId);
+        .rpc('increment_review_helpful', { p_review_id: reviewId });
 
       if (error) throw error;
       
