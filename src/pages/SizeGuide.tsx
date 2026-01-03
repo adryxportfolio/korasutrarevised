@@ -1,9 +1,7 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-
 export default function SizeGuide() {
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navbar />
       <main className="pt-32 pb-20">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -27,8 +25,8 @@ export default function SizeGuide() {
                   <tbody className="text-muted-foreground">
                     <tr className="border-b border-border">
                       <td className="p-4">Standard Saree</td>
-                      <td className="p-4">5.5 meters (6 yards)</td>
-                      <td className="p-4">1.1 meters (44 inches)</td>
+                      <td className="p-4">6.5 meters (6 yards)</td>
+                      <td className="p-4">1.16 meters (46 inches)</td>
                     </tr>
                     <tr className="border-b border-border">
                       <td className="p-4">With Blouse Piece</td>
@@ -113,6 +111,5 @@ export default function SizeGuide() {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 }
