@@ -125,7 +125,7 @@ export function HeroSection() {
             duration: 0.6,
             delay: 0.7
           }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed text-xl">
-              Discover the artistry of handcrafted sarees, where every thread tells a story of pure elegance and timeless tradition.
+              Discover the artistry of handcrafted sarees, where every thread tells a story of pure elegance and timeless beauty. 
             </motion.p>
             
             <motion.div initial={{
@@ -141,10 +141,9 @@ export function HeroSection() {
               <Link to="/collections/all" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
                 Explore Collection
               </Link>
-              <button 
-                onClick={() => document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-foreground font-body text-sm tracking-wide uppercase rounded-sm hover:bg-foreground hover:text-background transition-colors"
-              >
+              <button onClick={() => document.getElementById('about-section')?.scrollIntoView({
+              behavior: 'smooth'
+            })} className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-foreground font-body text-sm tracking-wide uppercase rounded-sm hover:bg-foreground hover:text-background transition-colors">
                 Our Story
               </button>
             </motion.div>
