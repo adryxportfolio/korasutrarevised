@@ -627,6 +627,12 @@ export default function Collection() {
                       </button>
                     </span>
                   ))}
+                  <button
+                    onClick={clearFilters}
+                    className="text-xs text-accent hover:text-accent/80 underline underline-offset-2 transition-colors"
+                  >
+                    Clear All
+                  </button>
                 </div>
               )}
             </div>
