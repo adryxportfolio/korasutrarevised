@@ -231,12 +231,9 @@ export default function Collection() {
       const data = await fetchProducts(50, config?.query || searchQuery || undefined);
       setProducts(data);
       
-      // Calculate max price
-      if (data.length > 0) {
-        const max = Math.max(...data.map(p => parseFloat(p.node.priceRange.minVariantPrice.amount)));
-        setMaxPrice(Math.ceil(max / 1000) * 1000);
-        setPriceRange([0, Math.ceil(max / 1000) * 1000]);
-      }
+      // Set fixed max price of 50,000
+      setMaxPrice(50000);
+      setPriceRange([0, 50000]);
       
       setLoading(false);
     }
