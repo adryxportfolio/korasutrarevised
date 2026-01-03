@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useParams, Link, useSearchParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Loader2, SlidersHorizontal, ChevronDown, Heart, X } from 'lucide-react';
+import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, SlidersHorizontal, ChevronDown, ChevronRight, Heart, X } from 'lucide-react';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -62,6 +62,44 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'newest', label: 'Newest' },
 ];
 
+// Collection categories with subcategories - matching Navbar structure
+const collectionCategories = {
+  fabric: {
+    label: 'Shop by Fabric',
+    items: [
+      { name: 'Tussar', href: '/collections/tussar' },
+      { name: 'Matka', href: '/collections/matka' },
+      { name: 'Muslin', href: '/collections/muslin' },
+      { name: 'Pure Silk', href: '/collections/pure-silk' },
+      { name: 'Katan Silk', href: '/collections/katan-silk' },
+      { name: 'Linen', href: '/collections/linen' },
+      { name: 'Cotton', href: '/collections/cotton' },
+    ],
+  },
+  patterns: {
+    label: 'Shop by Patterns',
+    items: [
+      { name: 'Jamdani', href: '/collections/jamdani' },
+      { name: 'Kantha Stitch', href: '/collections/kantha-stitch' },
+      { name: 'Baluchari', href: '/collections/baluchari' },
+      { name: 'Hand Paint', href: '/collections/hand-paint' },
+      { name: 'Block Print', href: '/collections/block-print' },
+      { name: 'Batik', href: '/collections/batik' },
+      { name: 'Digital Print', href: '/collections/digital-print' },
+      { name: 'Paithani', href: '/collections/paithani' },
+    ],
+  },
+  occasions: {
+    label: 'Shop by Occasions',
+    items: [
+      { name: 'Mummy ki Almari (Traditional)', href: '/collections/traditional' },
+      { name: 'Bas Yun Hi (Casual)', href: '/collections/casual' },
+      { name: 'Desk Se Dil Tak (Office Wear)', href: '/collections/office-wear' },
+      { name: 'Aj Main Upar (Party Wear)', href: '/collections/party-wear' },
+    ],
+  },
+};
+
 // Common color mapping for normalization
 const colorMap: Record<string, string> = {
   'red': '#DC2626',
@@ -102,6 +140,7 @@ const colorMap: Record<string, string> = {
 export default function Collection() {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -111,6 +150,7 @@ export default function Collection() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [blouseFilter, setBlouseFilter] = useState<BlouseFilter>('all');
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
@@ -286,6 +326,15 @@ export default function Collection() {
     );
   };
 
+  const toggleCategory = (category: string) => {
+    setExpandedCategory(expandedCategory === category ? null : category);
+  };
+
+  const handleCategoryNavigation = (href: string) => {
+    setFilterOpen(false);
+    navigate(href);
+  };
+
   const clearFilters = () => {
     setPriceRange([0, maxPrice]);
     setSortBy('featured');
@@ -433,8 +482,110 @@ export default function Collection() {
                       </div>
                     )}
 
+                    {/* Shop by Fabric */}
+                    <div>
+                      <button
+                        onClick={() => toggleCategory('fabric')}
+                        className="flex items-center justify-between w-full text-sm font-body uppercase tracking-wide mb-2"
+                      >
+                        Shop by Fabric
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'fabric' ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {expandedCategory === 'fabric' && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="space-y-2 pt-2">
+                              {collectionCategories.fabric.items.map((item) => (
+                                <button
+                                  key={item.name}
+                                  onClick={() => handleCategoryNavigation(item.href)}
+                                  className="block w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
+                                >
+                                  {item.name}
+                                </button>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Shop by Patterns */}
+                    <div>
+                      <button
+                        onClick={() => toggleCategory('patterns')}
+                        className="flex items-center justify-between w-full text-sm font-body uppercase tracking-wide mb-2"
+                      >
+                        Shop by Patterns
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'patterns' ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {expandedCategory === 'patterns' && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="space-y-2 pt-2">
+                              {collectionCategories.patterns.items.map((item) => (
+                                <button
+                                  key={item.name}
+                                  onClick={() => handleCategoryNavigation(item.href)}
+                                  className="block w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
+                                >
+                                  {item.name}
+                                </button>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Shop by Occasions */}
+                    <div>
+                      <button
+                        onClick={() => toggleCategory('occasions')}
+                        className="flex items-center justify-between w-full text-sm font-body uppercase tracking-wide mb-2"
+                      >
+                        Shop by Occasions
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'occasions' ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {expandedCategory === 'occasions' && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="space-y-2 pt-2">
+                              {collectionCategories.occasions.items.map((item) => (
+                                <button
+                                  key={item.name}
+                                  onClick={() => handleCategoryNavigation(item.href)}
+                                  className="block w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
+                                >
+                                  {item.name}
+                                </button>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
                     {/* Clear Filters */}
-                    <Button 
+                    <Button
                       variant="outline" 
                       className="w-full"
                       onClick={() => {
