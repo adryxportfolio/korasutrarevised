@@ -22,31 +22,53 @@ import {
 } from "@/components/ui/accordion";
 import { ProductReviews } from '@/components/ProductReviews';
 
+// Extract fabric type from product title
+function extractFabricFromTitle(title: string): string {
+  const fabricKeywords = [
+    'Tissue Tussar', 'Tissue Muslin', 'Tissue', 'Tussar', 'Tussar Silk', 'Muslin', 
+    'Jamdani', 'Kantha', 'Linen', 'Cotton', 'Silk', 'Banarasi', 'Chanderi', 
+    'Organza', 'Georgette', 'Chiffon', 'Crepe', 'Satin', 'Baluchari'
+  ];
+  
+  const lowerTitle = title.toLowerCase();
+  for (const fabric of fabricKeywords) {
+    if (lowerTitle.includes(fabric.toLowerCase())) {
+      return fabric;
+    }
+  }
+  return 'Handwoven';
+}
+
+// Extract color from product title
+function extractColorFromTitle(title: string): string {
+  const colorKeywords = [
+    'Black', 'White', 'Red', 'Blue', 'Green', 'Yellow', 'Pink', 'Purple', 
+    'Orange', 'Brown', 'Beige', 'Cream', 'Gold', 'Silver', 'Maroon', 'Navy',
+    'Teal', 'Turquoise', 'Coral', 'Peach', 'Lavender', 'Magenta', 'Ivory',
+    'Grey', 'Gray', 'Olive', 'Burgundy', 'Rose', 'Mustard', 'Mint'
+  ];
+  
+  const lowerTitle = title.toLowerCase();
+  for (const color of colorKeywords) {
+    if (lowerTitle.includes(color.toLowerCase())) {
+      return color;
+    }
+  }
+  return 'Multi';
+}
+
 // Parse product description to extract structured details
-function parseProductDetails(description: string): Record<string, string> {
+function parseProductDetails(title: string, description: string): Record<string, string> {
   const details: Record<string, string> = {};
   
-  const patterns = [
-    { key: 'Fabric', regex: /fabric[:\s]*([^,\n.]+)/i },
-    { key: 'Blouse Piece', regex: /blouse\s*piece[:\s]*([^,\n.]+)/i },
-    { key: 'Colour', regex: /colou?r[:\s]*([^,\n.]+)/i },
-    { key: 'Wash Care', regex: /wash\s*care[:\s]*([^,\n.]+)/i },
-    { key: 'Pattern', regex: /pattern[:\s]*([^,\n.]+)/i },
-    { key: 'Occasion', regex: /occasion[:\s]*([^,\n.]+)/i },
-    { key: 'Craft', regex: /craft[:\s]*([^,\n.]+)/i },
-    { key: 'Weave', regex: /weave[:\s]*([^,\n.]+)/i },
-  ];
-
-  patterns.forEach(({ key, regex }) => {
-    const match = description.match(regex);
-    if (match && match[1]) {
-      details[key] = match[1].trim();
-    }
-  });
-
-  // Always set fixed values for Length and Origin
-  details['Length'] = '6 metres';
-  details['Origin'] = 'Hyderabad';
+  // Extract Fabric from title
+  details['Fabric'] = extractFabricFromTitle(title);
+  
+  // Extract Color from title
+  details['Colour'] = extractColorFromTitle(title);
+  
+  // Always set Wash Care to Dry clean
+  details['Wash Care'] = 'Dry clean';
 
   return details;
 }
@@ -316,7 +338,7 @@ export default function ProductDetail() {
 
   const currentVariant = getCurrentVariant();
   const images = product.images.edges;
-  const productDetails = parseProductDetails(product.description);
+  const productDetails = parseProductDetails(product.title, product.description);
   const priceAmount = parseFloat(currentVariant?.price.amount || '0');
   const stockQuantity = handle ? getRandomStock(handle) : 1;
 
