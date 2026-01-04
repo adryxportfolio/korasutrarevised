@@ -78,30 +78,35 @@ function CollectionCard({
           />
           
           {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent opacity-70 group-hover:opacity-85 transition-opacity duration-500" />
           
           {/* Content */}
           <div className="absolute inset-0 flex flex-col justify-end p-3 md:p-6">
-            <span className="text-xs tracking-[0.15em] md:tracking-[0.2em] text-primary-foreground/70 uppercase mb-1 md:mb-2 font-body">
-              Collection
-            </span>
+            {/* Blur background for text readability */}
+            <div className="absolute inset-x-0 bottom-0 h-32 md:h-40 bg-gradient-to-t from-foreground/60 to-transparent backdrop-blur-[2px] -z-0" />
             
-            <h3 className="text-lg md:text-2xl lg:text-3xl font-heading text-primary-foreground mb-1 md:mb-2 break-words hyphens-auto">
-              {collection.name}
-            </h3>
-            
-            <p className={`text-xs md:text-sm text-primary-foreground/80 font-body mb-2 md:mb-4 line-clamp-2 ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500'}`}>
-              {collection.description}
-            </p>
-            
-            <div className={`flex items-center gap-2 text-primary-foreground/90 text-xs md:text-sm font-body tracking-wide ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100'}`}>
-              <span>View Collection</span>
-              <motion.span
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                →
-              </motion.span>
+            <div className="relative z-10">
+              <span className="text-xs tracking-[0.15em] md:tracking-[0.2em] text-primary-foreground/80 uppercase mb-1 md:mb-2 font-body font-medium block">
+                Collection
+              </span>
+              
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-heading font-bold text-primary-foreground mb-1 md:mb-2 break-words hyphens-auto drop-shadow-lg">
+                {collection.name}
+              </h3>
+              
+              <p className={`text-xs md:text-sm text-primary-foreground/90 font-body font-medium mb-2 md:mb-4 line-clamp-2 drop-shadow-md ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500'}`}>
+                {collection.description}
+              </p>
+              
+              <div className={`flex items-center gap-2 text-primary-foreground/90 text-xs md:text-sm font-body tracking-wide ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100'}`}>
+                <span>View Collection</span>
+                <motion.span
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  →
+                </motion.span>
+              </div>
             </div>
           </div>
 
@@ -202,14 +207,12 @@ export function CollectionsSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-10 md:mb-16"
         >
-          <div className="inline-block bg-background/80 backdrop-blur-sm px-6 py-4 rounded-sm">
-            <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body font-medium">
-              Curated Collections
-            </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-semibold">
-              Experience <span className="italic text-[#7c5003]">Elegance</span>
-            </h2>
-          </div>
+          <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
+            Curated Collections
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading">
+            Experience <span className="italic">Elegance</span>
+          </h2>
         </motion.div>
 
         {/* Carousel Container */}
@@ -301,7 +304,7 @@ export function CollectionsSection() {
         <div className="text-center mt-10">
           <Link
             to="/collections/all"
-            className="inline-block px-8 py-3 border border-foreground text-foreground font-body uppercase tracking-widest text-sm hover:bg-foreground hover:text-background transition-colors"
+            className="inline-block px-10 py-4 bg-primary text-primary-foreground font-body font-semibold uppercase tracking-widest text-sm hover:bg-primary/90 transition-colors rounded-sm shadow-md"
           >
             Explore Collection
           </Link>
