@@ -97,9 +97,7 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.4
-          }} className="inline-block tracking-[0.3em] text-muted-foreground uppercase mb-4 font-body text-2xl">
-              Kora Sutra 
-            </motion.span>
+          }} className="inline-block tracking-[0.3em] text-muted-foreground uppercase mb-4 font-body text-2xl">KORA SUTRA SAREES</motion.span>
             
             <motion.h1 initial={{
             opacity: 0,
