@@ -74,7 +74,7 @@ function CollectionCard({
                 Collection
               </span>
               
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-heading font-bold text-primary-foreground mb-1 md:mb-2 break-words hyphens-auto drop-shadow-lg">
+              <h3 className="text-xl md:text-2xl font-heading font-bold text-primary-foreground mb-1 md:mb-2 break-words hyphens-auto drop-shadow-lg lg:text-2xl">
                 {collection.name}
               </h3>
               
