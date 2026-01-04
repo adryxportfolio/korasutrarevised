@@ -431,8 +431,11 @@ export default function Collection() {
                       <div className="space-y-3">
                         <label className="flex items-center gap-3 cursor-pointer">
                           <Checkbox
-                            checked={blouseFilter === 'all'}
-                            onCheckedChange={() => setBlouseFilter('all')}
+                            checked={slug === 'all'}
+                            onCheckedChange={() => {
+                              setFilterOpen(false);
+                              navigate('/collections/all');
+                            }}
                           />
                           <span className="text-sm">All Sarees</span>
                         </label>
