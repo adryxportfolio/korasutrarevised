@@ -202,12 +202,14 @@ export function CollectionsSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-10 md:mb-16"
         >
-          <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
-            Curated Collections
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-light">
-            Experience <span className="italic text-[#7c5003]">Elegance</span>
-          </h2>
+          <div className="inline-block bg-background/80 backdrop-blur-sm px-6 py-4 rounded-sm">
+            <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body font-medium">
+              Curated Collections
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-semibold">
+              Experience <span className="italic text-[#7c5003]">Elegance</span>
+            </h2>
+          </div>
         </motion.div>
 
         {/* Carousel Container */}

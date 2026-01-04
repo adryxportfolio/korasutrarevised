@@ -597,6 +597,9 @@ export default function ProductDetail() {
                       <p>
                         While we strive for accuracy, the actual saree may differ slightly in color tone, weave, border detailing, or finish due to fabric nature, lighting, and digital rendering.
                       </p>
+                      <p className="font-medium text-foreground">
+                        Video proof is required for any returns.
+                      </p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
