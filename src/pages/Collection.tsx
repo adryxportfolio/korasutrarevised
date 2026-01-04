@@ -53,7 +53,7 @@ const collectionConfig: Record<string, { title: string; description: string; que
 };
 
 type SortOption = 'featured' | 'price-low' | 'price-high' | 'newest';
-type BlouseFilter = 'all' | 'with-blouse' | 'without-blouse';
+type BlouseFilter = 'none' | 'all' | 'with-blouse' | 'without-blouse';
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'featured', label: 'Featured' },
@@ -148,7 +148,7 @@ export default function Collection() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [maxPrice, setMaxPrice] = useState(50000);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [blouseFilter, setBlouseFilter] = useState<BlouseFilter>('all');
+  const [blouseFilter, setBlouseFilter] = useState<BlouseFilter>('none');
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   
@@ -250,7 +250,7 @@ export default function Collection() {
       return price >= priceRange[0] && price <= priceRange[1];
     });
 
-    // Blouse filter
+    // Blouse filter - 'none' and 'all' both show all products
     if (blouseFilter === 'with-blouse') {
       result = result.filter(p => hasBlouse(p));
     } else if (blouseFilter === 'without-blouse') {
@@ -335,12 +335,12 @@ export default function Collection() {
   const clearFilters = () => {
     setPriceRange([0, maxPrice]);
     setSortBy('featured');
-    setBlouseFilter('all');
+    setBlouseFilter('none');
     setSelectedColors([]);
   };
 
   const activeFiltersCount = (priceRange[0] > 0 || priceRange[1] < maxPrice ? 1 : 0) + 
-    (blouseFilter !== 'all' ? 1 : 0) + 
+    (blouseFilter !== 'none' ? 1 : 0) + 
     selectedColors.length;
 
   if (!config && !searchQuery) {
@@ -607,10 +607,10 @@ export default function Collection() {
                       </button>
                     </span>
                   )}
-                  {blouseFilter !== 'all' && (
+                  {blouseFilter !== 'none' && (
                     <span className="text-xs bg-secondary px-2 py-1 rounded flex items-center gap-1 capitalize">
-                      {blouseFilter === 'with-blouse' ? 'With Blouse' : 'Without Blouse'}
-                      <button onClick={() => setBlouseFilter('all')}>
+                      {blouseFilter === 'all' ? 'All Sarees' : blouseFilter === 'with-blouse' ? 'With Blouse' : 'Without Blouse'}
+                      <button onClick={() => setBlouseFilter('none')}>
                         <X className="w-3 h-3" />
                       </button>
                     </span>
