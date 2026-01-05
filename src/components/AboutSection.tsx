@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { Palette, Users, Heart, Sparkles } from 'lucide-react';
 
 const features = [
   {
@@ -116,20 +117,20 @@ export function AboutSection() {
           className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-border pt-12"
         >
           {[
-            { value: '2,500+', label: 'Curated Designs' },
-            { value: '120+', label: 'Artisan Families' },
-            { value: '50K+', label: 'Happy Customers' },
-            { value: '25+', label: 'Years of Legacy' },
+            { icon: Palette, label: 'Curated Designs' },
+            { icon: Users, label: 'Artisan Families' },
+            { icon: Heart, label: 'Happy Customers' },
+            { icon: Sparkles, label: 'Loved By Women' },
           ].map((stat, index) => (
             <div key={stat.label} className="text-center">
-              <motion.span
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
-                className="text-3xl md:text-4xl font-heading text-accent block mb-2"
+                className="flex justify-center mb-3"
               >
-                {stat.value}
-              </motion.span>
+                <stat.icon className="w-8 h-8 md:w-10 md:h-10 text-accent" strokeWidth={1.5} />
+              </motion.div>
               <span className="text-sm text-muted-foreground font-body tracking-wide">
                 {stat.label}
               </span>
