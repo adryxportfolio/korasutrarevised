@@ -45,7 +45,7 @@ export function StickyMobileCartBar({
             className="h-10 px-3 text-xs font-body uppercase tracking-wider rounded-full border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white"
           >
             <MessageCircle className="w-4 h-4 mr-1" />
-            Enquiry
+            Enquire on WhatsApp
           </Button>
           <Button
             onClick={onAddToCart}
