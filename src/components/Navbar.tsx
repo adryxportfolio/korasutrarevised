@@ -9,22 +9,63 @@ import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 
 // Common color mapping for the filter
-const colorOptions = [
-  { name: 'Red', value: 'red', hex: '#DC2626' },
-  { name: 'Pink', value: 'pink', hex: '#EC4899' },
-  { name: 'Orange', value: 'orange', hex: '#F97316' },
-  { name: 'Yellow', value: 'yellow', hex: '#EAB308' },
-  { name: 'Gold', value: 'gold', hex: '#D4AF37' },
-  { name: 'Green', value: 'green', hex: '#22C55E' },
-  { name: 'Blue', value: 'blue', hex: '#3B82F6' },
-  { name: 'Purple', value: 'purple', hex: '#A855F7' },
-  { name: 'Maroon', value: 'maroon', hex: '#800000' },
-  { name: 'Brown', value: 'brown', hex: '#92400E' },
-  { name: 'Beige', value: 'beige', hex: '#D4B896' },
-  { name: 'White', value: 'white', hex: '#FFFFFF' },
-  { name: 'Black', value: 'black', hex: '#1F2937' },
-  { name: 'Grey', value: 'grey', hex: '#6B7280' },
-];
+const colorOptions = [{
+  name: 'Red',
+  value: 'red',
+  hex: '#DC2626'
+}, {
+  name: 'Pink',
+  value: 'pink',
+  hex: '#EC4899'
+}, {
+  name: 'Orange',
+  value: 'orange',
+  hex: '#F97316'
+}, {
+  name: 'Yellow',
+  value: 'yellow',
+  hex: '#EAB308'
+}, {
+  name: 'Gold',
+  value: 'gold',
+  hex: '#D4AF37'
+}, {
+  name: 'Green',
+  value: 'green',
+  hex: '#22C55E'
+}, {
+  name: 'Blue',
+  value: 'blue',
+  hex: '#3B82F6'
+}, {
+  name: 'Purple',
+  value: 'purple',
+  hex: '#A855F7'
+}, {
+  name: 'Maroon',
+  value: 'maroon',
+  hex: '#800000'
+}, {
+  name: 'Brown',
+  value: 'brown',
+  hex: '#92400E'
+}, {
+  name: 'Beige',
+  value: 'beige',
+  hex: '#D4B896'
+}, {
+  name: 'White',
+  value: 'white',
+  hex: '#FFFFFF'
+}, {
+  name: 'Black',
+  value: 'black',
+  hex: '#1F2937'
+}, {
+  name: 'Grey',
+  value: 'grey',
+  hex: '#6B7280'
+}];
 // Collection categories with subcategories - ALL INTERNAL ROUTES
 const collectionCategories = {
   fabric: {
@@ -148,15 +189,9 @@ export function Navbar() {
     setIsOpen(false);
     navigate(`/collections/all?minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`);
   };
-
   const toggleColor = (color: string) => {
-    setSelectedColors(prev => 
-      prev.includes(color) 
-        ? prev.filter(c => c !== color)
-        : [...prev, color]
-    );
+    setSelectedColors(prev => prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]);
   };
-
   const handleColorFilterApply = () => {
     setIsOpen(false);
     if (selectedColors.length > 0) {
@@ -176,7 +211,7 @@ export function Navbar() {
     }} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-background/80 backdrop-blur-md shadow-soft' : 'bg-transparent'}`}>
         {/* Announcement Bar */}
         <div className="bg-primary text-primary-foreground text-center py-2 text-xs tracking-widest font-body">
-          ​Coming Soon! Launching on 26/01/2026    
+          ​Coming Soon! Launching on 23/01/2026    
         </div>
 
         <nav className="container mx-auto px-4 md:px-6 py-4 bg-transparent">
@@ -343,48 +378,26 @@ export function Navbar() {
                 }} className="overflow-hidden">
                         <div className="pl-4 py-4 space-y-4">
                           <div className="grid grid-cols-4 gap-2">
-                            {colorOptions.map((color) => (
-                              <button
-                                key={color.value}
-                                onClick={() => toggleColor(color.value)}
-                                className={`relative w-10 h-10 rounded-full border-2 transition-all ${
-                                  selectedColors.includes(color.value) 
-                                    ? 'border-accent scale-110' 
-                                    : 'border-border hover:border-accent/50'
-                                }`}
-                                style={{ backgroundColor: color.hex }}
-                                title={color.name}
-                              >
-                                {selectedColors.includes(color.value) && (
-                                  <Check className={`absolute inset-0 m-auto w-4 h-4 ${
-                                    ['white', 'beige', 'yellow', 'gold'].includes(color.value) 
-                                      ? 'text-foreground' 
-                                      : 'text-white'
-                                  }`} />
-                                )}
-                              </button>
-                            ))}
+                            {colorOptions.map(color => <button key={color.value} onClick={() => toggleColor(color.value)} className={`relative w-10 h-10 rounded-full border-2 transition-all ${selectedColors.includes(color.value) ? 'border-accent scale-110' : 'border-border hover:border-accent/50'}`} style={{
+                        backgroundColor: color.hex
+                      }} title={color.name}>
+                                {selectedColors.includes(color.value) && <Check className={`absolute inset-0 m-auto w-4 h-4 ${['white', 'beige', 'yellow', 'gold'].includes(color.value) ? 'text-foreground' : 'text-white'}`} />}
+                              </button>)}
                           </div>
-                          {selectedColors.length > 0 && (
-                            <div className="flex flex-wrap gap-1">
+                          {selectedColors.length > 0 && <div className="flex flex-wrap gap-1">
                               {selectedColors.map(c => {
-                                const colorObj = colorOptions.find(co => co.value === c);
-                                return (
-                                  <span key={c} className="text-xs bg-secondary px-2 py-1 rounded-sm">
+                        const colorObj = colorOptions.find(co => co.value === c);
+                        return <span key={c} className="text-xs bg-secondary px-2 py-1 rounded-sm">
                                     {colorObj?.name}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          )}
+                                  </span>;
+                      })}
+                            </div>}
                           <button onClick={handleColorFilterApply} className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors">
                             Apply Filter
                           </button>
-                          {selectedColors.length > 0 && (
-                            <button onClick={() => setSelectedColors([])} className="w-full py-2 text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
+                          {selectedColors.length > 0 && <button onClick={() => setSelectedColors([])} className="w-full py-2 text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
                               Clear Selection
-                            </button>
-                          )}
+                            </button>}
                         </div>
                       </motion.div>}
                   </AnimatePresence>
