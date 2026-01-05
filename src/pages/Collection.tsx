@@ -157,6 +157,14 @@ export default function Collection() {
 
   const config = slug ? collectionConfig[slug] : null;
   const searchQuery = searchParams.get('q');
+  const colorsParam = searchParams.get('colors');
+
+  // Initialize selectedColors from URL params
+  useEffect(() => {
+    if (colorsParam) {
+      setSelectedColors(colorsParam.split(',').filter(c => c.trim()));
+    }
+  }, [colorsParam]);
 
   // Extract available colors from products
   const availableColors = useMemo(() => {
