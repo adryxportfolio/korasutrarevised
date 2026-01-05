@@ -1,12 +1,30 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, User, ChevronDown, ChevronRight, Heart } from 'lucide-react';
+import { Menu, X, Search, User, ChevronDown, ChevronRight, Heart, Check } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { CartDrawer } from '@/components/CartDrawer';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
+
+// Common color mapping for the filter
+const colorOptions = [
+  { name: 'Red', value: 'red', hex: '#DC2626' },
+  { name: 'Pink', value: 'pink', hex: '#EC4899' },
+  { name: 'Orange', value: 'orange', hex: '#F97316' },
+  { name: 'Yellow', value: 'yellow', hex: '#EAB308' },
+  { name: 'Gold', value: 'gold', hex: '#D4AF37' },
+  { name: 'Green', value: 'green', hex: '#22C55E' },
+  { name: 'Blue', value: 'blue', hex: '#3B82F6' },
+  { name: 'Purple', value: 'purple', hex: '#A855F7' },
+  { name: 'Maroon', value: 'maroon', hex: '#800000' },
+  { name: 'Brown', value: 'brown', hex: '#92400E' },
+  { name: 'Beige', value: 'beige', hex: '#D4B896' },
+  { name: 'White', value: 'white', hex: '#FFFFFF' },
+  { name: 'Black', value: 'black', hex: '#1F2937' },
+  { name: 'Grey', value: 'grey', hex: '#6B7280' },
+];
 // Collection categories with subcategories - ALL INTERNAL ROUTES
 const collectionCategories = {
   fabric: {
@@ -87,6 +105,8 @@ export function Navbar() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [collectionsExpanded, setCollectionsExpanded] = useState(false);
   const [priceFilterExpanded, setPriceFilterExpanded] = useState(false);
+  const [colorFilterExpanded, setColorFilterExpanded] = useState(false);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const navigate = useNavigate();
   const wishlistCount = useWishlistStore(state => state.getTotalItems());
@@ -127,6 +147,23 @@ export function Navbar() {
   const handlePriceFilterApply = () => {
     setIsOpen(false);
     navigate(`/collections/all?minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`);
+  };
+
+  const toggleColor = (color: string) => {
+    setSelectedColors(prev => 
+      prev.includes(color) 
+        ? prev.filter(c => c !== color)
+        : [...prev, color]
+    );
+  };
+
+  const handleColorFilterApply = () => {
+    setIsOpen(false);
+    if (selectedColors.length > 0) {
+      navigate(`/collections/all?colors=${selectedColors.join(',')}`);
+    } else {
+      navigate('/collections/all');
+    }
   };
   return <>
       <motion.header initial={{
@@ -279,6 +316,75 @@ export function Navbar() {
                           <button onClick={handlePriceFilterApply} className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors">
                             Apply Filter
                           </button>
+                        </div>
+                      </motion.div>}
+                  </AnimatePresence>
+                </li>
+
+                {/* Color Filter */}
+                <li>
+                  <button onClick={() => setColorFilterExpanded(!colorFilterExpanded)} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50">
+                    Filter by Color
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${colorFilterExpanded ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {colorFilterExpanded && <motion.div initial={{
+                  height: 0,
+                  opacity: 0
+                }} animate={{
+                  height: 'auto',
+                  opacity: 1
+                }} exit={{
+                  height: 0,
+                  opacity: 0
+                }} transition={{
+                  duration: 0.3
+                }} className="overflow-hidden">
+                        <div className="pl-4 py-4 space-y-4">
+                          <div className="grid grid-cols-4 gap-2">
+                            {colorOptions.map((color) => (
+                              <button
+                                key={color.value}
+                                onClick={() => toggleColor(color.value)}
+                                className={`relative w-10 h-10 rounded-full border-2 transition-all ${
+                                  selectedColors.includes(color.value) 
+                                    ? 'border-accent scale-110' 
+                                    : 'border-border hover:border-accent/50'
+                                }`}
+                                style={{ backgroundColor: color.hex }}
+                                title={color.name}
+                              >
+                                {selectedColors.includes(color.value) && (
+                                  <Check className={`absolute inset-0 m-auto w-4 h-4 ${
+                                    ['white', 'beige', 'yellow', 'gold'].includes(color.value) 
+                                      ? 'text-foreground' 
+                                      : 'text-white'
+                                  }`} />
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                          {selectedColors.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {selectedColors.map(c => {
+                                const colorObj = colorOptions.find(co => co.value === c);
+                                return (
+                                  <span key={c} className="text-xs bg-secondary px-2 py-1 rounded-sm">
+                                    {colorObj?.name}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          )}
+                          <button onClick={handleColorFilterApply} className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors">
+                            Apply Filter
+                          </button>
+                          {selectedColors.length > 0 && (
+                            <button onClick={() => setSelectedColors([])} className="w-full py-2 text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
+                              Clear Selection
+                            </button>
+                          )}
                         </div>
                       </motion.div>}
                   </AnimatePresence>
