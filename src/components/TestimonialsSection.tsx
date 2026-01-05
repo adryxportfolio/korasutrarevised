@@ -51,6 +51,54 @@ const testimonials = [
     rating: 5,
     text: 'I\'ve bought multiple sarees from Kora Sutra and each one has been a treasure. The attention to detail and authenticity is what keeps me coming back.',
     product: 'Block Print'
+  },
+  {
+    id: 7,
+    name: 'Sunita Menon',
+    location: 'Kochi',
+    rating: 5,
+    text: 'The Muslin saree I ordered was simply divine! The softness and drape are unmatched. I felt like royalty wearing it to my daughter\'s engagement.',
+    product: 'Muslin Saree'
+  },
+  {
+    id: 8,
+    name: 'Lakshmi Venkatesh',
+    location: 'Delhi',
+    rating: 5,
+    text: 'Finally found authentic handloom sarees online! The colors are exactly as shown and the fabric quality is premium. Already planning my next purchase.',
+    product: 'Tussar Silk'
+  },
+  {
+    id: 9,
+    name: 'Sneha Kulkarni',
+    location: 'Pune',
+    rating: 5,
+    text: 'Gifted my mother a beautiful Jamdani and she was in tears of joy. The intricate work and premium packaging made it extra special. Thank you!',
+    product: 'Jamdani Cotton'
+  },
+  {
+    id: 10,
+    name: 'Rina Chatterjee',
+    location: 'Jaipur',
+    rating: 5,
+    text: 'The attention to preserving traditional weaving techniques while keeping designs contemporary is remarkable. My Block Print saree is a conversation starter!',
+    product: 'Block Print Cotton'
+  },
+  {
+    id: 11,
+    name: 'Pooja Agarwal',
+    location: 'Lucknow',
+    rating: 5,
+    text: 'Ordered for Diwali and was amazed by the craftsmanship. The saree looked even more beautiful in person. Kora Sutra truly celebrates Indian heritage.',
+    product: 'Chanderi Silk'
+  },
+  {
+    id: 12,
+    name: 'Divya Krishnamurthy',
+    location: 'Coimbatore',
+    rating: 5,
+    text: 'As a collector of handloom sarees, I can confidently say Kora Sutra offers museum-quality pieces. Each saree tells a story of our rich textile tradition.',
+    product: 'Kanjivaram Silk'
   }
 ];
 
@@ -61,12 +109,27 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="bg-background rounded-sm p-6 shadow-soft hover:shadow-md transition-shadow duration-300"
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.95 }}
+      transition={{ 
+        duration: 0.7, 
+        delay: index * 0.08,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }}
+      whileHover={{ 
+        y: -8, 
+        scale: 1.02,
+        transition: { duration: 0.3 }
+      }}
+      className="bg-background rounded-sm p-6 shadow-soft hover:shadow-lg transition-all duration-300 group cursor-default"
     >
-      <Quote className="w-8 h-8 text-primary/30 mb-4" />
+      <motion.div
+        initial={{ rotate: 0 }}
+        whileHover={{ rotate: 12, scale: 1.1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Quote className="w-8 h-8 text-primary/30 mb-4 group-hover:text-primary/50 transition-colors duration-300" />
+      </motion.div>
       
       <p className="text-muted-foreground font-body leading-relaxed mb-6">
         "{testimonial.text}"
@@ -74,15 +137,32 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
       
       <div className="flex items-center gap-1 mb-4">
         {Array.from({ length: testimonial.rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+            transition={{ 
+              duration: 0.3, 
+              delay: (index * 0.08) + 0.5 + (i * 0.05),
+              type: "spring",
+              stiffness: 300
+            }}
+          >
+            <Star className="w-4 h-4 fill-primary text-primary" />
+          </motion.div>
         ))}
       </div>
       
-      <div className="border-t border-border pt-4">
-        <p className="font-heading text-foreground">{testimonial.name}</p>
+      <motion.div 
+        className="border-t border-border pt-4"
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.5, delay: (index * 0.08) + 0.6 }}
+      >
+        <p className="font-heading text-foreground group-hover:text-primary transition-colors duration-300">{testimonial.name}</p>
         <p className="text-sm text-muted-foreground font-body">{testimonial.location}</p>
         <p className="text-xs text-primary font-body mt-1">Purchased: {testimonial.product}</p>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -92,7 +172,7 @@ export function TestimonialsSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section ref={ref} className="py-24 bg-secondary/30">
+    <section ref={ref} className="py-24 bg-secondary/30 overflow-hidden">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <motion.div
@@ -101,16 +181,31 @@ export function TestimonialsSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
+          <motion.span 
+            className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body"
+            initial={{ opacity: 0, letterSpacing: '0.1em' }}
+            animate={isInView ? { opacity: 1, letterSpacing: '0.3em' } : { opacity: 0, letterSpacing: '0.1em' }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
             What Our Customers Say
-          </span>
-          <h2 className="text-4xl md:text-5xl font-heading font-light">
-            Loved by <span className="italic text-accent">Women</span> Everywhere
-          </h2>
+          </motion.span>
+          <motion.h2 
+            className="text-4xl md:text-5xl font-heading font-light"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            Loved by <motion.span 
+              className="italic text-accent inline-block"
+              initial={{ opacity: 0, x: -10 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >Women</motion.span> Everywhere
+          </motion.h2>
         </motion.div>
 
         {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard key={testimonial.id} testimonial={testimonial} index={index} />
           ))}
