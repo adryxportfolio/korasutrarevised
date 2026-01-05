@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
 interface ImageNode {
   node: {
@@ -17,7 +17,10 @@ interface SwipeableImageGalleryProps {
 export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const constraintsRef = useRef(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   const navigateImage = (newDirection: number) => {
     setDirection(newDirection);
@@ -30,6 +33,7 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
   };
 
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (isZoomed) return; // Don't navigate while zoomed
     const threshold = 50;
     if (info.offset.x > threshold) {
       navigateImage(-1);
@@ -37,6 +41,51 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
       navigateImage(1);
     }
   };
+
+  const handleDoubleTap = useCallback((e: React.TouchEvent | React.MouseEvent) => {
+    if (isZoomed) {
+      setIsZoomed(false);
+      return;
+    }
+    
+    const container = imageContainerRef.current;
+    if (!container) return;
+    
+    const rect = container.getBoundingClientRect();
+    let clientX: number, clientY: number;
+    
+    if ('touches' in e && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if ('clientX' in e) {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    } else {
+      return;
+    }
+    
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+    
+    setZoomPosition({ x, y });
+    setIsZoomed(true);
+  }, [isZoomed]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isZoomed) return;
+    
+    const container = imageContainerRef.current;
+    if (!container || e.touches.length !== 1) return;
+    
+    const rect = container.getBoundingClientRect();
+    const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+    const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+    
+    setZoomPosition({ 
+      x: Math.max(0, Math.min(100, x)), 
+      y: Math.max(0, Math.min(100, y)) 
+    });
+  }, [isZoomed]);
 
   const variants = {
     enter: (direction: number) => ({
@@ -81,9 +130,14 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
         </div>
       )}
       
-      {/* Main Image with Swipe */}
+      {/* Main Image with Swipe and Zoom */}
       <div className="flex-1 relative overflow-hidden" ref={constraintsRef}>
-        <div className="aspect-[3/4] overflow-hidden bg-secondary/20 touch-pan-y">
+        <div 
+          ref={imageContainerRef}
+          className="aspect-[3/4] overflow-hidden bg-secondary/20 touch-pan-y relative"
+          onDoubleClick={handleDoubleTap}
+          onTouchMove={handleTouchMove}
+        >
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.div
               key={selectedImage}
@@ -96,7 +150,7 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
                 x: { type: "spring", stiffness: 300, damping: 30 },
                 opacity: { duration: 0.2 },
               }}
-              drag={images.length > 1 ? "x" : false}
+              drag={images.length > 1 && !isZoomed ? "x" : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.7}
               onDragEnd={handleDragEnd}
@@ -106,12 +160,27 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
                 <img
                   src={images[selectedImage].node.url}
                   alt={images[selectedImage].node.altText || productTitle}
-                  className="w-full h-full object-cover pointer-events-none select-none"
+                  className={`w-full h-full object-cover pointer-events-none select-none transition-transform duration-200 ${
+                    isZoomed ? 'scale-[2.5]' : 'scale-100'
+                  }`}
+                  style={isZoomed ? {
+                    transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
+                  } : undefined}
                   draggable={false}
                 />
               )}
             </motion.div>
           </AnimatePresence>
+          
+          {/* Zoom indicator for mobile */}
+          {isZoomed && (
+            <button
+              onClick={() => setIsZoomed(false)}
+              className="md:hidden absolute top-3 right-3 z-10 px-3 py-1.5 bg-background/80 backdrop-blur-sm rounded-full text-xs font-medium flex items-center gap-1"
+            >
+              Tap to close
+            </button>
+          )}
         </div>
         
         {/* Image Navigation Arrows - Desktop */}
@@ -134,10 +203,11 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
           </>
         )}
 
-        {/* Swipe hint on mobile */}
-        {images.length > 1 && (
-          <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-background/60 backdrop-blur-sm rounded-full text-xs text-muted-foreground">
-            Swipe to browse
+        {/* Swipe/Zoom hint on mobile */}
+        {images.length > 1 && !isZoomed && (
+          <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-background/60 backdrop-blur-sm rounded-full text-xs text-muted-foreground flex items-center gap-1.5">
+            <ZoomIn className="w-3 h-3" />
+            Double-tap to zoom • Swipe to browse
           </div>
         )}
       </div>

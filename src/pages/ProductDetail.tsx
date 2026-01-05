@@ -57,15 +57,56 @@ function extractColorFromTitle(title: string): string {
   return 'Multi';
 }
 
+// Extract pattern from product title or description
+function extractPatternFromTitle(title: string, description: string): string {
+  const patternKeywords = [
+    'Embroidered', 'Printed', 'Woven', 'Block Print', 'Hand Painted', 'Zari',
+    'Sequin', 'Mirror Work', 'Thread Work', 'Applique', 'Batik', 'Tie-Dye',
+    'Ikat', 'Bandhani', 'Leheriya', 'Paisley', 'Floral', 'Geometric', 
+    'Abstract', 'Traditional', 'Contemporary', 'Striped', 'Checked'
+  ];
+  
+  const combined = `${title} ${description}`.toLowerCase();
+  for (const pattern of patternKeywords) {
+    if (combined.includes(pattern.toLowerCase())) {
+      return pattern;
+    }
+  }
+  return 'Handcrafted';
+}
+
+// Check if blouse piece is included
+function hasBlousePiece(title: string, description: string): boolean {
+  const combined = `${title} ${description}`.toLowerCase();
+  // Check for explicit mentions
+  if (combined.includes('without blouse') || combined.includes('no blouse') || combined.includes('blouse not included')) {
+    return false;
+  }
+  if (combined.includes('with blouse') || combined.includes('blouse piece') || combined.includes('blouse included')) {
+    return true;
+  }
+  // Default to yes for most sarees
+  return true;
+}
+
 // Parse product description to extract structured details
-function parseProductDetails(title: string, description: string): Record<string, string> {
-  const details: Record<string, string> = {};
+function parseProductDetails(title: string, description: string): Record<string, string | boolean> {
+  const details: Record<string, string | boolean> = {};
   
   // Extract Fabric from title
   details['Fabric'] = extractFabricFromTitle(title);
   
   // Extract Color from title
   details['Colour'] = extractColorFromTitle(title);
+  
+  // Extract Pattern
+  details['Pattern'] = extractPatternFromTitle(title, description);
+  
+  // Standard size for sarees
+  details['Size'] = '5.5 meters (with blouse piece)';
+  
+  // Blouse Piece - boolean for checkbox
+  details['Blouse Piece'] = hasBlousePiece(title, description);
   
   // Always set Wash Care to Dry clean
   details['Wash Care'] = 'Dry clean';
@@ -84,7 +125,7 @@ function getRandomStock(handle: string): number {
 }
 
 // Product Details Table Component
-function ProductDetailsTable({ details }: { details: Record<string, string> }) {
+function ProductDetailsTable({ details }: { details: Record<string, string | boolean> }) {
   const entries = Object.entries(details);
   
   if (entries.length === 0) return null;
@@ -99,8 +140,23 @@ function ProductDetailsTable({ details }: { details: Record<string, string> }) {
           <div className="w-1/3 px-4 py-3 bg-secondary/30 font-medium text-sm text-foreground">
             {key}
           </div>
-          <div className="w-2/3 px-4 py-3 text-sm text-foreground/80">
-            {value}
+          <div className="w-2/3 px-4 py-3 text-sm text-foreground/80 flex items-center">
+            {key === 'Blouse Piece' ? (
+              <div className="flex items-center gap-2">
+                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                  value ? 'bg-green-500 border-green-500' : 'border-muted-foreground'
+                }`}>
+                  {value && (
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+                <span>{value ? 'Yes' : 'No'}</span>
+              </div>
+            ) : (
+              value
+            )}
           </div>
         </div>
       ))}
@@ -600,6 +656,15 @@ export default function ProductDetail() {
                         We offer easy returns and exchanges within 10 days of delivery. 
                         Items must be unused with all tags attached.
                       </p>
+                      <div className="p-3 bg-amber-50 border border-amber-200 rounded-sm">
+                        <p className="font-semibold text-amber-800 flex items-center gap-2">
+                          <span>📹</span> Video Proof Required
+                        </p>
+                        <p className="text-amber-700 text-xs mt-1">
+                          An unboxing video is mandatory for all return and exchange requests. 
+                          Please record while opening the package to ensure smooth processing.
+                        </p>
+                      </div>
                       <Link to="/returns" className="text-accent hover:underline inline-block">
                         Learn more about our return policy
                       </Link>
