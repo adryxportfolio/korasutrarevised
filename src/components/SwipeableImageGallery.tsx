@@ -18,9 +18,12 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
   const [selectedImage, setSelectedImage] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const constraintsRef = useRef(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const initialPinchDistance = useRef<number | null>(null);
+  const lastTapTime = useRef<number>(0);
 
   const navigateImage = (newDirection: number) => {
     setDirection(newDirection);
@@ -42,50 +45,116 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
     }
   };
 
-  const handleDoubleTap = useCallback((e: React.TouchEvent | React.MouseEvent) => {
-    if (isZoomed) {
-      setIsZoomed(false);
-      return;
-    }
+  const resetZoom = useCallback(() => {
+    setIsZoomed(false);
+    setZoomScale(1);
+  }, []);
+
+  // Handle double tap for zoom
+  const handleTap = useCallback((e: React.TouchEvent) => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
     
+    if (now - lastTapTime.current < DOUBLE_TAP_DELAY) {
+      // Double tap detected
+      if (isZoomed) {
+        resetZoom();
+      } else {
+        const container = imageContainerRef.current;
+        if (!container || e.touches.length === 0) return;
+        
+        const rect = container.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = ((touch.clientX - rect.left) / rect.width) * 100;
+        const y = ((touch.clientY - rect.top) / rect.height) * 100;
+        
+        setZoomPosition({ x, y });
+        setZoomScale(2.5);
+        setIsZoomed(true);
+      }
+      lastTapTime.current = 0;
+    } else {
+      lastTapTime.current = now;
+    }
+  }, [isZoomed, resetZoom]);
+
+  // Calculate distance between two touch points
+  const getTouchDistance = (touches: React.TouchList): number => {
+    if (touches.length < 2) return 0;
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Get center point of two touches
+  const getTouchCenter = (touches: React.TouchList, rect: DOMRect) => {
+    const x = ((touches[0].clientX + touches[1].clientX) / 2 - rect.left) / rect.width * 100;
+    const y = ((touches[0].clientY + touches[1].clientY) / 2 - rect.top) / rect.height * 100;
+    return { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) };
+  };
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      // Start pinch zoom
+      initialPinchDistance.current = getTouchDistance(e.touches);
+      
+      const container = imageContainerRef.current;
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const center = getTouchCenter(e.touches, rect);
+        if (!isZoomed) {
+          setZoomPosition(center);
+        }
+      }
+    } else if (e.touches.length === 1) {
+      handleTap(e);
+    }
+  }, [isZoomed, handleTap]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
     const container = imageContainerRef.current;
     if (!container) return;
     
     const rect = container.getBoundingClientRect();
-    let clientX: number, clientY: number;
     
-    if ('touches' in e && e.touches.length > 0) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else if ('clientX' in e) {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    } else {
-      return;
+    // Handle pinch zoom with two fingers
+    if (e.touches.length === 2 && initialPinchDistance.current) {
+      e.preventDefault();
+      const currentDistance = getTouchDistance(e.touches);
+      const scale = currentDistance / initialPinchDistance.current;
+      
+      const newScale = Math.max(1, Math.min(4, zoomScale * scale));
+      setZoomScale(newScale);
+      setIsZoomed(newScale > 1);
+      
+      // Update position to pinch center
+      const center = getTouchCenter(e.touches, rect);
+      setZoomPosition(center);
+      
+      initialPinchDistance.current = currentDistance;
+    } 
+    // Handle single finger pan when zoomed
+    else if (isZoomed && e.touches.length === 1) {
+      const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+      const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+      
+      setZoomPosition({ 
+        x: Math.max(0, Math.min(100, x)), 
+        y: Math.max(0, Math.min(100, y)) 
+      });
+    }
+  }, [isZoomed, zoomScale]);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length < 2) {
+      initialPinchDistance.current = null;
     }
     
-    const x = ((clientX - rect.left) / rect.width) * 100;
-    const y = ((clientY - rect.top) / rect.height) * 100;
-    
-    setZoomPosition({ x, y });
-    setIsZoomed(true);
-  }, [isZoomed]);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isZoomed) return;
-    
-    const container = imageContainerRef.current;
-    if (!container || e.touches.length !== 1) return;
-    
-    const rect = container.getBoundingClientRect();
-    const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
-    const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
-    
-    setZoomPosition({ 
-      x: Math.max(0, Math.min(100, x)), 
-      y: Math.max(0, Math.min(100, y)) 
-    });
-  }, [isZoomed]);
+    // Reset if zoomed out below threshold
+    if (zoomScale <= 1.1 && isZoomed) {
+      resetZoom();
+    }
+  }, [zoomScale, isZoomed, resetZoom]);
 
   const variants = {
     enter: (direction: number) => ({
@@ -134,9 +203,10 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
       <div className="flex-1 relative overflow-hidden" ref={constraintsRef}>
         <div 
           ref={imageContainerRef}
-          className="aspect-[3/4] overflow-hidden bg-secondary/20 touch-pan-y relative"
-          onDoubleClick={handleDoubleTap}
+          className="aspect-[3/4] overflow-hidden bg-secondary/20 touch-none relative"
+          onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.div
@@ -160,12 +230,11 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
                 <img
                   src={images[selectedImage].node.url}
                   alt={images[selectedImage].node.altText || productTitle}
-                  className={`w-full h-full object-cover pointer-events-none select-none transition-transform duration-200 ${
-                    isZoomed ? 'scale-[2.5]' : 'scale-100'
-                  }`}
-                  style={isZoomed ? {
+                  className="w-full h-full object-cover pointer-events-none select-none transition-transform duration-200"
+                  style={{
+                    transform: `scale(${zoomScale})`,
                     transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
-                  } : undefined}
+                  }}
                   draggable={false}
                 />
               )}
@@ -175,7 +244,7 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
           {/* Zoom indicator for mobile */}
           {isZoomed && (
             <button
-              onClick={() => setIsZoomed(false)}
+              onClick={resetZoom}
               className="md:hidden absolute top-3 right-3 z-10 px-3 py-1.5 bg-background/80 backdrop-blur-sm rounded-full text-xs font-medium flex items-center gap-1"
             >
               Tap to close
@@ -207,7 +276,7 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
         {images.length > 1 && !isZoomed && (
           <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-background/60 backdrop-blur-sm rounded-full text-xs text-muted-foreground flex items-center gap-1.5">
             <ZoomIn className="w-3 h-3" />
-            Double-tap to zoom • Swipe to browse
+            Pinch or double-tap to zoom
           </div>
         )}
       </div>
