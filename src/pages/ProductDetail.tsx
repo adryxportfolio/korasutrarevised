@@ -102,8 +102,8 @@ function parseProductDetails(title: string, description: string): Record<string,
   // Extract Pattern
   details['Pattern'] = extractPatternFromTitle(title, description);
   
-  // Standard size for sarees
-  details['Size'] = '5.5 meters (with blouse piece)';
+  // Standard size for sarees - 6.5 meters
+  details['Size'] = '6.5 meters (with blouse piece)';
   
   // Blouse Piece - boolean for checkbox
   details['Blouse Piece'] = hasBlousePiece(title, description);
@@ -112,6 +112,28 @@ function parseProductDetails(title: string, description: string): Record<string,
   details['Wash Care'] = 'Dry clean';
 
   return details;
+}
+
+// Generate automatic description based on product details
+function generateAutoDescription(title: string, details: Record<string, string | boolean>): string {
+  const fabric = details['Fabric'] as string || 'Handwoven';
+  const colour = details['Colour'] as string || 'elegant';
+  const pattern = details['Pattern'] as string || 'handcrafted';
+  
+  const descriptions = [
+    `Drape yourself in the timeless elegance of this exquisite ${colour.toLowerCase()} ${fabric.toLowerCase()} saree. Featuring beautiful ${pattern.toLowerCase()} work, this piece is a perfect blend of tradition and sophistication. Ideal for festive occasions, weddings, or special celebrations.`,
+    `This stunning ${colour.toLowerCase()} ${fabric.toLowerCase()} saree showcases intricate ${pattern.toLowerCase()} craftsmanship that reflects the rich heritage of Indian textiles. Each drape tells a story of skilled artisans and their dedication to preserving traditional art forms.`,
+    `Experience the luxury of authentic ${fabric.toLowerCase()} with this gorgeous ${colour.toLowerCase()} saree. The ${pattern.toLowerCase()} detailing adds a touch of grace and charm, making it a must-have addition to your ethnic wardrobe.`
+  ];
+  
+  // Use title hash to consistently select a description
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = ((hash << 5) - hash) + title.charCodeAt(i);
+    hash = hash & hash;
+  }
+  
+  return descriptions[Math.abs(hash) % descriptions.length];
 }
 
 // Generate a random stock quantity (1-5) based on product handle for consistency
@@ -652,7 +674,7 @@ export default function ProductDetail() {
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
                     <p className="font-body text-foreground/80 leading-relaxed text-sm">
-                      {product.description || 'No description available.'}
+                      {generateAutoDescription(product.title, productDetails)}
                     </p>
                   </AccordionContent>
                 </AccordionItem>
