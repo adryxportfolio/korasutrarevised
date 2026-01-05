@@ -124,8 +124,16 @@ function getRandomStock(handle: string): number {
   return Math.abs(hash % 5) + 1; // Returns 1-5
 }
 
-// Product Details Table Component
-function ProductDetailsTable({ details }: { details: Record<string, string | boolean> }) {
+// Product Details Table Component with Blouse Piece selection
+function ProductDetailsTable({ 
+  details, 
+  blousePieceSelected, 
+  onBlousePieceChange 
+}: { 
+  details: Record<string, string | boolean>;
+  blousePieceSelected: boolean;
+  onBlousePieceChange: (value: boolean) => void;
+}) {
   const entries = Object.entries(details);
   
   if (entries.length === 0) return null;
@@ -143,16 +151,26 @@ function ProductDetailsTable({ details }: { details: Record<string, string | boo
           <div className="w-2/3 px-4 py-3 text-sm text-foreground/80 flex items-center">
             {key === 'Blouse Piece' ? (
               <div className="flex items-center gap-2">
-                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
-                  value ? 'bg-green-500 border-green-500' : 'border-muted-foreground'
-                }`}>
-                  {value && (
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </div>
-                <span>{value ? 'Yes' : 'No'}</span>
+                <button
+                  onClick={() => onBlousePieceChange(true)}
+                  className={`px-4 py-1.5 text-xs font-medium rounded-l-full border transition-all ${
+                    blousePieceSelected 
+                      ? 'bg-green-500 border-green-500 text-white' 
+                      : 'border-border hover:border-foreground text-foreground/70'
+                  }`}
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={() => onBlousePieceChange(false)}
+                  className={`px-4 py-1.5 text-xs font-medium rounded-r-full border -ml-px transition-all ${
+                    !blousePieceSelected 
+                      ? 'bg-red-500 border-red-500 text-white' 
+                      : 'border-border hover:border-foreground text-foreground/70'
+                  }`}
+                >
+                  No
+                </button>
               </div>
             ) : (
               value
@@ -246,6 +264,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [blousePieceSelected, setBlousePieceSelected] = useState(true);
   
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
@@ -602,7 +621,11 @@ export default function ProductDetail() {
                     Details
                   </AccordionTrigger>
                   <AccordionContent className="pb-4">
-                    <ProductDetailsTable details={productDetails} />
+                    <ProductDetailsTable 
+                      details={productDetails} 
+                      blousePieceSelected={blousePieceSelected}
+                      onBlousePieceChange={setBlousePieceSelected}
+                    />
                     {Object.keys(productDetails).length === 0 && (
                       <p className="text-sm text-muted-foreground font-body">
                         Product details will be available soon.

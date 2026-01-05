@@ -20,10 +20,12 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const constraintsRef = useRef(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const initialPinchDistance = useRef<number | null>(null);
-  const lastTapTime = useRef<number>(0);
+  const lastTouchPosition = useRef<{ x: number; y: number; time: number } | null>(null);
+  const momentumAnimationRef = useRef<number | null>(null);
 
   const navigateImage = (newDirection: number) => {
     setDirection(newDirection);
@@ -36,7 +38,7 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
   };
 
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (isZoomed) return; // Don't navigate while zoomed
+    if (isZoomed) return;
     const threshold = 50;
     if (info.offset.x > threshold) {
       navigateImage(-1);
@@ -46,37 +48,36 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
   };
 
   const resetZoom = useCallback(() => {
+    if (momentumAnimationRef.current) {
+      cancelAnimationFrame(momentumAnimationRef.current);
+    }
     setIsZoomed(false);
     setZoomScale(1);
+    setVelocity({ x: 0, y: 0 });
   }, []);
 
-  // Handle double tap for zoom
-  const handleTap = useCallback((e: React.TouchEvent) => {
-    const now = Date.now();
-    const DOUBLE_TAP_DELAY = 300;
-    
-    if (now - lastTapTime.current < DOUBLE_TAP_DELAY) {
-      // Double tap detected
-      if (isZoomed) {
-        resetZoom();
-      } else {
-        const container = imageContainerRef.current;
-        if (!container || e.touches.length === 0) return;
-        
-        const rect = container.getBoundingClientRect();
-        const touch = e.touches[0];
-        const x = ((touch.clientX - rect.left) / rect.width) * 100;
-        const y = ((touch.clientY - rect.top) / rect.height) * 100;
-        
-        setZoomPosition({ x, y });
-        setZoomScale(2.5);
-        setIsZoomed(true);
+  // Momentum-based animation for smooth panning
+  const applyMomentum = useCallback(() => {
+    const friction = 0.92;
+    const minVelocity = 0.5;
+
+    setVelocity(prev => {
+      const newVx = prev.x * friction;
+      const newVy = prev.y * friction;
+
+      if (Math.abs(newVx) < minVelocity && Math.abs(newVy) < minVelocity) {
+        return { x: 0, y: 0 };
       }
-      lastTapTime.current = 0;
-    } else {
-      lastTapTime.current = now;
-    }
-  }, [isZoomed, resetZoom]);
+
+      setZoomPosition(pos => ({
+        x: Math.max(0, Math.min(100, pos.x - newVx * 0.5)),
+        y: Math.max(0, Math.min(100, pos.y - newVy * 0.5))
+      }));
+
+      momentumAnimationRef.current = requestAnimationFrame(applyMomentum);
+      return { x: newVx, y: newVy };
+    });
+  }, []);
 
   // Calculate distance between two touch points
   const getTouchDistance = (touches: React.TouchList): number => {
@@ -94,6 +95,13 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
   };
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    // Cancel any ongoing momentum animation
+    if (momentumAnimationRef.current) {
+      cancelAnimationFrame(momentumAnimationRef.current);
+      momentumAnimationRef.current = null;
+    }
+    setVelocity({ x: 0, y: 0 });
+
     if (e.touches.length === 2) {
       // Start pinch zoom
       initialPinchDistance.current = getTouchDistance(e.touches);
@@ -106,10 +114,15 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
           setZoomPosition(center);
         }
       }
-    } else if (e.touches.length === 1) {
-      handleTap(e);
+    } else if (e.touches.length === 1 && isZoomed) {
+      // Track touch position for momentum calculation
+      lastTouchPosition.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+        time: Date.now()
+      };
     }
-  }, [isZoomed, handleTap]);
+  }, [isZoomed]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     const container = imageContainerRef.current;
@@ -127,16 +140,34 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
       setZoomScale(newScale);
       setIsZoomed(newScale > 1);
       
-      // Update position to pinch center
       const center = getTouchCenter(e.touches, rect);
       setZoomPosition(center);
       
       initialPinchDistance.current = currentDistance;
     } 
-    // Handle single finger pan when zoomed
+    // Handle single finger pan when zoomed with velocity tracking
     else if (isZoomed && e.touches.length === 1) {
-      const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
-      const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+      const touch = e.touches[0];
+      const x = ((touch.clientX - rect.left) / rect.width) * 100;
+      const y = ((touch.clientY - rect.top) / rect.height) * 100;
+      
+      // Calculate velocity for momentum
+      if (lastTouchPosition.current) {
+        const dt = Math.max(1, Date.now() - lastTouchPosition.current.time);
+        const dx = touch.clientX - lastTouchPosition.current.x;
+        const dy = touch.clientY - lastTouchPosition.current.y;
+        
+        setVelocity({
+          x: (dx / dt) * 16, // Normalize to ~60fps
+          y: (dy / dt) * 16
+        });
+      }
+      
+      lastTouchPosition.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+        time: Date.now()
+      };
       
       setZoomPosition({ 
         x: Math.max(0, Math.min(100, x)), 
@@ -150,11 +181,18 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
       initialPinchDistance.current = null;
     }
     
+    // Apply momentum when releasing single finger while zoomed
+    if (e.touches.length === 0 && isZoomed && (Math.abs(velocity.x) > 2 || Math.abs(velocity.y) > 2)) {
+      momentumAnimationRef.current = requestAnimationFrame(applyMomentum);
+    }
+    
+    lastTouchPosition.current = null;
+    
     // Reset if zoomed out below threshold
     if (zoomScale <= 1.1 && isZoomed) {
       resetZoom();
     }
-  }, [zoomScale, isZoomed, resetZoom]);
+  }, [zoomScale, isZoomed, resetZoom, velocity, applyMomentum]);
 
   const variants = {
     enter: (direction: number) => ({
@@ -276,7 +314,7 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
         {images.length > 1 && !isZoomed && (
           <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-background/60 backdrop-blur-sm rounded-full text-xs text-muted-foreground flex items-center gap-1.5">
             <ZoomIn className="w-3 h-3" />
-            Pinch or double-tap to zoom
+            Pinch to zoom • Swipe to browse
           </div>
         )}
       </div>
