@@ -45,7 +45,7 @@ export function NewsletterSection() {
             Stay Connected
           </span>
           <h2 className="text-4xl md:text-5xl font-heading font-light mb-6">
-            Join The  <span className="italic">KoraSutra Circle</span>
+            Join The  <span className="italic">Korasutra Circle</span>
           </h2>
           <p className="text-primary-foreground/80 font-body mb-8 leading-relaxed">
             Be the first to know about new collections, exclusive offers, and styling tips 
