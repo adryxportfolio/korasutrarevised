@@ -128,8 +128,8 @@ export function HeroSection() {
         }} transition={{
           duration: 1,
           delay: 0.4
-        }} className="relative flex items-center justify-center">
-            <div className="relative w-full max-w-md mx-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        }} className="relative flex items-center justify-center h-full">
+            <div className="relative w-full max-w-sm lg:max-w-md mx-auto h-[calc(100vh-220px)] flex items-center justify-center">
               {/* Decorative Frame */}
               <motion.div className="absolute -inset-3 border border-accent/30 rounded-sm" animate={{
               rotate: [0, 1, 0, -1, 0]
@@ -145,14 +145,14 @@ export function HeroSection() {
             }} />
               
               {/* Video */}
-              <div className="relative overflow-hidden rounded-sm shadow-elegant">
+              <div className="relative overflow-hidden rounded-sm shadow-elegant w-full h-full flex items-center justify-center">
                 <video 
                   src={heroVideo}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full h-auto max-h-[calc(100vh-200px)] object-contain"
+                  className="w-full h-full object-contain max-h-full"
                 />
                 
                 {/* Overlay */}
