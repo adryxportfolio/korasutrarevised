@@ -174,22 +174,38 @@ export function CollectionsSection() {
         {/* Section Header */}
         <motion.div initial={{
         opacity: 0,
-        y: 30
+        y: 50
       }} animate={isInView ? {
         opacity: 1,
         y: 0
       } : {
         opacity: 0,
-        y: 30
+        y: 50
       }} transition={{
-        duration: 0.8
+        duration: 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94]
       }} className="text-center mb-10 md:mb-16">
-          <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
+          <motion.span 
+            className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body"
+            initial={{ opacity: 0, letterSpacing: '0.1em' }}
+            animate={isInView ? { opacity: 1, letterSpacing: '0.3em' } : { opacity: 0, letterSpacing: '0.1em' }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
             Curated Collections
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading">
-            Experience <span className="italic">Elegance</span>
-          </h2>
+          </motion.span>
+          <motion.h2 
+            className="text-3xl md:text-4xl lg:text-5xl font-heading"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            Experience <motion.span 
+              className="italic inline-block"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.5, type: "spring", stiffness: 200 }}
+            >Elegance</motion.span>
+          </motion.h2>
         </motion.div>
 
         {/* Carousel Container */}
