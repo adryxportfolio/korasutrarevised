@@ -69,7 +69,7 @@ export function HeroSection() {
             duration: 0.6,
             delay: 0.4
           }} className="mb-6 flex flex-col items-center lg:items-start">
-              <span className="font-script text-5xl md:text-6xl lg:text-7xl text-foreground leading-tight font-semibold">
+              <span className="font-heading text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight tracking-widest uppercase">
                 Kora Sutra Sarees
               </span>
             </motion.div>
