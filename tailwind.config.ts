@@ -16,7 +16,7 @@ export default {
       fontFamily: {
         heading: ['Cormorant Garamond', 'serif'],
         body: ['DM Sans', 'sans-serif'],
-        script: ['Alex Brush', 'cursive'],
+        script: ['Pinyon Script', 'cursive'],
       },
       colors: {
         border: "hsl(var(--border))",
