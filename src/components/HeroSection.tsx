@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import heroVideo from '@/assets/hero-video.mp4';
+import ksWordmark from '@/assets/ks-wordmark.png';
 
 // Floating particles animation component
 function FloatingParticles() {
@@ -68,10 +69,13 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.4
-          }} className="mb-6">
-              <span className="font-script text-5xl md:text-6xl lg:text-7xl text-foreground">
-                Kora Sutra
-              </span>
+          }} className="mb-6 flex flex-col items-center lg:items-start">
+              <img
+                src={ksWordmark}
+                alt="Kora Sutra"
+                className="w-[260px] md:w-[320px] lg:w-[380px] h-auto max-w-full"
+                loading="eager"
+              />
               <span className="block font-heading text-lg md:text-xl tracking-[0.4em] text-muted-foreground mt-2 uppercase">
                 Sarees
               </span>
