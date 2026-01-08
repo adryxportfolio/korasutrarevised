@@ -1,10 +1,6 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import hero1 from '@/assets/hero-1.jpeg';
-import hero2 from '@/assets/hero-2.jpeg';
-import hero3 from '@/assets/hero-3.jpeg';
+import heroVideo from '@/assets/hero-video.mp4';
 
 // Floating particles animation component
 function FloatingParticles() {
@@ -36,33 +32,8 @@ function FloatingParticles() {
     }} />)}
     </div>;
 }
-const heroSlides = [{
-  id: 1,
-  image: hero1,
-  alt: 'Woman in elegant pink saree sitting on sofa'
-}, {
-  id: 2,
-  image: hero2,
-  alt: 'Woman in turquoise floral saree outdoors'
-}, {
-  id: 3,
-  image: hero3,
-  alt: 'Flat 15% off - New Brand Launch promotion'
-}];
+
 export function HeroSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % heroSlides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-  const nextSlide = () => {
-    setCurrentSlide(prev => (prev + 1) % heroSlides.length);
-  };
-  const prevSlide = () => {
-    setCurrentSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length);
-  };
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
       {/* Floating Particles */}
       <FloatingParticles />
@@ -147,7 +118,7 @@ export function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Hero Image Slider */}
+          {/* Hero Video */}
           <motion.div initial={{
           opacity: 0,
           scale: 0.9
@@ -173,7 +144,7 @@ export function HeroSection() {
               repeat: Infinity
             }} />
               
-              {/* Image Slider */}
+              {/* Video */}
               <motion.div animate={{
               y: [0, -10, 0]
             }} transition={{
@@ -181,34 +152,18 @@ export function HeroSection() {
               repeat: Infinity,
               ease: "easeInOut"
             }} className="relative h-full">
-                <AnimatePresence mode="wait">
-                  <motion.img key={currentSlide} src={heroSlides[currentSlide].image} alt={heroSlides[currentSlide].alt} initial={{
-                  opacity: 0
-                }} animate={{
-                  opacity: 1
-                }} exit={{
-                  opacity: 0
-                }} transition={{
-                  duration: 0.5
-                }} className="w-full h-full object-cover rounded-sm shadow-elegant" />
-                </AnimatePresence>
+                <video 
+                  src={heroVideo}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover rounded-sm shadow-elegant"
+                />
                 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent" />
               </motion.div>
-
-              {/* Slider Controls */}
-              <button onClick={prevSlide} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors z-10">
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button onClick={nextSlide} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors z-10">
-                <ChevronRight className="w-5 h-5" />
-              </button>
-
-              {/* Slide Indicators */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                {heroSlides.map((_, index) => <button key={index} onClick={() => setCurrentSlide(index)} className={`w-2 h-2 rounded-full transition-all ${currentSlide === index ? 'bg-accent w-6' : 'bg-background/60'}`} />)}
-              </div>
 
             </div>
           </motion.div>
