@@ -35,16 +35,28 @@ function FloatingParticles() {
 
 export function HeroSection() {
   return <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Full-screen Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video 
-          src={heroVideo}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        />
+      {/* Full-screen Video Background with Ken Burns Effect */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.1 }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut"
+          }}
+        >
+          <video 
+            src={heroVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
         {/* Dark Overlay for text readability */}
         <div className="absolute inset-0 bg-black/40" />
         {/* Gradient Overlay */}
