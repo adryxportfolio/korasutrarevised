@@ -68,7 +68,11 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.4
-          }} className="inline-block tracking-[0.2em] text-muted-foreground mb-4 font-heading italic text-3xl">Kora Sutra Sarees</motion.span>
+          }} className="inline-block mb-6 font-heading text-4xl md:text-5xl text-foreground">
+              <span className="italic font-light">Kora</span>{' '}
+              <span className="italic font-light">Sutra</span>{' '}
+              <span className="font-normal tracking-wide">SAREES</span>
+            </motion.span>
             
             <motion.h1 initial={{
             opacity: 0,
