@@ -34,27 +34,36 @@ function FloatingParticles() {
 }
 
 export function HeroSection() {
-  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
-      {/* Floating Particles */}
-      <FloatingParticles />
-      
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-        backgroundImage: `radial-gradient(circle at 25% 25%, hsl(var(--sage)) 1px, transparent 1px)`,
-        backgroundSize: '60px 60px'
-      }} />
+  return <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Full-screen Video Background */}
+      <div className="absolute inset-0 z-0">
+        <video 
+          src={heroVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        />
+        {/* Dark Overlay for text readability */}
+        <div className="absolute inset-0 bg-black/40" />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
       </div>
 
-      <div className="container mx-auto px-6 pt-32 pb-20 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      {/* Floating Particles */}
+      <FloatingParticles />
+
+      {/* Content */}
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="max-w-2xl">
           {/* Text Content */}
           <motion.div initial={{
           opacity: 0,
-          x: -50
+          y: 30
         }} animate={{
           opacity: 1,
-          x: 0
+          y: 0
         }} transition={{
           duration: 0.8,
           delay: 0.2
@@ -68,7 +77,7 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.4
-          }} className="inline-block tracking-[0.3em] text-muted-foreground uppercase mb-4 font-body text-2xl">KORA SUTRA SAREES</motion.span>
+          }} className="inline-block tracking-[0.3em] text-white/80 uppercase mb-4 font-body text-lg md:text-2xl">KORA SUTRA SAREES</motion.span>
             
             <motion.h1 initial={{
             opacity: 0,
@@ -79,9 +88,9 @@ export function HeroSection() {
           }} transition={{
             duration: 0.8,
             delay: 0.5
-          }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6">Wear it with
+          }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6 text-white">Wear it with
             <br />
-              <span className="italic text-[#0f0901]">​Pride</span>
+              <span className="italic text-white/90">​Pride</span>
             </motion.h1>
             
             <motion.p initial={{
@@ -93,7 +102,7 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.7
-          }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed text-xl">
+          }} className="text-white/80 max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed text-lg md:text-xl">
               Discover the artistry of handcrafted sarees, where every thread tells a story of pure elegance and timeless beauty. 
             </motion.p>
             
@@ -107,59 +116,15 @@ export function HeroSection() {
             duration: 0.6,
             delay: 0.9
           }} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/collections/all" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
+              <Link to="/collections/all" className="inline-flex items-center justify-center px-8 py-4 bg-white text-black font-body text-sm tracking-wide rounded-sm hover:bg-white/90 transition-colors">
                 Explore Collection
               </Link>
               <button onClick={() => document.getElementById('about-section')?.scrollIntoView({
               behavior: 'smooth'
-            })} className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-foreground font-body text-sm tracking-wide uppercase rounded-sm hover:bg-foreground hover:text-background transition-colors">
+            })} className="inline-flex items-center justify-center px-8 py-4 border border-white text-white font-body text-sm tracking-wide uppercase rounded-sm hover:bg-white hover:text-black transition-colors">
                 Our Story
               </button>
             </motion.div>
-          </motion.div>
-
-          {/* Hero Video */}
-          <motion.div initial={{
-          opacity: 0,
-          scale: 0.9
-        }} animate={{
-          opacity: 1,
-          scale: 1
-        }} transition={{
-          duration: 1,
-          delay: 0.4
-        }} className="relative flex items-center justify-center">
-            <div className="relative w-full max-w-md mx-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
-              {/* Decorative Frame */}
-              <motion.div className="absolute -inset-3 border border-accent/30 rounded-sm" animate={{
-              rotate: [0, 1, 0, -1, 0]
-            }} transition={{
-              duration: 10,
-              repeat: Infinity
-            }} />
-              <motion.div className="absolute -inset-6 border border-border rounded-sm" animate={{
-              rotate: [0, -1, 0, 1, 0]
-            }} transition={{
-              duration: 12,
-              repeat: Infinity
-            }} />
-              
-              {/* Video */}
-              <div className="relative overflow-hidden rounded-sm shadow-elegant">
-                <video 
-                  src={heroVideo}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-auto max-h-[calc(100vh-200px)] object-contain"
-                />
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
-              </div>
-
-            </div>
           </motion.div>
         </div>
       </div>
@@ -171,14 +136,14 @@ export function HeroSection() {
       opacity: 1
     }} transition={{
       delay: 1.5
-    }} className="absolute bottom-8 left-1/2 -translate-x-1/2">
+    }} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
         <motion.div animate={{
         y: [0, 10, 0]
       }} transition={{
         duration: 1.5,
         repeat: Infinity
-      }} className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full flex justify-center pt-2">
-          <motion.div className="w-1 h-2 bg-accent rounded-full" />
+      }} className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center pt-2">
+          <motion.div className="w-1 h-2 bg-white rounded-full" />
         </motion.div>
       </motion.div>
     </section>;
