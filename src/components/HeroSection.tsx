@@ -32,7 +32,6 @@ function FloatingParticles() {
     }} />)}
     </div>;
 }
-
 export function HeroSection() {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
       {/* Floating Particles */}
@@ -74,32 +73,41 @@ export function HeroSection() {
               </span>
             </motion.div>
             
-            <motion.h1 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6"
-            >
-              <motion.span
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                className="inline-block"
-              >
+            <motion.h1 initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} transition={{
+            duration: 0.5,
+            delay: 0.5
+          }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6">
+              <motion.span initial={{
+              opacity: 0,
+              y: 30
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} transition={{
+              duration: 0.6,
+              delay: 0.6
+            }} className="inline-block text-[#570000]">
                 Wear it with
               </motion.span>
               <br />
-              <motion.span 
-                initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
-                animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: 0.9,
-                  type: "spring",
-                  stiffness: 100
-                }}
-                className="inline-block italic text-foreground"
-              >
+              <motion.span initial={{
+              opacity: 0,
+              scale: 0.8,
+              rotateX: -90
+            }} animate={{
+              opacity: 1,
+              scale: 1,
+              rotateX: 0
+            }} transition={{
+              duration: 0.8,
+              delay: 0.9,
+              type: "spring",
+              stiffness: 100
+            }} className="inline-block italic text-[#570000]">
                 Pride
               </motion.span>
             </motion.h1>
@@ -166,14 +174,7 @@ export function HeroSection() {
               
               {/* Video */}
               <div className="relative overflow-hidden rounded-sm shadow-elegant w-full h-full flex items-center justify-center">
-                <video 
-                  src={heroVideo}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-contain max-h-full"
-                />
+                <video src={heroVideo} autoPlay loop muted playsInline className="w-full h-full object-contain max-h-full" />
                 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
