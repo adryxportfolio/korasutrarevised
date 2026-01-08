@@ -296,8 +296,10 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="Enter your name"
+                  maxLength={100}
                   required
                 />
+                <span className="text-xs text-muted-foreground mt-1">{formName.length}/100</span>
               </div>
               
               <div>
@@ -306,7 +308,9 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
                   placeholder="Sum up your review"
+                  maxLength={150}
                 />
+                <span className="text-xs text-muted-foreground mt-1">{formTitle.length}/150</span>
               </div>
               
               <div>
@@ -316,8 +320,10 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
                   onChange={(e) => setFormContent(e.target.value)}
                   placeholder="Share your experience with this product"
                   rows={4}
+                  maxLength={2000}
                   required
                 />
+                <span className="text-xs text-muted-foreground mt-1">{formContent.length}/2000</span>
               </div>
               
               <div className="flex gap-3 pt-2">
@@ -396,7 +402,7 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
                     )}
                   </div>
                   {review.title && (
-                    <h4 className="font-medium">{review.title}</h4>
+                    <h4 className="font-medium break-words">{review.title}</h4>
                   )}
                 </div>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">
@@ -404,7 +410,7 @@ export const ProductReviews = ({ productId, productHandle, productTitle }: Produ
                 </span>
               </div>
               
-              <p className="text-sm text-foreground/80 mb-3 leading-relaxed">
+              <p className="text-sm text-foreground/80 mb-3 leading-relaxed break-words">
                 {review.content}
               </p>
               
