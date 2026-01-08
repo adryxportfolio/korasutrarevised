@@ -74,18 +74,34 @@ export function HeroSection() {
               </span>
             </motion.div>
             
-            <motion.h1 initial={{
-            opacity: 0,
-            y: 30
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.8,
-            delay: 0.5
-          }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6">Wear it with
-            <br />
-              <span className="italic text-[#0f0901]">​Pride</span>
+            <motion.h1 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6"
+            >
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="inline-block"
+              >
+                Wear it with
+              </motion.span>
+              <br />
+              <motion.span 
+                initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
+                animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: 0.9,
+                  type: "spring",
+                  stiffness: 100
+                }}
+                className="inline-block italic text-foreground"
+              >
+                Pride
+              </motion.span>
             </motion.h1>
             
             <motion.p initial={{
