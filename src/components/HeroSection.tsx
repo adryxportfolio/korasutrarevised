@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import heroVideo from '@/assets/hero-video.mp4';
 
@@ -15,7 +16,7 @@ function FloatingParticles() {
     duration: 10 + Math.random() * 10
   }));
   return <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map(particle => <motion.div key={particle.id} className="absolute rounded-full bg-accent/20" style={{
+      {particles.map(particle => <motion.div key={particle.id} className="absolute rounded-full bg-white/20" style={{
       left: `${particle.x}%`,
       top: `${particle.y}%`,
       width: particle.size,
@@ -34,19 +35,23 @@ function FloatingParticles() {
 }
 
 export function HeroSection() {
-  return <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Full-screen Video Background with Ken Burns Effect */}
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Parallax transforms
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.3]);
+
+  return <section ref={sectionRef} className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Full-screen Video Background with Ken Burns + Parallax Effect */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <motion.div
-          className="absolute inset-0"
-          initial={{ scale: 1 }}
-          animate={{ scale: 1.1 }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut"
-          }}
+          className="absolute inset-[-10%] w-[120%] h-[120%]"
+          style={{ scale: videoScale }}
         >
           <video 
             src={heroVideo}
@@ -66,8 +71,11 @@ export function HeroSection() {
       {/* Floating Particles */}
       <FloatingParticles />
 
-      {/* Content */}
-      <div className="container mx-auto px-6 relative z-10">
+      {/* Content with Parallax */}
+      <motion.div 
+        className="container mx-auto px-6 relative z-10"
+        style={{ y: contentY, opacity: contentOpacity }}
+      >
         <div className="max-w-2xl">
           {/* Text Content */}
           <motion.div initial={{
@@ -139,7 +147,7 @@ export function HeroSection() {
             </motion.div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Scroll Indicator */}
       <motion.div initial={{
