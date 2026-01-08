@@ -59,7 +59,7 @@ export function HeroSection() {
           duration: 0.8,
           delay: 0.2
         }} className="text-center lg:text-left">
-            <motion.span initial={{
+            <motion.div initial={{
             opacity: 0,
             y: 20
           }} animate={{
@@ -68,11 +68,14 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.4
-          }} className="inline-block mb-6 font-heading text-4xl md:text-5xl text-foreground">
-              <span className="italic font-light">Kora</span>{' '}
-              <span className="italic font-light">Sutra</span>{' '}
-              <span className="font-normal tracking-wide">SAREES</span>
-            </motion.span>
+          }} className="mb-6">
+              <span className="font-script text-5xl md:text-6xl lg:text-7xl text-foreground">
+                Kora Sutra
+              </span>
+              <span className="block font-heading text-lg md:text-xl tracking-[0.4em] text-muted-foreground mt-2 uppercase">
+                Sarees
+              </span>
+            </motion.div>
             
             <motion.h1 initial={{
             opacity: 0,
