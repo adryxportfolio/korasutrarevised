@@ -128,16 +128,16 @@ export function HeroSection() {
         }} transition={{
           duration: 1,
           delay: 0.4
-        }} className="relative">
-            <div className="relative aspect-[3/4] max-w-lg mx-auto">
+        }} className="relative flex items-center justify-center">
+            <div className="relative w-full max-w-md mx-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
               {/* Decorative Frame */}
-              <motion.div className="absolute -inset-4 border border-accent/30 rounded-sm" animate={{
+              <motion.div className="absolute -inset-3 border border-accent/30 rounded-sm" animate={{
               rotate: [0, 1, 0, -1, 0]
             }} transition={{
               duration: 10,
               repeat: Infinity
             }} />
-              <motion.div className="absolute -inset-8 border border-border rounded-sm" animate={{
+              <motion.div className="absolute -inset-6 border border-border rounded-sm" animate={{
               rotate: [0, -1, 0, 1, 0]
             }} transition={{
               duration: 12,
@@ -145,25 +145,19 @@ export function HeroSection() {
             }} />
               
               {/* Video */}
-              <motion.div animate={{
-              y: [0, -10, 0]
-            }} transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }} className="relative h-full">
+              <div className="relative overflow-hidden rounded-sm shadow-elegant">
                 <video 
                   src={heroVideo}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full h-full object-cover rounded-sm shadow-elegant"
+                  className="w-full h-auto max-h-[calc(100vh-200px)] object-contain"
                 />
                 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent" />
-              </motion.div>
+                <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
+              </div>
 
             </div>
           </motion.div>
