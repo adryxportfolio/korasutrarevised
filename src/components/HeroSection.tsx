@@ -97,7 +97,7 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.4
-          }} className="inline-block tracking-[0.3em] text-white/80 uppercase mb-4 font-body text-lg md:text-2xl">KORA SUTRA SAREES</motion.span>
+          }} className="inline-block text-white/90 mb-4 text-3xl md:text-4xl lg:text-5xl" style={{ fontFamily: 'var(--font-script)' }}>Kora Sutra Sarees</motion.span>
             
             <motion.h1 initial={{
             opacity: 0,
