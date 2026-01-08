@@ -44,51 +44,46 @@ export function AboutSection() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <motion.div
-            initial={{ opacity: 0, x: -80 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8 }}
           >
-            <motion.span 
-              className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body"
-              initial={{ opacity: 0, letterSpacing: '0.1em' }}
-              animate={isInView ? { opacity: 1, letterSpacing: '0.3em' } : { opacity: 0, letterSpacing: '0.1em' }}
-              transition={{ duration: 1, delay: 0.2 }}
-            >
+            <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
               Our Story
-            </motion.span>
-            <motion.h2 
-              className="text-4xl md:text-5xl font-heading font-light mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
+            </span>
+            <h2 className="text-4xl md:text-5xl font-heading font-light mb-6">
               Weaving Dreams Into
               <br />
-              <motion.span 
-                className="italic text-accent inline-block"
-                initial={{ opacity: 0, x: -20 }}
-                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >Timeless Elegance</motion.span>
-            </motion.h2>
-            {[
-              'It started long ago…',
-              'in the rustle of Ma\'s saree, in Dida\'s quiet embroideries, and in those childhood afternoons when we wrapped ourselves in whatever fabric we found, hoping to look like the women we admired.',
-              'Somewhere in those small, ordinary moments, a deep love for sarees took root—steady, quiet, unforgettable.',
-              'What began as simple fascination slowly became a dream that gently kept me awake…',
-              'Today, that dream finds its life in Kora Sutra— a space where artisans, weaves, and stories meet with honesty.',
-              'Where a saree is not just worn, but chosen… cherished… and passed on.'
-            ].map((text, index) => (
-              <motion.p
-                key={index}
-                className="text-muted-foreground font-body leading-relaxed mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
-              >
-                {text}
-              </motion.p>
-            ))}
+              <span className="italic text-accent">Timeless Elegance</span>
+            </h2>
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
+              It started long ago…
+            </p>
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
+              in the rustle of Ma's saree,
+              <br />
+              in Dida's quiet embroideries,
+              <br />
+              and in those childhood afternoons when we wrapped ourselves in whatever fabric we found,
+              <br />
+              hoping to look like the women we admired.
+            </p>
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
+              Somewhere in those small, ordinary moments,
+              <br />
+              a deep love for sarees took root—steady, quiet, unforgettable.
+            </p>
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
+              What began as simple fascination slowly became a dream that gently kept me awake…
+            </p>
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
+              Today, that dream finds its life in Kora Sutra—
+              <br />
+              a space where artisans, weaves, and stories meet with honesty.
+            </p>
+            <p className="text-muted-foreground font-body leading-relaxed">
+              Where a saree is not just worn, but chosen… cherished… and passed on.
+            </p>
           </motion.div>
 
           {/* Right Content - Features */}

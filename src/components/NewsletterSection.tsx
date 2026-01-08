@@ -22,76 +22,35 @@ export function NewsletterSection() {
   };
   return <section ref={ref} className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
       {/* Decorative Elements */}
-      <motion.div 
-        className="absolute inset-0 opacity-10"
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 0.1 } : { opacity: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <motion.div 
-          className="absolute top-10 left-10 w-40 h-40 border border-primary-foreground rounded-full"
-          initial={{ scale: 0, rotate: -180 }}
-          animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
-          transition={{ duration: 1.2, delay: 0.2 }}
-        />
-        <motion.div 
-          className="absolute bottom-10 right-10 w-60 h-60 border border-primary-foreground rounded-full"
-          initial={{ scale: 0, rotate: 180 }}
-          animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: 180 }}
-          transition={{ duration: 1.2, delay: 0.4 }}
-        />
-        <motion.div 
-          className="absolute top-1/2 left-1/4 w-20 h-20 border border-primary-foreground"
-          initial={{ scale: 0, rotate: 0 }}
-          animate={isInView ? { scale: 1, rotate: 45 } : { scale: 0, rotate: 0 }}
-          transition={{ duration: 1, delay: 0.6 }}
-        />
-      </motion.div>
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 left-10 w-40 h-40 border border-primary-foreground rounded-full" />
+        <div className="absolute bottom-10 right-10 w-60 h-60 border border-primary-foreground rounded-full" />
+        <div className="absolute top-1/2 left-1/4 w-20 h-20 border border-primary-foreground rotate-45" />
+      </div>
 
       <div className="container mx-auto px-6 relative z-10">
         <motion.div initial={{
         opacity: 0,
-        y: 50
+        y: 30
       }} animate={isInView ? {
         opacity: 1,
         y: 0
       } : {
         opacity: 0,
-        y: 50
+        y: 30
       }} transition={{
-        duration: 0.8,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        duration: 0.8
       }} className="max-w-2xl mx-auto text-center">
-          <motion.span 
-            className="text-sm tracking-[0.3em] uppercase mb-4 block font-body opacity-70"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 0.7, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <span className="text-sm tracking-[0.3em] uppercase mb-4 block font-body opacity-70">
             Stay Connected
-          </motion.span>
-          <motion.h2 
-            className="text-4xl md:text-5xl font-heading font-light mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            Join The <motion.span 
-              className="italic inline-block"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.6, delay: 0.5, type: "spring", stiffness: 200 }}
-            >Korasutra Circle</motion.span>
-          </motion.h2>
-          <motion.p 
-            className="text-primary-foreground/80 font-body mb-8 leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
+          </span>
+          <h2 className="text-4xl md:text-5xl font-heading font-light mb-6">
+            Join The  <span className="italic">Korasutra Circle</span>
+          </h2>
+          <p className="text-primary-foreground/80 font-body mb-8 leading-relaxed">
             Be the first to know about new collections, exclusive offers, and styling tips 
             curated just for you.
-          </motion.p>
+          </p>
 
           <motion.form initial={{
           opacity: 0,

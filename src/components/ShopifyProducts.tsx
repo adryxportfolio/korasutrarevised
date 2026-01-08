@@ -84,57 +84,28 @@ export function ShopifyProducts() {
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <motion.span 
-            className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body"
-            initial={{ opacity: 0, letterSpacing: '0.1em' }}
-            whileInView={{ opacity: 1, letterSpacing: '0.3em' }}
-            transition={{ duration: 1, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
+          <span className="text-sm tracking-[0.3em] text-muted-foreground uppercase mb-4 block font-body">
             Our Collection
-          </motion.span>
-          <motion.h2 
-            className="text-3xl md:text-4xl lg:text-5xl font-heading font-light"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            Shop <motion.span 
-              className="italic text-accent inline-block"
-              initial={{ opacity: 0, rotateY: 90 }}
-              whileInView={{ opacity: 1, rotateY: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              viewport={{ once: true }}
-            >Sarees</motion.span>
-          </motion.h2>
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-light">
+            Shop <span className="italic text-accent">Sarees</span>
+          </h2>
         </motion.div>
 
-        <motion.div 
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true, margin: '-50px' }}
-        >
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((product, index) => (
             <motion.div
               key={product.node.id}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ 
-                duration: 0.6, 
-                delay: index * 0.08,
-                ease: [0.25, 0.46, 0.45, 0.94]
-              }}
-              viewport={{ once: true, margin: '-30px' }}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
             >
               <Link 
                 to={`/product/${product.node.handle}`}
@@ -173,7 +144,7 @@ export function ShopifyProducts() {
               </Link>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
