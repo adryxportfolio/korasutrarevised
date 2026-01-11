@@ -39,6 +39,25 @@ function extractFabricFromTitle(title: string): string {
   return 'Handwoven';
 }
 
+// Extract product type/category (block print, tussar, kantha, jamdani, etc.)
+function extractProductType(title: string): string {
+  // Order matters - check more specific types first
+  const typeKeywords = [
+    'Block Print', 'Kantha Stitch', 'Kantha', 'Jamdani', 'Tussar', 'Muslin', 
+    'Baluchari', 'Banarasi', 'Chanderi', 'Ikat', 'Bandhani', 'Batik',
+    'Kalamkari', 'Patola', 'Paithani', 'Pochampally', 'Bomkai', 'Sambalpuri',
+    'Tant', 'Gadwal', 'Uppada', 'Venkatagiri', 'Mangalagiri', 'Narayanpet'
+  ];
+  
+  const lowerTitle = title.toLowerCase();
+  for (const type of typeKeywords) {
+    if (lowerTitle.includes(type.toLowerCase())) {
+      return type;
+    }
+  }
+  return '';
+}
+
 // Extract color from product title
 function extractColorFromTitle(title: string): string {
   const colorKeywords = [
@@ -204,28 +223,28 @@ function ProductDetailsTable({
   );
 }
 
-// Similar Products Component - SUTA Style (filters by same fabric type with fallback)
-function SimilarProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string | undefined; products: ShopifyProduct[] }) {
+// Similar Products Component - filters by same product type (block print, tussar, kantha, etc.)
+function SimilarProducts({ currentHandle, currentProductType, products }: { currentHandle: string; currentProductType: string; products: ShopifyProduct[] }) {
   // Filter out current product first
   const otherProducts = products.filter(p => p.node.handle !== currentHandle);
   
-  // Try to filter by same fabric type if fabric is available
+  // Try to filter by same product type
   let filteredProducts: ShopifyProduct[] = [];
   let sectionTitle = "Similar Products";
   
-  if (currentFabric) {
-    const sameFabricProducts = otherProducts.filter(p => {
-      const productFabric = extractFabricFromTitle(p.node.title);
-      return productFabric.toLowerCase() === currentFabric.toLowerCase();
+  if (currentProductType) {
+    const sameTypeProducts = otherProducts.filter(p => {
+      const productType = extractProductType(p.node.title);
+      return productType.toLowerCase() === currentProductType.toLowerCase();
     });
     
-    if (sameFabricProducts.length > 0) {
-      filteredProducts = sameFabricProducts.slice(0, 4);
-      sectionTitle = `More in ${currentFabric}`;
+    if (sameTypeProducts.length > 0) {
+      filteredProducts = sameTypeProducts.slice(0, 4);
+      sectionTitle = `More in ${currentProductType}`;
     }
   }
   
-  // Fallback to showing any other products if no same-fabric products found
+  // Fallback to showing any other products if no same-type products found
   if (filteredProducts.length === 0) {
     filteredProducts = otherProducts.slice(0, 4);
     sectionTitle = "Similar Products";
@@ -261,28 +280,28 @@ function SimilarProducts({ currentHandle, currentFabric, products }: { currentHa
   );
 }
 
-// You May Also Like Section - Bottom of page (filters by same fabric type with fallback)
-function RelatedProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string | undefined; products: ShopifyProduct[] }) {
+// You May Also Like Section - filters by same product type (block print, tussar, kantha, etc.)
+function RelatedProducts({ currentHandle, currentProductType, products }: { currentHandle: string; currentProductType: string; products: ShopifyProduct[] }) {
   // Filter out current product first
   const otherProducts = products.filter(p => p.node.handle !== currentHandle);
   
-  // Try to filter by same fabric type if fabric is available
+  // Try to filter by same product type
   let filteredProducts: ShopifyProduct[] = [];
   let sectionTitle = "YOU MAY ALSO LIKE";
   
-  if (currentFabric) {
-    const sameFabricProducts = otherProducts.filter(p => {
-      const productFabric = extractFabricFromTitle(p.node.title);
-      return productFabric.toLowerCase() === currentFabric.toLowerCase();
+  if (currentProductType) {
+    const sameTypeProducts = otherProducts.filter(p => {
+      const productType = extractProductType(p.node.title);
+      return productType.toLowerCase() === currentProductType.toLowerCase();
     });
     
-    if (sameFabricProducts.length > 0) {
-      filteredProducts = sameFabricProducts.slice(0, 8);
-      sectionTitle = `MORE IN ${currentFabric.toUpperCase()}`;
+    if (sameTypeProducts.length > 0) {
+      filteredProducts = sameTypeProducts.slice(0, 8);
+      sectionTitle = `MORE IN ${currentProductType.toUpperCase()}`;
     }
   }
   
-  // Fallback to showing any other products if no same-fabric products found
+  // Fallback to showing any other products if no same-type products found
   if (filteredProducts.length === 0) {
     filteredProducts = otherProducts.slice(0, 8);
     sectionTitle = "YOU MAY ALSO LIKE";
@@ -679,7 +698,7 @@ export default function ProductDetail() {
               </Button>
 
               {/* Similar Products */}
-              <SimilarProducts currentHandle={handle || ''} currentFabric={productDetails['Fabric'] as string} products={relatedProducts} />
+              <SimilarProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} products={relatedProducts} />
 
               {/* Accordion Sections - SUTA Style */}
               <Accordion type="multiple" className="w-full border-t border-border mt-4 md:mt-6">
@@ -797,7 +816,7 @@ export default function ProductDetail() {
           <RecentlyViewed currentHandle={handle} />
 
           {/* Related Products - Bottom */}
-          <RelatedProducts currentHandle={handle || ''} currentFabric={productDetails['Fabric'] as string} products={relatedProducts} />
+          <RelatedProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} products={relatedProducts} />
         </div>
         
         {/* Sticky Mobile Cart Bar - add bottom padding to main content */}
