@@ -204,24 +204,39 @@ function ProductDetailsTable({
   );
 }
 
-// Similar Products Component - SUTA Style (filters by same fabric type)
-function SimilarProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string; products: ShopifyProduct[] }) {
-  // Filter products by same fabric type, excluding current product
-  const sameFabricProducts = products.filter(p => {
-    if (p.node.handle === currentHandle) return false;
-    const productFabric = extractFabricFromTitle(p.node.title);
-    return productFabric.toLowerCase() === currentFabric.toLowerCase();
-  });
+// Similar Products Component - SUTA Style (filters by same fabric type with fallback)
+function SimilarProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string | undefined; products: ShopifyProduct[] }) {
+  // Filter out current product first
+  const otherProducts = products.filter(p => p.node.handle !== currentHandle);
   
-  // If not enough same-fabric products, show what we have
-  const filteredProducts = sameFabricProducts.slice(0, 4);
+  // Try to filter by same fabric type if fabric is available
+  let filteredProducts: ShopifyProduct[] = [];
+  let sectionTitle = "Similar Products";
+  
+  if (currentFabric) {
+    const sameFabricProducts = otherProducts.filter(p => {
+      const productFabric = extractFabricFromTitle(p.node.title);
+      return productFabric.toLowerCase() === currentFabric.toLowerCase();
+    });
+    
+    if (sameFabricProducts.length > 0) {
+      filteredProducts = sameFabricProducts.slice(0, 4);
+      sectionTitle = `More in ${currentFabric}`;
+    }
+  }
+  
+  // Fallback to showing any other products if no same-fabric products found
+  if (filteredProducts.length === 0) {
+    filteredProducts = otherProducts.slice(0, 4);
+    sectionTitle = "Similar Products";
+  }
   
   if (filteredProducts.length === 0) return null;
 
   return (
     <div className="border border-border rounded-sm p-4 mt-6">
       <h3 className="text-center text-sm font-body uppercase tracking-widest mb-4 border-b border-border pb-3">
-        More in {currentFabric}
+        {sectionTitle}
       </h3>
       <div className="flex gap-3 overflow-x-auto pb-2">
         {filteredProducts.map(({ node }) => (
@@ -246,24 +261,39 @@ function SimilarProducts({ currentHandle, currentFabric, products }: { currentHa
   );
 }
 
-// You May Also Like Section - Bottom of page (filters by same fabric type)
-function RelatedProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string; products: ShopifyProduct[] }) {
-  // Filter products by same fabric type, excluding current product
-  const sameFabricProducts = products.filter(p => {
-    if (p.node.handle === currentHandle) return false;
-    const productFabric = extractFabricFromTitle(p.node.title);
-    return productFabric.toLowerCase() === currentFabric.toLowerCase();
-  });
+// You May Also Like Section - Bottom of page (filters by same fabric type with fallback)
+function RelatedProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string | undefined; products: ShopifyProduct[] }) {
+  // Filter out current product first
+  const otherProducts = products.filter(p => p.node.handle !== currentHandle);
   
-  // Show up to 8 same-fabric products
-  const filteredProducts = sameFabricProducts.slice(0, 8);
+  // Try to filter by same fabric type if fabric is available
+  let filteredProducts: ShopifyProduct[] = [];
+  let sectionTitle = "YOU MAY ALSO LIKE";
+  
+  if (currentFabric) {
+    const sameFabricProducts = otherProducts.filter(p => {
+      const productFabric = extractFabricFromTitle(p.node.title);
+      return productFabric.toLowerCase() === currentFabric.toLowerCase();
+    });
+    
+    if (sameFabricProducts.length > 0) {
+      filteredProducts = sameFabricProducts.slice(0, 8);
+      sectionTitle = `MORE IN ${currentFabric.toUpperCase()}`;
+    }
+  }
+  
+  // Fallback to showing any other products if no same-fabric products found
+  if (filteredProducts.length === 0) {
+    filteredProducts = otherProducts.slice(0, 8);
+    sectionTitle = "YOU MAY ALSO LIKE";
+  }
   
   if (filteredProducts.length === 0) return null;
 
   return (
     <section className="mt-16 border-t border-border pt-12">
       <h2 className="text-2xl md:text-3xl font-heading text-center mb-8 tracking-wide">
-        MORE IN {currentFabric.toUpperCase()}
+        {sectionTitle}
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {filteredProducts.map(({ node }) => (
