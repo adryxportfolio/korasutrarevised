@@ -204,17 +204,24 @@ function ProductDetailsTable({
   );
 }
 
-// Similar Products Component - SUTA Style
-function SimilarProducts({ currentHandle, products }: { currentHandle: string; products: ShopifyProduct[] }) {
-  const filteredProducts = products.filter(p => p.node.handle !== currentHandle).slice(0, 4);
-  const [currentIndex, setCurrentIndex] = useState(0);
+// Similar Products Component - SUTA Style (filters by same fabric type)
+function SimilarProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string; products: ShopifyProduct[] }) {
+  // Filter products by same fabric type, excluding current product
+  const sameFabricProducts = products.filter(p => {
+    if (p.node.handle === currentHandle) return false;
+    const productFabric = extractFabricFromTitle(p.node.title);
+    return productFabric.toLowerCase() === currentFabric.toLowerCase();
+  });
+  
+  // If not enough same-fabric products, show what we have
+  const filteredProducts = sameFabricProducts.slice(0, 4);
   
   if (filteredProducts.length === 0) return null;
 
   return (
     <div className="border border-border rounded-sm p-4 mt-6">
       <h3 className="text-center text-sm font-body uppercase tracking-widest mb-4 border-b border-border pb-3">
-        Similar Products
+        More in {currentFabric}
       </h3>
       <div className="flex gap-3 overflow-x-auto pb-2">
         {filteredProducts.map(({ node }) => (
@@ -239,16 +246,24 @@ function SimilarProducts({ currentHandle, products }: { currentHandle: string; p
   );
 }
 
-// You May Also Like Section - Bottom of page
-function RelatedProducts({ currentHandle, products }: { currentHandle: string; products: ShopifyProduct[] }) {
-  const filteredProducts = products.filter(p => p.node.handle !== currentHandle).slice(0, 8);
+// You May Also Like Section - Bottom of page (filters by same fabric type)
+function RelatedProducts({ currentHandle, currentFabric, products }: { currentHandle: string; currentFabric: string; products: ShopifyProduct[] }) {
+  // Filter products by same fabric type, excluding current product
+  const sameFabricProducts = products.filter(p => {
+    if (p.node.handle === currentHandle) return false;
+    const productFabric = extractFabricFromTitle(p.node.title);
+    return productFabric.toLowerCase() === currentFabric.toLowerCase();
+  });
+  
+  // Show up to 8 same-fabric products
+  const filteredProducts = sameFabricProducts.slice(0, 8);
   
   if (filteredProducts.length === 0) return null;
 
   return (
     <section className="mt-16 border-t border-border pt-12">
       <h2 className="text-2xl md:text-3xl font-heading text-center mb-8 tracking-wide">
-        YOU MAY ALSO LIKE
+        MORE IN {currentFabric.toUpperCase()}
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {filteredProducts.map(({ node }) => (
@@ -634,7 +649,7 @@ export default function ProductDetail() {
               </Button>
 
               {/* Similar Products */}
-              <SimilarProducts currentHandle={handle || ''} products={relatedProducts} />
+              <SimilarProducts currentHandle={handle || ''} currentFabric={productDetails['Fabric'] as string} products={relatedProducts} />
 
               {/* Accordion Sections - SUTA Style */}
               <Accordion type="multiple" className="w-full border-t border-border mt-4 md:mt-6">
@@ -752,7 +767,7 @@ export default function ProductDetail() {
           <RecentlyViewed currentHandle={handle} />
 
           {/* Related Products - Bottom */}
-          <RelatedProducts currentHandle={handle || ''} products={relatedProducts} />
+          <RelatedProducts currentHandle={handle || ''} currentFabric={productDetails['Fabric'] as string} products={relatedProducts} />
         </div>
         
         {/* Sticky Mobile Cart Bar - add bottom padding to main content */}
