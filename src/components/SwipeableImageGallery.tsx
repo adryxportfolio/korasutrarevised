@@ -310,13 +310,6 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
           </>
         )}
 
-        {/* Swipe/Zoom hint on mobile */}
-        {images.length > 1 && !isZoomed && (
-          <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-background/60 backdrop-blur-sm rounded-full text-xs text-muted-foreground flex items-center gap-1.5">
-            <ZoomIn className="w-3 h-3" />
-            Pinch to zoom • Swipe to browse
-          </div>
-        )}
       </div>
 
       {/* Image Dots - Mobile */}
