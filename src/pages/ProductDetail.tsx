@@ -223,15 +223,16 @@ function ProductDetailsTable({
   );
 }
 
-// Similar Products Component - filters by same product type (block print, tussar, kantha, etc.)
-function SimilarProducts({ currentHandle, currentProductType, products }: { currentHandle: string; currentProductType: string; products: ShopifyProduct[] }) {
+// Similar Products Component - filters by same product type OR fabric
+function SimilarProducts({ currentHandle, currentProductType, currentFabric, products }: { currentHandle: string; currentProductType: string; currentFabric: string; products: ShopifyProduct[] }) {
   // Filter out current product first
   const otherProducts = products.filter(p => p.node.handle !== currentHandle);
   
-  // Try to filter by same product type
+  // Try to filter by same product type first, then fall back to fabric
   let filteredProducts: ShopifyProduct[] = [];
   let sectionTitle = "Similar Products";
   
+  // First priority: Match by product type (technique like Block Print, Kantha, etc.)
   if (currentProductType) {
     const sameTypeProducts = otherProducts.filter(p => {
       const productType = extractProductType(p.node.title);
@@ -244,7 +245,20 @@ function SimilarProducts({ currentHandle, currentProductType, products }: { curr
     }
   }
   
-  // Fallback to showing any other products if no same-type products found
+  // Second priority: Match by fabric (Linen, Tussar, Muslin, etc.)
+  if (filteredProducts.length === 0 && currentFabric && currentFabric !== 'Handwoven') {
+    const sameFabricProducts = otherProducts.filter(p => {
+      const productFabric = extractFabricFromTitle(p.node.title);
+      return productFabric.toLowerCase() === currentFabric.toLowerCase();
+    });
+    
+    if (sameFabricProducts.length > 0) {
+      filteredProducts = sameFabricProducts.slice(0, 4);
+      sectionTitle = `More in ${currentFabric}`;
+    }
+  }
+  
+  // Fallback to showing any other products if no matching products found
   if (filteredProducts.length === 0) {
     filteredProducts = otherProducts.slice(0, 4);
     sectionTitle = "Similar Products";
@@ -280,15 +294,16 @@ function SimilarProducts({ currentHandle, currentProductType, products }: { curr
   );
 }
 
-// You May Also Like Section - filters by same product type (block print, tussar, kantha, etc.)
-function RelatedProducts({ currentHandle, currentProductType, products }: { currentHandle: string; currentProductType: string; products: ShopifyProduct[] }) {
+// You May Also Like Section - filters by same product type OR fabric
+function RelatedProducts({ currentHandle, currentProductType, currentFabric, products }: { currentHandle: string; currentProductType: string; currentFabric: string; products: ShopifyProduct[] }) {
   // Filter out current product first
   const otherProducts = products.filter(p => p.node.handle !== currentHandle);
   
-  // Try to filter by same product type
+  // Try to filter by same product type first, then fall back to fabric
   let filteredProducts: ShopifyProduct[] = [];
   let sectionTitle = "YOU MAY ALSO LIKE";
   
+  // First priority: Match by product type (technique like Block Print, Kantha, etc.)
   if (currentProductType) {
     const sameTypeProducts = otherProducts.filter(p => {
       const productType = extractProductType(p.node.title);
@@ -301,7 +316,20 @@ function RelatedProducts({ currentHandle, currentProductType, products }: { curr
     }
   }
   
-  // Fallback to showing any other products if no same-type products found
+  // Second priority: Match by fabric (Linen, Tussar, Muslin, etc.)
+  if (filteredProducts.length === 0 && currentFabric && currentFabric !== 'Handwoven') {
+    const sameFabricProducts = otherProducts.filter(p => {
+      const productFabric = extractFabricFromTitle(p.node.title);
+      return productFabric.toLowerCase() === currentFabric.toLowerCase();
+    });
+    
+    if (sameFabricProducts.length > 0) {
+      filteredProducts = sameFabricProducts.slice(0, 8);
+      sectionTitle = `MORE IN ${currentFabric.toUpperCase()}`;
+    }
+  }
+  
+  // Fallback to showing any other products if no matching products found
   if (filteredProducts.length === 0) {
     filteredProducts = otherProducts.slice(0, 8);
     sectionTitle = "YOU MAY ALSO LIKE";
@@ -698,7 +726,7 @@ export default function ProductDetail() {
               </Button>
 
               {/* Similar Products */}
-              <SimilarProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} products={relatedProducts} />
+              <SimilarProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} currentFabric={extractFabricFromTitle(product.title)} products={relatedProducts} />
 
               {/* Accordion Sections - SUTA Style */}
               <Accordion type="multiple" className="w-full border-t border-border mt-4 md:mt-6">
@@ -816,7 +844,7 @@ export default function ProductDetail() {
           <RecentlyViewed currentHandle={handle} />
 
           {/* Related Products - Bottom */}
-          <RelatedProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} products={relatedProducts} />
+          <RelatedProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} currentFabric={extractFabricFromTitle(product.title)} products={relatedProducts} />
         </div>
         
         {/* Sticky Mobile Cart Bar - add bottom padding to main content */}
