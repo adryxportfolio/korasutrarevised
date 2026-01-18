@@ -67,7 +67,7 @@ function CollectionCard({
           {/* Content */}
           <div className="absolute inset-0 flex flex-col justify-end p-3 md:p-6">
             {/* Blur background for text readability */}
-            <div className="absolute inset-x-0 bottom-0 h-32 md:h-40 bg-gradient-to-t from-foreground/60 to-transparent backdrop-blur-[2px] -z-0" />
+            <div className="absolute inset-x-0 bottom-0 h-20 md:h-24 bg-gradient-to-t from-foreground/60 to-transparent backdrop-blur-[2px] -z-0" />
             
             <div className="relative z-10">
               <span className="text-xs tracking-[0.15em] md:tracking-[0.2em] text-primary-foreground/80 uppercase mb-1 md:mb-2 font-body font-medium block">
