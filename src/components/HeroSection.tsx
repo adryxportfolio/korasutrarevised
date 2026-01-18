@@ -91,7 +91,7 @@ export function HeroSection() {
               duration: 0.6,
               delay: 0.6
             }} className="inline-block text-[#570000]">
-                Wear it with
+                Wear It With
               </motion.span>
               <br />
               <motion.span initial={{
