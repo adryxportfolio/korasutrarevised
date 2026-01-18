@@ -237,7 +237,18 @@ export default function Collection() {
     async function loadProducts() {
       setLoading(true);
       const data = await fetchProducts(50, config?.query || searchQuery || undefined);
-      setProducts(data);
+      
+      // Filter products by title to ensure they actually contain the fabric/collection keyword
+      let filteredData = data;
+      if (config?.query && slug) {
+        const queryKeyword = config.query.toLowerCase();
+        filteredData = data.filter(product => {
+          const title = product.node.title.toLowerCase();
+          return title.includes(queryKeyword);
+        });
+      }
+      
+      setProducts(filteredData);
       
       // Set fixed max price of 50,000
       setMaxPrice(50000);
