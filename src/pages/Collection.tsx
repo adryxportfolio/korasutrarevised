@@ -166,24 +166,79 @@ export default function Collection() {
     }
   }, [colorsParam]);
 
+  // Helper function to extract colors from a product
+  const extractProductColors = (product: ShopifyProduct): string[] => {
+    const productColors: string[] = [];
+    
+    // 1. Check product options (e.g., Color option with values)
+    product.node.options?.forEach(option => {
+      if (option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'colour') {
+        option.values.forEach(value => {
+          const normalizedValue = value.toLowerCase().trim();
+          // Check if the value matches any known color
+          Object.keys(colorMap).forEach(color => {
+            if (normalizedValue.includes(color) || color.includes(normalizedValue)) {
+              productColors.push(color);
+            }
+          });
+          // Also add the exact value if it's a known color
+          if (colorMap[normalizedValue]) {
+            productColors.push(normalizedValue);
+          }
+        });
+      }
+    });
+    
+    // 2. Check variant selectedOptions
+    product.node.variants.edges.forEach(variant => {
+      variant.node.selectedOptions?.forEach(option => {
+        if (option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'colour') {
+          const normalizedValue = option.value.toLowerCase().trim();
+          Object.keys(colorMap).forEach(color => {
+            if (normalizedValue.includes(color) || color.includes(normalizedValue)) {
+              productColors.push(color);
+            }
+          });
+          if (colorMap[normalizedValue]) {
+            productColors.push(normalizedValue);
+          }
+        }
+      });
+    });
+    
+    // 3. Check tags for colors
+    product.node.tags?.forEach(tag => {
+      const normalizedTag = tag.toLowerCase().trim();
+      if (colorMap[normalizedTag]) {
+        productColors.push(normalizedTag);
+      }
+      // Check if tag contains a color word
+      Object.keys(colorMap).forEach(color => {
+        if (normalizedTag.includes(color)) {
+          productColors.push(color);
+        }
+      });
+    });
+    
+    // 4. Check title for colors (common in saree naming)
+    const title = product.node.title.toLowerCase();
+    Object.keys(colorMap).forEach(color => {
+      // Use word boundary check to avoid false positives like "green" in "evergreen"
+      const regex = new RegExp(`\\b${color}\\b`, 'i');
+      if (regex.test(title)) {
+        productColors.push(color);
+      }
+    });
+    
+    return [...new Set(productColors)]; // Remove duplicates
+  };
+
   // Extract available colors from products
   const availableColors = useMemo(() => {
     const colorsSet = new Set<string>();
     products.forEach(product => {
-      // Check tags for colors
-      product.node.tags?.forEach(tag => {
-        const normalizedTag = tag.toLowerCase().trim();
-        if (colorMap[normalizedTag]) {
-          colorsSet.add(normalizedTag);
-        }
-      });
-      // Check title and description for colors
-      const textToSearch = `${product.node.title} ${product.node.description}`.toLowerCase();
-      Object.keys(colorMap).forEach(color => {
-        if (textToSearch.includes(color)) {
-          colorsSet.add(color);
-        }
-      });
+      const productColors = extractProductColors(product);
+      productColors.forEach(color => colorsSet.add(color));
     });
     return Array.from(colorsSet).sort();
   }, [products]);
@@ -221,16 +276,20 @@ export default function Collection() {
     return false;
   };
 
-  // Check product color
+  // Check product color - uses the same extraction logic for consistency
   const hasColor = (product: ShopifyProduct, colors: string[]): boolean => {
     if (colors.length === 0) return true;
     
-    const tags = product.node.tags?.map(t => t.toLowerCase()) || [];
-    const text = `${product.node.title} ${product.node.description}`.toLowerCase();
+    const productColors = extractProductColors(product);
     
-    return colors.some(color => {
-      return tags.some(tag => tag.includes(color)) || text.includes(color);
-    });
+    // Check if any of the selected colors match the product's colors
+    return colors.some(selectedColor => 
+      productColors.some(productColor => 
+        productColor === selectedColor || 
+        productColor.includes(selectedColor) || 
+        selectedColor.includes(productColor)
+      )
+    );
   };
 
   useEffect(() => {
