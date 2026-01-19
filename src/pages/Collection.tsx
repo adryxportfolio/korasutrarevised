@@ -166,79 +166,19 @@ export default function Collection() {
     }
   }, [colorsParam]);
 
-  // Helper function to extract colors from a product
-  const extractProductColors = (product: ShopifyProduct): string[] => {
-    const productColors: string[] = [];
-    
-    // 1. Check product options (e.g., Color option with values)
-    product.node.options?.forEach(option => {
-      if (option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'colour') {
-        option.values.forEach(value => {
-          const normalizedValue = value.toLowerCase().trim();
-          // Check if the value matches any known color
-          Object.keys(colorMap).forEach(color => {
-            if (normalizedValue.includes(color) || color.includes(normalizedValue)) {
-              productColors.push(color);
-            }
-          });
-          // Also add the exact value if it's a known color
-          if (colorMap[normalizedValue]) {
-            productColors.push(normalizedValue);
-          }
-        });
-      }
-    });
-    
-    // 2. Check variant selectedOptions
-    product.node.variants.edges.forEach(variant => {
-      variant.node.selectedOptions?.forEach(option => {
-        if (option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'colour') {
-          const normalizedValue = option.value.toLowerCase().trim();
-          Object.keys(colorMap).forEach(color => {
-            if (normalizedValue.includes(color) || color.includes(normalizedValue)) {
-              productColors.push(color);
-            }
-          });
-          if (colorMap[normalizedValue]) {
-            productColors.push(normalizedValue);
-          }
-        }
-      });
-    });
-    
-    // 3. Check tags for colors
-    product.node.tags?.forEach(tag => {
-      const normalizedTag = tag.toLowerCase().trim();
-      if (colorMap[normalizedTag]) {
-        productColors.push(normalizedTag);
-      }
-      // Check if tag contains a color word
-      Object.keys(colorMap).forEach(color => {
-        if (normalizedTag.includes(color)) {
-          productColors.push(color);
-        }
-      });
-    });
-    
-    // 4. Check title for colors (common in saree naming)
-    const title = product.node.title.toLowerCase();
-    Object.keys(colorMap).forEach(color => {
-      // Use word boundary check to avoid false positives like "green" in "evergreen"
-      const regex = new RegExp(`\\b${color}\\b`, 'i');
-      if (regex.test(title)) {
-        productColors.push(color);
-      }
-    });
-    
-    return [...new Set(productColors)]; // Remove duplicates
-  };
-
-  // Extract available colors from products
+  // Extract available colors from products - derived primarily from title
   const availableColors = useMemo(() => {
     const colorsSet = new Set<string>();
     products.forEach(product => {
-      const productColors = extractProductColors(product);
-      productColors.forEach(color => colorsSet.add(color));
+      const title = product.node.title.toLowerCase();
+      // Check each known color against the title
+      Object.keys(colorMap).forEach(color => {
+        // Use word boundary to match exact color words
+        const regex = new RegExp(`\\b${color}\\b`, 'i');
+        if (regex.test(title)) {
+          colorsSet.add(color);
+        }
+      });
     });
     return Array.from(colorsSet).sort();
   }, [products]);
@@ -248,11 +188,9 @@ export default function Collection() {
     const text = `${product.node.title} ${product.node.description}`.toLowerCase();
     const tags = product.node.tags?.map(t => t.toLowerCase()) || [];
     
-    // Check for "with blouse" indicators
     const withBlouseIndicators = ['with blouse', 'blouse included', 'includes blouse', 'blouse piece included', 'running blouse'];
     const withoutBlouseIndicators = ['without blouse', 'no blouse', 'blouse not included', 'saree only'];
     
-    // Check tags first
     for (const tag of tags) {
       for (const indicator of withBlouseIndicators) {
         if (tag.includes(indicator)) return true;
@@ -262,7 +200,6 @@ export default function Collection() {
       }
     }
     
-    // Check text
     for (const indicator of withBlouseIndicators) {
       if (text.includes(indicator)) return true;
     }
@@ -270,26 +207,22 @@ export default function Collection() {
       if (text.includes(indicator)) return false;
     }
     
-    // Default to true if "blouse" is mentioned without "without"
     if (text.includes('blouse') && !text.includes('without blouse')) return true;
     
     return false;
   };
 
-  // Check product color - uses the same extraction logic for consistency
+  // Check if product title contains the selected color
   const hasColor = (product: ShopifyProduct, colors: string[]): boolean => {
     if (colors.length === 0) return true;
     
-    const productColors = extractProductColors(product);
+    const title = product.node.title.toLowerCase();
     
-    // Check if any of the selected colors match the product's colors
-    return colors.some(selectedColor => 
-      productColors.some(productColor => 
-        productColor === selectedColor || 
-        productColor.includes(selectedColor) || 
-        selectedColor.includes(productColor)
-      )
-    );
+    // Product must contain at least one of the selected colors in its title
+    return colors.some(selectedColor => {
+      const regex = new RegExp(`\\b${selectedColor}\\b`, 'i');
+      return regex.test(title);
+    });
   };
 
   useEffect(() => {
