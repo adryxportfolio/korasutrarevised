@@ -21,7 +21,7 @@ export default function Terms() {
             <section className="mb-8">
               <h2 className="text-2xl font-heading mb-4">2. Use of Website</h2>
               <p className="text-muted-foreground mb-4">
-                This website is for informational and brand discovery purposes. All purchases are processed through our official Dukaan store at mydukaan.io/korasutra.
+                This website is for informational, brand discovery, and e-commerce purposes. All purchases are processed through our official Shopify-powered store.
               </p>
               <p className="text-muted-foreground mb-4">
                 You agree to use this website only for lawful purposes and in a way that does not infringe on the rights of others or restrict their use of the website.
@@ -38,14 +38,14 @@ export default function Terms() {
             <section className="mb-8">
               <h2 className="text-2xl font-heading mb-4">4. Product Information</h2>
               <p className="text-muted-foreground mb-4">
-                We strive to display our products accurately. However, slight variations in color may occur due to screen settings. For accurate product details and availability, please visit our official store.
+                We strive to display our products accurately. However, slight variations in color may occur due to screen settings. For accurate product details and availability, please refer to the product pages on our website.
               </p>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-heading mb-4">5. External Links</h2>
+              <h2 className="text-2xl font-heading mb-4">5. E-Commerce & Payments</h2>
               <p className="text-muted-foreground mb-4">
-                This website contains links to our official Dukaan store. We are not responsible for the content or practices of any third-party websites.
+                All transactions on this website are processed securely through Shopify's payment infrastructure. By making a purchase, you also agree to Shopify's terms of service and payment processing policies.
               </p>
             </section>
 
@@ -64,7 +64,14 @@ export default function Terms() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-heading mb-4">8. Contact Us</h2>
+              <h2 className="text-2xl font-heading mb-4">8. Governing Law</h2>
+              <p className="text-muted-foreground mb-4">
+                These Terms and Conditions shall be governed by and construed in accordance with the laws of India. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts in India.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-heading mb-4">9. Contact Us</h2>
               <p className="text-muted-foreground mb-4">
                 For questions about these Terms & Conditions, please contact us at korasutra.official@gmail.com or call +91 79958 62266.
               </p>
