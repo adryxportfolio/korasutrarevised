@@ -14,6 +14,125 @@ export type Database = {
   }
   public: {
     Tables: {
+      customer_addresses: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          city: string
+          country: string
+          created_at: string
+          customer_id: string
+          id: string
+          is_default: boolean | null
+          postal_code: string
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          city: string
+          country?: string
+          created_at?: string
+          customer_id: string
+          id?: string
+          is_default?: boolean | null
+          postal_code: string
+          state: string
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          customer_id?: string
+          id?: string
+          is_default?: boolean | null
+          postal_code?: string
+          state?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_addresses_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          country_code: string
+          created_at: string
+          email: string | null
+          id: string
+          is_verified: boolean | null
+          name: string | null
+          phone: string
+          shopify_customer_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          country_code?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_verified?: boolean | null
+          name?: string | null
+          phone: string
+          shopify_customer_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          country_code?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_verified?: boolean | null
+          name?: string | null
+          phone?: string
+          shopify_customer_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      otp_verifications: {
+        Row: {
+          attempts: number | null
+          country_code: string
+          created_at: string
+          expires_at: string
+          id: string
+          otp_hash: string
+          phone: string
+          verified: boolean | null
+        }
+        Insert: {
+          attempts?: number | null
+          country_code?: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          otp_hash: string
+          phone: string
+          verified?: boolean | null
+        }
+        Update: {
+          attempts?: number | null
+          country_code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          otp_hash?: string
+          phone?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           content: string
