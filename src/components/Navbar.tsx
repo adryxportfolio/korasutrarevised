@@ -5,9 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { CartDrawer } from '@/components/CartDrawer';
 import { useWishlistStore } from '@/stores/wishlistStore';
+import { useAuthStore } from '@/stores/authStore';
+import { OTPAuthModal } from '@/components/OTPAuthModal';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-
 // Common color mapping for the filter
 const colorOptions = [{
   name: 'Red',
@@ -149,8 +150,10 @@ export function Navbar() {
   const [colorFilterExpanded, setColorFilterExpanded] = useState(false);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const navigate = useNavigate();
   const wishlistCount = useWishlistStore(state => state.getTotalItems());
+  const { isAuthenticated, customer } = useAuthStore();
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -238,9 +241,16 @@ export function Navbar() {
                   </Badge>}
               </Link>
               
-              {/* Account - Opens Shopify login */}
-              <button onClick={() => window.open('https://korasutrarevised-iv76s.myshopify.com/account/login', '_blank')} className="p-2 hover:bg-secondary/50 rounded-full transition-colors" aria-label="Account">
+              {/* Account - Opens OTP Auth Modal */}
+              <button 
+                onClick={() => setAuthModalOpen(true)} 
+                className={`p-2 hover:bg-secondary/50 rounded-full transition-colors relative ${isAuthenticated ? 'text-accent' : ''}`}
+                aria-label="Account"
+              >
                 <User className="w-5 h-5" />
+                {isAuthenticated && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background" />
+                )}
               </button>
               
               {/* Search */}
@@ -560,5 +570,11 @@ export function Navbar() {
             </nav>
           </motion.div>}
       </AnimatePresence>
+
+      {/* OTP Auth Modal */}
+      <OTPAuthModal 
+        isOpen={authModalOpen} 
+        onClose={() => setAuthModalOpen(false)} 
+      />
     </>;
 }
