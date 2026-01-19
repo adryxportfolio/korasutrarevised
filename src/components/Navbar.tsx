@@ -80,7 +80,7 @@ const collectionCategories = {
       name: 'Muslin',
       href: '/collections/muslin'
     }, {
-      name: 'Pure Silk',
+      name: 'Silk',
       href: '/collections/pure-silk'
     }, {
       name: 'Katan Silk',
