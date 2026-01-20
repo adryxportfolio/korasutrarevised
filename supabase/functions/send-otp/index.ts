@@ -103,29 +103,35 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // MSG91 Send OTP via WhatsApp API
-    const msg91Response = await fetch("https://control.msg91.com/api/v5/whatsapp", {
+    const msg91Response = await fetch("https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "authkey": msg91AuthKey,
       },
       body: JSON.stringify({
-        integrated_number: Deno.env.get("MSG91_WHATSAPP_NUMBER") || msg91SenderId,
+        integrated_number: "917995862266",
         content_type: "template",
         payload: {
           messaging_product: "whatsapp",
           type: "template",
           template: {
-            name: msg91TemplateId,
+            name: "koraotp",
             language: {
-              code: "en",
+              code: "en_US",
               policy: "deterministic"
             },
+            namespace: "dc3a79b1_fa9a_4148_82d7_9a1c233a8443",
             to_and_components: [
               {
                 to: [fullPhone.replace("+", "")],
                 components: {
                   body_1: {
+                    type: "text",
+                    value: otp
+                  },
+                  button_1: {
+                    subtype: "url",
                     type: "text",
                     value: otp
                   }
