@@ -151,6 +151,12 @@ export function Navbar() {
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  
+  // Multi-select state for collection filters
+  const [selectedFabrics, setSelectedFabrics] = useState<string[]>([]);
+  const [selectedPatterns, setSelectedPatterns] = useState<string[]>([]);
+  const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
+  
   const navigate = useNavigate();
   const wishlistCount = useWishlistStore(state => state.getTotalItems());
   const { isAuthenticated, customer } = useAuthStore();
@@ -203,6 +209,44 @@ export function Navbar() {
       navigate('/collections/all');
     }
   };
+
+  // Toggle functions for multi-select collection filters
+  const toggleFabric = (value: string) => {
+    setSelectedFabrics(prev => 
+      prev.includes(value) ? prev.filter(f => f !== value) : [...prev, value]
+    );
+  };
+
+  const togglePattern = (value: string) => {
+    setSelectedPatterns(prev => 
+      prev.includes(value) ? prev.filter(p => p !== value) : [...prev, value]
+    );
+  };
+
+  const toggleOccasion = (value: string) => {
+    setSelectedOccasions(prev => 
+      prev.includes(value) ? prev.filter(o => o !== value) : [...prev, value]
+    );
+  };
+
+  const handleCollectionFilterApply = () => {
+    setIsOpen(false);
+    const params = new URLSearchParams();
+    if (selectedFabrics.length > 0) params.set('fabrics', selectedFabrics.join(','));
+    if (selectedPatterns.length > 0) params.set('patterns', selectedPatterns.join(','));
+    if (selectedOccasions.length > 0) params.set('occasions', selectedOccasions.join(','));
+    
+    const queryString = params.toString();
+    navigate(`/collections/all${queryString ? `?${queryString}` : ''}`);
+  };
+
+  const clearCollectionFilters = () => {
+    setSelectedFabrics([]);
+    setSelectedPatterns([]);
+    setSelectedOccasions([]);
+  };
+
+  const hasCollectionFilters = selectedFabrics.length > 0 || selectedPatterns.length > 0 || selectedOccasions.length > 0;
   return <>
       <motion.header initial={{
       y: -100
@@ -444,7 +488,14 @@ export function Navbar() {
                           {/* Shop by Fabric */}
                           <div>
                             <button onClick={() => toggleCategory('fabric')} className="flex items-center justify-between w-full py-2 text-base font-body text-foreground/80 hover:text-accent transition-colors">
-                              {collectionCategories.fabric.label}
+                              <span className="flex items-center gap-2">
+                                {collectionCategories.fabric.label}
+                                {selectedFabrics.length > 0 && (
+                                  <Badge className="h-5 px-2 bg-accent text-accent-foreground text-xs">
+                                    {selectedFabrics.length}
+                                  </Badge>
+                                )}
+                              </span>
                               <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'fabric' ? 'rotate-90' : ''}`} />
                             </button>
                             <AnimatePresence>
@@ -460,11 +511,25 @@ export function Navbar() {
                         }} transition={{
                           duration: 0.2
                         }} className="overflow-hidden pl-4 space-y-1">
-                                  {collectionCategories.fabric.items.map(item => <li key={item.name}>
-                                      <button onClick={() => handleNavigation(item.href)} className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left">
+                                  {collectionCategories.fabric.items.map(item => (
+                                    <li key={item.name}>
+                                      <button 
+                                        onClick={() => toggleFabric(item.name.toLowerCase())} 
+                                        className="flex items-center gap-3 py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left"
+                                      >
+                                        <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                                          selectedFabrics.includes(item.name.toLowerCase()) 
+                                            ? 'bg-accent border-accent' 
+                                            : 'border-border'
+                                        }`}>
+                                          {selectedFabrics.includes(item.name.toLowerCase()) && (
+                                            <Check className="w-3 h-3 text-accent-foreground" />
+                                          )}
+                                        </div>
                                         {item.name}
                                       </button>
-                                    </li>)}
+                                    </li>
+                                  ))}
                                 </motion.ul>}
                             </AnimatePresence>
                           </div>
@@ -472,7 +537,14 @@ export function Navbar() {
                           {/* Shop by Patterns */}
                           <div>
                             <button onClick={() => toggleCategory('patterns')} className="flex items-center justify-between w-full py-2 text-base font-body text-foreground/80 hover:text-accent transition-colors">
-                              {collectionCategories.patterns.label}
+                              <span className="flex items-center gap-2">
+                                {collectionCategories.patterns.label}
+                                {selectedPatterns.length > 0 && (
+                                  <Badge className="h-5 px-2 bg-accent text-accent-foreground text-xs">
+                                    {selectedPatterns.length}
+                                  </Badge>
+                                )}
+                              </span>
                               <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'patterns' ? 'rotate-90' : ''}`} />
                             </button>
                             <AnimatePresence>
@@ -488,11 +560,25 @@ export function Navbar() {
                         }} transition={{
                           duration: 0.2
                         }} className="overflow-hidden pl-4 space-y-1">
-                                  {collectionCategories.patterns.items.map(item => <li key={item.name}>
-                                      <button onClick={() => handleNavigation(item.href)} className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left">
+                                  {collectionCategories.patterns.items.map(item => (
+                                    <li key={item.name}>
+                                      <button 
+                                        onClick={() => togglePattern(item.name.toLowerCase())} 
+                                        className="flex items-center gap-3 py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left"
+                                      >
+                                        <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                                          selectedPatterns.includes(item.name.toLowerCase()) 
+                                            ? 'bg-accent border-accent' 
+                                            : 'border-border'
+                                        }`}>
+                                          {selectedPatterns.includes(item.name.toLowerCase()) && (
+                                            <Check className="w-3 h-3 text-accent-foreground" />
+                                          )}
+                                        </div>
                                         {item.name}
                                       </button>
-                                    </li>)}
+                                    </li>
+                                  ))}
                                 </motion.ul>}
                             </AnimatePresence>
                           </div>
@@ -500,7 +586,14 @@ export function Navbar() {
                           {/* Shop by Occasions */}
                           <div>
                             <button onClick={() => toggleCategory('occasions')} className="flex items-center justify-between w-full py-2 text-base font-body text-foreground/80 hover:text-accent transition-colors">
-                              {collectionCategories.occasions.label}
+                              <span className="flex items-center gap-2">
+                                {collectionCategories.occasions.label}
+                                {selectedOccasions.length > 0 && (
+                                  <Badge className="h-5 px-2 bg-accent text-accent-foreground text-xs">
+                                    {selectedOccasions.length}
+                                  </Badge>
+                                )}
+                              </span>
                               <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'occasions' ? 'rotate-90' : ''}`} />
                             </button>
                             <AnimatePresence>
@@ -516,14 +609,46 @@ export function Navbar() {
                         }} transition={{
                           duration: 0.2
                         }} className="overflow-hidden pl-4 space-y-1">
-                                  {collectionCategories.occasions.items.map(item => <li key={item.name}>
-                                      <button onClick={() => handleNavigation(item.href)} className="block py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left">
+                                  {collectionCategories.occasions.items.map(item => (
+                                    <li key={item.name}>
+                                      <button 
+                                        onClick={() => toggleOccasion(item.name.toLowerCase())} 
+                                        className="flex items-center gap-3 py-2 text-sm font-body text-muted-foreground hover:text-accent transition-colors w-full text-left"
+                                      >
+                                        <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                                          selectedOccasions.includes(item.name.toLowerCase()) 
+                                            ? 'bg-accent border-accent' 
+                                            : 'border-border'
+                                        }`}>
+                                          {selectedOccasions.includes(item.name.toLowerCase()) && (
+                                            <Check className="w-3 h-3 text-accent-foreground" />
+                                          )}
+                                        </div>
                                         {item.name}
                                       </button>
-                                    </li>)}
+                                    </li>
+                                  ))}
                                 </motion.ul>}
                             </AnimatePresence>
                           </div>
+
+                          {/* Apply & Clear Buttons */}
+                          {hasCollectionFilters && (
+                            <div className="pt-4 space-y-2 border-t border-border/50">
+                              <button 
+                                onClick={handleCollectionFilterApply} 
+                                className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors"
+                              >
+                                Apply Filters ({selectedFabrics.length + selectedPatterns.length + selectedOccasions.length})
+                              </button>
+                              <button 
+                                onClick={clearCollectionFilters} 
+                                className="w-full py-2 text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                Clear Selection
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </motion.div>}
                   </AnimatePresence>
