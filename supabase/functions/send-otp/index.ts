@@ -102,20 +102,38 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // MSG91 Send OTP API
-    const msg91Response = await fetch("https://control.msg91.com/api/v5/otp", {
+    // MSG91 Send OTP via WhatsApp API
+    const msg91Response = await fetch("https://control.msg91.com/api/v5/whatsapp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "authkey": msg91AuthKey,
       },
       body: JSON.stringify({
-        template_id: msg91TemplateId,
-        mobile: fullPhone.replace("+", ""),
-        otp: otp,
-        sender: msg91SenderId,
-        otp_length: 6,
-        otp_expiry: 5,
+        integrated_number: Deno.env.get("MSG91_WHATSAPP_NUMBER") || msg91SenderId,
+        content_type: "template",
+        payload: {
+          messaging_product: "whatsapp",
+          type: "template",
+          template: {
+            name: msg91TemplateId,
+            language: {
+              code: "en",
+              policy: "deterministic"
+            },
+            to_and_components: [
+              {
+                to: [fullPhone.replace("+", "")],
+                components: {
+                  body_1: {
+                    type: "text",
+                    value: otp
+                  }
+                }
+              }
+            ]
+          }
+        }
       }),
     });
 
