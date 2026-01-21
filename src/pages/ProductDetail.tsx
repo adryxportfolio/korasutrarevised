@@ -191,14 +191,15 @@ function generateAutoDescription(title: string, details: Record<string, string |
   return descriptions[Math.abs(hash) % descriptions.length];
 }
 
-// Generate a consistent stock quantity (1-5) based on product handle
-function getRandomStock(handle: string): number {
-  let hash = 0;
-  for (let i = 0; i < handle.length; i++) {
-    hash = ((hash << 5) - hash) + handle.charCodeAt(i);
-    hash = hash & hash;
-  }
-  return Math.abs(hash % 5) + 1; // Returns 1-5
+// Get stock quantity from variant - returns actual Shopify inventory
+function getStockQuantity(variant: { quantityAvailable: number | null } | undefined): number | null {
+  if (!variant) return null;
+  return variant.quantityAvailable;
+}
+
+// Format SKU for display - returns SKU or fallback message
+function formatSKU(sku: string | null | undefined): string {
+  return sku || 'Waiting For Admin Changes';
 }
 
 // Product Details Table Component with Blouse Piece display
@@ -533,7 +534,7 @@ export default function ProductDetail() {
 
   const handleEnquiry = () => {
     const variant = getCurrentVariant();
-    const sku = variant?.sku || 'N/A';
+    const sku = formatSKU(variant?.sku);
     const message = `Hi, I'm interested in ${product?.title}.\n\nSKU: ${sku}\n\nCould you provide more details?`;
     window.open(`https://wa.me/917995862266?text=${encodeURIComponent(message)}`, '_blank');
   };
@@ -575,7 +576,8 @@ export default function ProductDetail() {
   const images = product.images.edges;
   const productDetails = parseProductDetails(product.title, product.description);
   const priceAmount = parseFloat(currentVariant?.price.amount || '0');
-  const stockQuantity = handle ? getRandomStock(handle) : 1;
+  const stockQuantity = getStockQuantity(currentVariant);
+  const currentSKU = formatSKU(currentVariant?.sku);
 
   return (
     <>
@@ -650,10 +652,20 @@ export default function ProductDetail() {
                 </span>
               </div>
 
-              {/* Stock Status */}
-              {stockQuantity <= 5 && stockQuantity > 0 && (
+              {/* Stock Status - Real inventory from Shopify */}
+              {stockQuantity !== null && stockQuantity === 0 && (
+                <p className="text-xs md:text-sm text-destructive font-body flex items-center gap-1">
+                  ⚠️ 0 available in stock
+                </p>
+              )}
+              {stockQuantity !== null && stockQuantity > 0 && stockQuantity <= 5 && (
                 <p className="text-xs md:text-sm text-destructive font-body flex items-center gap-1">
                   🔥 Only {stockQuantity} left in stock — SELLING FAST!
+                </p>
+              )}
+              {stockQuantity !== null && stockQuantity > 5 && (
+                <p className="text-xs md:text-sm text-green-600 font-body flex items-center gap-1">
+                  ✓ {stockQuantity} in stock
                 </p>
               )}
 
@@ -716,7 +728,7 @@ export default function ProductDetail() {
                     </Button>
                     {!currentVariant?.availableForSale && (
                       <a
-                        href={`https://wa.me/917995862266?text=${encodeURIComponent(`Hi, I'm interested in "${product.title}" which is currently out of stock. Please notify me when it's back in stock. Product: ${window.location.href}`)}`}
+                        href={`https://wa.me/917995862266?text=${encodeURIComponent(`Hi, I'm interested in "${product.title}" which is currently out of stock.\n\nSKU: ${currentSKU}\n\nPlease notify me when it's back in stock.\n\nProduct: ${window.location.href}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full"
@@ -908,6 +920,7 @@ export default function ProductDetail() {
             onAddToCart={handleBuyNow}
             productTitle={product.title}
             isLoading={isCheckingOut}
+            sku={currentVariant.sku}
           />
         )}
       </main>

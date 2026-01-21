@@ -11,6 +11,7 @@ export interface StickyMobileCartBarProps {
   onAddToCart: () => void;
   productTitle: string;
   isLoading?: boolean;
+  sku?: string | null;
 }
 
 const WHATSAPP_NUMBER = '917995862266';
@@ -20,10 +21,13 @@ export function StickyMobileCartBar({
   isAvailable, 
   onAddToCart,
   productTitle,
-  isLoading = false
+  isLoading = false,
+  sku
 }: StickyMobileCartBarProps) {
+  const formattedSKU = sku || 'Waiting For Admin Changes';
+  
   const handleEnquiry = () => {
-    const message = `Hi, I'm interested in ${productTitle}. Could you provide more details?`;
+    const message = `Hi, I'm interested in ${productTitle}.\n\nSKU: ${formattedSKU}\n\nCould you provide more details?`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
