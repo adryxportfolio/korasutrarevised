@@ -115,7 +115,7 @@ function extractLength(title: string, description: string): string | null {
   
   // Look for explicit length mentions in various formats
   const lengthPatterns = [
-    /length[:\s]+(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)/i,
+    /length[:\s]+(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)?/i,  // "Length: 6.25" or "Length 6.25 meters"
     /(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)\s*(?:length|long)/i,
     /saree\s*length[:\s]+(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)?/i,
     /(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)\s*saree/i,
