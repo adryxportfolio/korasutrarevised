@@ -33,7 +33,6 @@ export interface ShopifyProduct {
           id: string;
           title: string;
           sku: string | null;
-          quantityAvailable: number | null;
           price: {
             amount: string;
             currencyCode: string;
@@ -118,7 +117,6 @@ const PRODUCTS_QUERY = `
                 id
                 title
                 sku
-                quantityAvailable
                 price {
                   amount
                   currencyCode
@@ -168,7 +166,6 @@ const PRODUCT_BY_HANDLE_QUERY = `
             id
             title
             sku
-            quantityAvailable
             price {
               amount
               currencyCode
