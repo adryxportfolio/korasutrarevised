@@ -939,7 +939,8 @@ export default function ProductDetail() {
           <StickyMobileCartBar
             price={currentVariant.price}
             isAvailable={currentVariant.availableForSale}
-            onAddToCart={handleBuyNow}
+            onBuyNow={handleBuyNow}
+            onAddToCart={handleAddToCart}
             productTitle={product.title}
             isLoading={isCheckingOut}
             sku={currentVariant.sku}

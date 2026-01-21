@@ -1,4 +1,4 @@
-import { ShoppingBag, MessageCircle, Loader2 } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Loader2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/shopify';
 
@@ -8,6 +8,7 @@ export interface StickyMobileCartBarProps {
     currencyCode: string;
   };
   isAvailable: boolean;
+  onBuyNow: () => void;
   onAddToCart: () => void;
   productTitle: string;
   isLoading?: boolean;
@@ -18,7 +19,7 @@ const WHATSAPP_NUMBER = '917995862266';
 
 export function StickyMobileCartBar({ 
   price, 
-  isAvailable, 
+  onBuyNow,
   onAddToCart,
   productTitle,
   isLoading = false,
@@ -42,19 +43,32 @@ export function StickyMobileCartBar({
         </div>
         
         {/* Buttons */}
-        <div className="flex-1 flex items-center gap-2 justify-end">
+        <div className="flex-1 flex items-center gap-1.5 justify-end">
+          {/* WhatsApp Enquiry - Icon only on mobile for space */}
           <Button
             onClick={handleEnquiry}
             variant="outline"
-            className="h-10 px-3 text-xs font-body uppercase tracking-wider rounded-full border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white"
+            size="icon"
+            className="h-10 w-10 rounded-full border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white flex-shrink-0"
           >
-            <MessageCircle className="w-4 h-4 mr-1" />
-            Enquire on WhatsApp
+            <MessageCircle className="w-4 h-4" />
           </Button>
+          
+          {/* Add to Cart */}
           <Button
             onClick={onAddToCart}
+            variant="outline"
+            className="h-10 px-3 text-xs font-body uppercase tracking-wider rounded-full border-foreground hover:bg-foreground hover:text-background"
+          >
+            <Plus className="w-4 h-4 mr-1" />
+            Cart
+          </Button>
+          
+          {/* Buy Now */}
+          <Button
+            onClick={onBuyNow}
             disabled={isLoading}
-            className="h-10 px-4 text-xs font-body uppercase tracking-wider bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
+            className="h-10 px-3 text-xs font-body uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
