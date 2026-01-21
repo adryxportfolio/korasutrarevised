@@ -263,41 +263,101 @@ export default function Collection() {
         });
       }
       
-      // Apply multi-filter from hamburger menu (fabrics, patterns, occasions)
+      // Track unavailable filters from URL params
+      const urlUnavailable: { fabrics: string[]; patterns: string[]; occasions: string[] } = {
+        fabrics: [],
+        patterns: [],
+        occasions: []
+      };
+      
+      // Apply multi-filter from hamburger menu (fabrics, patterns, occasions) with partial matching
       if (fabricsParam || patternsParam || occasionsParam) {
         const fabrics = fabricsParam ? fabricsParam.split(',').map(f => f.trim().toLowerCase()) : [];
         const patterns = patternsParam ? patternsParam.split(',').map(p => p.trim().toLowerCase()) : [];
         const occasions = occasionsParam ? occasionsParam.split(',').map(o => o.trim().toLowerCase()) : [];
         
+        // Check which fabrics have matching products
+        const fabricsWithMatches: string[] = [];
+        fabrics.forEach(fabric => {
+          const hasMatch = data.some(product => {
+            const regex = new RegExp(`\\b${fabric}\\b`, 'i');
+            return regex.test(product.node.title.toLowerCase());
+          });
+          if (hasMatch) {
+            fabricsWithMatches.push(fabric);
+          } else {
+            urlUnavailable.fabrics.push(fabric);
+          }
+        });
+        
+        // Check which patterns have matching products
+        const patternsWithMatches: string[] = [];
+        patterns.forEach(pattern => {
+          const hasMatch = data.some(product => {
+            const combined = `${product.node.title} ${product.node.description || ''}`.toLowerCase();
+            const regex = new RegExp(`\\b${pattern.replace(' ', '\\s*')}\\b`, 'i');
+            return regex.test(combined);
+          });
+          if (hasMatch) {
+            patternsWithMatches.push(pattern);
+          } else {
+            urlUnavailable.patterns.push(pattern);
+          }
+        });
+        
+        // Check which occasions have matching products
+        const occasionsWithMatches: string[] = [];
+        occasions.forEach(occasion => {
+          const occasionKeywords = occasion.match(/\(([^)]+)\)/);
+          const keyword = occasionKeywords ? occasionKeywords[1].toLowerCase() : occasion;
+          const hasMatch = data.some(product => {
+            const combined = `${product.node.title} ${product.node.description || ''}`.toLowerCase();
+            return combined.includes(keyword);
+          });
+          if (hasMatch) {
+            occasionsWithMatches.push(occasion);
+          } else {
+            urlUnavailable.occasions.push(occasion);
+          }
+        });
+        
+        // Filter using only the filters that have matches
         filteredData = data.filter(product => {
           const title = product.node.title.toLowerCase();
           const description = (product.node.description || '').toLowerCase();
           const combined = `${title} ${description}`;
           
-          // Check if product matches any selected fabric
-          const matchesFabric = fabrics.length === 0 || fabrics.some(fabric => {
+          // Check if product matches any available fabric (only if we have fabrics with matches)
+          const matchesFabric = fabricsWithMatches.length === 0 || fabricsWithMatches.some(fabric => {
             const regex = new RegExp(`\\b${fabric}\\b`, 'i');
             return regex.test(title);
           });
           
-          // Check if product matches any selected pattern
-          const matchesPattern = patterns.length === 0 || patterns.some(pattern => {
+          // Check if product matches any available pattern (only if we have patterns with matches)
+          const matchesPattern = patternsWithMatches.length === 0 || patternsWithMatches.some(pattern => {
             const regex = new RegExp(`\\b${pattern.replace(' ', '\\s*')}\\b`, 'i');
             return regex.test(combined);
           });
           
-          // Check if product matches any selected occasion (more flexible matching)
-          const matchesOccasion = occasions.length === 0 || occasions.some(occasion => {
-            // Extract keywords from occasion like "mummy ki almari (traditional)" -> "traditional"
+          // Check if product matches any available occasion (only if we have occasions with matches)
+          const matchesOccasion = occasionsWithMatches.length === 0 || occasionsWithMatches.some(occasion => {
             const occasionKeywords = occasion.match(/\(([^)]+)\)/);
             const keyword = occasionKeywords ? occasionKeywords[1].toLowerCase() : occasion;
             return combined.includes(keyword);
           });
           
-          // Product must match at least one filter from each selected category
+          // Product must match at least one filter from each category that has available matches
           return matchesFabric && matchesPattern && matchesOccasion;
         });
       }
+      
+      // Update unavailable filters state for URL params
+      setUnavailableFilters(prev => ({
+        ...prev,
+        fabrics: urlUnavailable.fabrics,
+        patterns: urlUnavailable.patterns,
+        occasions: urlUnavailable.occasions
+      }));
       
       setProducts(filteredData);
       
@@ -310,11 +370,20 @@ export default function Collection() {
     loadProducts();
   }, [slug, config?.query, searchQuery, fabricsParam, patternsParam, occasionsParam]);
 
-  // Filter and sort products
+  // Track which filter categories have no matching products
+  const [unavailableFilters, setUnavailableFilters] = useState<{
+    colors: string[];
+    fabrics: string[];
+    patterns: string[];
+    occasions: string[];
+  }>({ colors: [], fabrics: [], patterns: [], occasions: [] });
+
+  // Filter and sort products with partial match logic
   useEffect(() => {
     let result = [...products];
+    const unavailable: typeof unavailableFilters = { colors: [], fabrics: [], patterns: [], occasions: [] };
     
-    // Price filter
+    // Price filter (always applied)
     result = result.filter(p => {
       const price = parseFloat(p.node.priceRange.minVariantPrice.amount);
       return price >= priceRange[0] && price <= priceRange[1];
@@ -327,8 +396,31 @@ export default function Collection() {
       result = result.filter(p => !hasBlouse(p));
     }
 
-    // Color filter
-    result = result.filter(p => hasColor(p, selectedColors));
+    // Check which color filters have matching products
+    if (selectedColors.length > 0) {
+      const colorsWithMatches: string[] = [];
+      const colorsWithoutMatches: string[] = [];
+      
+      selectedColors.forEach(color => {
+        const hasMatch = result.some(p => {
+          const regex = new RegExp(`\\b${color}\\b`, 'i');
+          return regex.test(p.node.title.toLowerCase());
+        });
+        if (hasMatch) {
+          colorsWithMatches.push(color);
+        } else {
+          colorsWithoutMatches.push(color);
+        }
+      });
+      
+      unavailable.colors = colorsWithoutMatches;
+      
+      // Only filter if there are colors with matches
+      if (colorsWithMatches.length > 0) {
+        result = result.filter(p => hasColor(p, colorsWithMatches));
+      }
+      // If no colors have matches, keep showing all products and just mark them unavailable
+    }
     
     // Sort
     switch (sortBy) {
@@ -352,6 +444,7 @@ export default function Collection() {
         break;
     }
     
+    setUnavailableFilters(unavailable);
     setFilteredProducts(result);
   }, [products, sortBy, priceRange, blouseFilter, selectedColors]);
 
@@ -995,7 +1088,59 @@ export default function Collection() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6">
+            <>
+              {/* Unavailable filter notices */}
+              {(unavailableFilters.colors.length > 0 || unavailableFilters.fabrics.length > 0 || 
+                unavailableFilters.patterns.length > 0 || unavailableFilters.occasions.length > 0) && (
+                <div className="mb-6 p-4 bg-muted/50 rounded-lg border border-border">
+                  <p className="text-sm text-muted-foreground font-body">
+                    <span className="font-medium text-foreground">Some selections are currently unavailable:</span>
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {unavailableFilters.colors.map(color => (
+                      <span key={`unavail-color-${color}`} className="inline-flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive text-xs rounded-full">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full border border-border/50"
+                          style={{ backgroundColor: colorMap[color] || '#888' }}
+                        />
+                        {color.charAt(0).toUpperCase() + color.slice(1)} (color)
+                        <button onClick={() => clearUrlFilter('colors', color)} className="ml-1 hover:opacity-70">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                    {unavailableFilters.fabrics.map(fabric => (
+                      <span key={`unavail-fabric-${fabric}`} className="inline-flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive text-xs rounded-full">
+                        {fabric.charAt(0).toUpperCase() + fabric.slice(1)} (fabric)
+                        <button onClick={() => clearUrlFilter('fabrics', fabric)} className="ml-1 hover:opacity-70">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                    {unavailableFilters.patterns.map(pattern => (
+                      <span key={`unavail-pattern-${pattern}`} className="inline-flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive text-xs rounded-full">
+                        {pattern.charAt(0).toUpperCase() + pattern.slice(1)} (pattern)
+                        <button onClick={() => clearUrlFilter('patterns', pattern)} className="ml-1 hover:opacity-70">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                    {unavailableFilters.occasions.map(occasion => (
+                      <span key={`unavail-occasion-${occasion}`} className="inline-flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive text-xs rounded-full">
+                        {occasion.charAt(0).toUpperCase() + occasion.slice(1)} (occasion)
+                        <button onClick={() => clearUrlFilter('occasions', occasion)} className="ml-1 hover:opacity-70">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Showing {filteredProducts.length} products from your other selections.
+                  </p>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6">
               {filteredProducts.map(({ node }, index) => {
                 const productHasBlouse = hasBlouse({ node });
                 return (
@@ -1067,7 +1212,8 @@ export default function Collection() {
                   </motion.div>
                 );
               })}
-            </div>
+              </div>
+            </>
           )}
         </div>
       </main>
