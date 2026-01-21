@@ -53,12 +53,10 @@ export function StickyMobileCartBar({
           </Button>
           <Button
             onClick={onAddToCart}
-            disabled={!isAvailable || isLoading}
+            disabled={isLoading}
             className="h-10 px-4 text-xs font-body uppercase tracking-wider bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
           >
-            {!isAvailable ? (
-              'Sold Out'
-            ) : isLoading ? (
+            {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>
