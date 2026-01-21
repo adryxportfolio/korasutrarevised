@@ -158,6 +158,9 @@ export default function Collection() {
   const config = slug ? collectionConfig[slug] : null;
   const searchQuery = searchParams.get('q');
   const colorsParam = searchParams.get('colors');
+  const fabricsParam = searchParams.get('fabrics');
+  const patternsParam = searchParams.get('patterns');
+  const occasionsParam = searchParams.get('occasions');
 
   // Initialize selectedColors from URL params
   useEffect(() => {
@@ -228,7 +231,7 @@ export default function Collection() {
   useEffect(() => {
     async function loadProducts() {
       setLoading(true);
-      const data = await fetchProducts(50, config?.query || searchQuery || undefined);
+      const data = await fetchProducts(100, config?.query || searchQuery || undefined);
       
       // Filter products by title to ensure they actually contain the fabric/collection keyword
       let filteredData = data;
@@ -237,6 +240,42 @@ export default function Collection() {
         filteredData = data.filter(product => {
           const title = product.node.title.toLowerCase();
           return title.includes(queryKeyword);
+        });
+      }
+      
+      // Apply multi-filter from hamburger menu (fabrics, patterns, occasions)
+      if (fabricsParam || patternsParam || occasionsParam) {
+        const fabrics = fabricsParam ? fabricsParam.split(',').map(f => f.trim().toLowerCase()) : [];
+        const patterns = patternsParam ? patternsParam.split(',').map(p => p.trim().toLowerCase()) : [];
+        const occasions = occasionsParam ? occasionsParam.split(',').map(o => o.trim().toLowerCase()) : [];
+        
+        filteredData = data.filter(product => {
+          const title = product.node.title.toLowerCase();
+          const description = (product.node.description || '').toLowerCase();
+          const combined = `${title} ${description}`;
+          
+          // Check if product matches any selected fabric
+          const matchesFabric = fabrics.length === 0 || fabrics.some(fabric => {
+            const regex = new RegExp(`\\b${fabric}\\b`, 'i');
+            return regex.test(title);
+          });
+          
+          // Check if product matches any selected pattern
+          const matchesPattern = patterns.length === 0 || patterns.some(pattern => {
+            const regex = new RegExp(`\\b${pattern.replace(' ', '\\s*')}\\b`, 'i');
+            return regex.test(combined);
+          });
+          
+          // Check if product matches any selected occasion (more flexible matching)
+          const matchesOccasion = occasions.length === 0 || occasions.some(occasion => {
+            // Extract keywords from occasion like "mummy ki almari (traditional)" -> "traditional"
+            const occasionKeywords = occasion.match(/\(([^)]+)\)/);
+            const keyword = occasionKeywords ? occasionKeywords[1].toLowerCase() : occasion;
+            return combined.includes(keyword);
+          });
+          
+          // Product must match at least one filter from each selected category
+          return matchesFabric && matchesPattern && matchesOccasion;
         });
       }
       
@@ -249,7 +288,7 @@ export default function Collection() {
       setLoading(false);
     }
     loadProducts();
-  }, [slug, config?.query, searchQuery]);
+  }, [slug, config?.query, searchQuery, fabricsParam, patternsParam, occasionsParam]);
 
   // Filter and sort products
   useEffect(() => {
@@ -350,11 +389,32 @@ export default function Collection() {
     setSelectedColors([]);
   };
 
+  // Active URL filters from hamburger menu
+  const urlFabrics = fabricsParam ? fabricsParam.split(',').map(f => f.trim()) : [];
+  const urlPatterns = patternsParam ? patternsParam.split(',').map(p => p.trim()) : [];
+  const urlOccasions = occasionsParam ? occasionsParam.split(',').map(o => o.trim()) : [];
+  const hasUrlFilters = urlFabrics.length > 0 || urlPatterns.length > 0 || urlOccasions.length > 0;
+
   const activeFiltersCount = (priceRange[0] > 0 || priceRange[1] < maxPrice ? 1 : 0) + 
     (blouseFilter !== 'none' ? 1 : 0) + 
-    selectedColors.length;
+    selectedColors.length +
+    urlFabrics.length + urlPatterns.length + urlOccasions.length;
 
-  if (!config && !searchQuery) {
+  const clearUrlFilter = (type: 'fabrics' | 'patterns' | 'occasions', value: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    const param = newParams.get(type);
+    if (param) {
+      const values = param.split(',').filter(v => v.trim().toLowerCase() !== value.toLowerCase());
+      if (values.length > 0) {
+        newParams.set(type, values.join(','));
+      } else {
+        newParams.delete(type);
+      }
+    }
+    navigate(`/collections/all${newParams.toString() ? `?${newParams.toString()}` : ''}`);
+  };
+
+  if (!config && !searchQuery && !hasUrlFilters) {
     return (
       <>
         <Navbar />
@@ -371,8 +431,25 @@ export default function Collection() {
     );
   }
 
-  const title = searchQuery ? `Search: "${searchQuery}"` : config?.title || 'All Products';
-  const description = searchQuery ? `Showing results for "${searchQuery}"` : config?.description || '';
+  // Dynamic title based on active filters
+  const getFilteredTitle = () => {
+    if (searchQuery) return `Search: "${searchQuery}"`;
+    if (hasUrlFilters) {
+      const allFilters = [...urlFabrics, ...urlPatterns, ...urlOccasions];
+      if (allFilters.length === 1) {
+        return allFilters[0].charAt(0).toUpperCase() + allFilters[0].slice(1) + ' Sarees';
+      }
+      return 'Filtered Collection';
+    }
+    return config?.title || 'All Products';
+  };
+
+  const title = getFilteredTitle();
+  const description = searchQuery 
+    ? `Showing results for "${searchQuery}"` 
+    : hasUrlFilters 
+      ? `Showing products matching your selected filters` 
+      : config?.description || '';
 
   return (
     <>
@@ -397,6 +474,49 @@ export default function Collection() {
               {description}
             </p>
           </div>
+
+          {/* Active URL Filter Chips */}
+          {hasUrlFilters && (
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="text-sm text-muted-foreground font-body">Active filters:</span>
+              {urlFabrics.map(fabric => (
+                <button
+                  key={`fabric-${fabric}`}
+                  onClick={() => clearUrlFilter('fabrics', fabric)}
+                  className="flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent text-sm rounded-full hover:bg-accent/20 transition-colors"
+                >
+                  {fabric.charAt(0).toUpperCase() + fabric.slice(1)}
+                  <X className="w-3 h-3" />
+                </button>
+              ))}
+              {urlPatterns.map(pattern => (
+                <button
+                  key={`pattern-${pattern}`}
+                  onClick={() => clearUrlFilter('patterns', pattern)}
+                  className="flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent text-sm rounded-full hover:bg-accent/20 transition-colors"
+                >
+                  {pattern.charAt(0).toUpperCase() + pattern.slice(1)}
+                  <X className="w-3 h-3" />
+                </button>
+              ))}
+              {urlOccasions.map(occasion => (
+                <button
+                  key={`occasion-${occasion}`}
+                  onClick={() => clearUrlFilter('occasions', occasion)}
+                  className="flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent text-sm rounded-full hover:bg-accent/20 transition-colors"
+                >
+                  {occasion.charAt(0).toUpperCase() + occasion.slice(1)}
+                  <X className="w-3 h-3" />
+                </button>
+              ))}
+              <button
+                onClick={() => navigate('/collections/all')}
+                className="text-sm text-muted-foreground hover:text-foreground underline"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
 
           {/* Filter & Sort Bar */}
           <div className="flex items-center justify-between mb-4 md:mb-6 pb-3 md:pb-4 border-b border-border gap-2">
