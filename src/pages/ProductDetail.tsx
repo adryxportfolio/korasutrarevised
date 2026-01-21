@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Loader2, Clock, Heart, Share2, Bell } from 'lucide-react';
+import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus } from 'lucide-react';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
@@ -510,6 +510,33 @@ export default function ProductDetail() {
     }
   };
 
+  const handleAddToCart = () => {
+    if (!product || !selectedVariant) {
+      toast.error('Please select a variant', { position: 'top-center' });
+      return;
+    }
+    
+    const variant = getCurrentVariant();
+    if (!variant) {
+      toast.error('Variant not found', { position: 'top-center' });
+      return;
+    }
+
+    addItem({
+      product: { node: product },
+      variantId: variant.id,
+      variantTitle: variant.title,
+      price: variant.price,
+      quantity: 1,
+      selectedOptions: variant.selectedOptions,
+    });
+    
+    toast.success('Added to cart!', { 
+      description: product.title,
+      position: 'top-center' 
+    });
+  };
+
   const handleWishlistToggle = () => {
     if (!product) return;
     
@@ -694,10 +721,11 @@ export default function ProductDetail() {
                 </div>
               ))}
 
-              {/* Add-Ons Section - Simplified */}
+              {/* Add-Ons Section - Buy Now & Add to Cart */}
               <div className="border border-border rounded-sm overflow-hidden">
                 <div className="p-3 md:p-4 bg-accent/5 border-b border-border">
                   <div className="flex flex-col items-center justify-center gap-2">
+                    {/* Buy Now Button */}
                     <Button
                       onClick={handleBuyNow}
                       disabled={isCheckingOut}
@@ -714,6 +742,16 @@ export default function ProductDetail() {
                           Buy Now
                         </>
                       )}
+                    </Button>
+                    
+                    {/* Add to Cart Button */}
+                    <Button
+                      onClick={handleAddToCart}
+                      variant="outline"
+                      className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest rounded-full border-foreground hover:bg-foreground hover:text-background"
+                    >
+                      <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                      Add to Cart
                     </Button>
                   </div>
                 </div>
@@ -746,15 +784,26 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              {/* Add to Cart Button - Large */}
-              <Button
-                onClick={handleBuyNow}
-                disabled={isCheckingOut}
-                className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white"
-                size="lg"
-              >
-                {isCheckingOut ? 'Processing...' : 'Buy Now'}
-              </Button>
+              {/* Large Buttons - Buy Now & Add to Cart */}
+              <div className="flex flex-col gap-3">
+                <Button
+                  onClick={handleBuyNow}
+                  disabled={isCheckingOut}
+                  className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white"
+                  size="lg"
+                >
+                  {isCheckingOut ? 'Processing...' : 'Buy Now'}
+                </Button>
+                <Button
+                  onClick={handleAddToCart}
+                  variant="outline"
+                  className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest border-foreground hover:bg-foreground hover:text-background"
+                  size="lg"
+                >
+                  <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                  Add to Cart
+                </Button>
+              </div>
 
               {/* Similar Products */}
               <SimilarProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} currentFabric={extractFabricFromTitle(product.title)} products={relatedProducts} />
