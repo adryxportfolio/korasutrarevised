@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, SlidersHorizontal, ChevronDown, ChevronRight, Heart, X } from 'lucide-react';
+import { Loader2, SlidersHorizontal, ChevronDown, ChevronRight, Heart, X, Check } from 'lucide-react';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -152,6 +152,11 @@ export default function Collection() {
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   
+  // Multi-select state for filter sheet (synced with URL)
+  const [filterFabrics, setFilterFabrics] = useState<string[]>([]);
+  const [filterPatterns, setFilterPatterns] = useState<string[]>([]);
+  const [filterOccasions, setFilterOccasions] = useState<string[]>([]);
+  
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
 
@@ -162,12 +167,27 @@ export default function Collection() {
   const patternsParam = searchParams.get('patterns');
   const occasionsParam = searchParams.get('occasions');
 
-  // Initialize selectedColors from URL params
+  // Initialize filters from URL params
   useEffect(() => {
     if (colorsParam) {
       setSelectedColors(colorsParam.split(',').filter(c => c.trim()));
     }
-  }, [colorsParam]);
+    if (fabricsParam) {
+      setFilterFabrics(fabricsParam.split(',').filter(f => f.trim()));
+    } else {
+      setFilterFabrics([]);
+    }
+    if (patternsParam) {
+      setFilterPatterns(patternsParam.split(',').filter(p => p.trim()));
+    } else {
+      setFilterPatterns([]);
+    }
+    if (occasionsParam) {
+      setFilterOccasions(occasionsParam.split(',').filter(o => o.trim()));
+    } else {
+      setFilterOccasions([]);
+    }
+  }, [colorsParam, fabricsParam, patternsParam, occasionsParam]);
 
   // Extract available colors from products - derived primarily from title
   const availableColors = useMemo(() => {
@@ -377,6 +397,45 @@ export default function Collection() {
     setExpandedCategory(expandedCategory === category ? null : category);
   };
 
+  // Toggle functions for filter sheet multi-select
+  const toggleFilterFabric = (value: string) => {
+    setFilterFabrics(prev => 
+      prev.includes(value) ? prev.filter(f => f !== value) : [...prev, value]
+    );
+  };
+
+  const toggleFilterPattern = (value: string) => {
+    setFilterPatterns(prev => 
+      prev.includes(value) ? prev.filter(p => p !== value) : [...prev, value]
+    );
+  };
+
+  const toggleFilterOccasion = (value: string) => {
+    setFilterOccasions(prev => 
+      prev.includes(value) ? prev.filter(o => o !== value) : [...prev, value]
+    );
+  };
+
+  const handleFilterApply = () => {
+    setFilterOpen(false);
+    const params = new URLSearchParams();
+    if (filterFabrics.length > 0) params.set('fabrics', filterFabrics.join(','));
+    if (filterPatterns.length > 0) params.set('patterns', filterPatterns.join(','));
+    if (filterOccasions.length > 0) params.set('occasions', filterOccasions.join(','));
+    if (selectedColors.length > 0) params.set('colors', selectedColors.join(','));
+    
+    const queryString = params.toString();
+    navigate(`/collections/all${queryString ? `?${queryString}` : ''}`);
+  };
+
+  const hasFilterSelections = filterFabrics.length > 0 || filterPatterns.length > 0 || filterOccasions.length > 0;
+
+  const clearFilterSelections = () => {
+    setFilterFabrics([]);
+    setFilterPatterns([]);
+    setFilterOccasions([]);
+  };
+
   const handleCategoryNavigation = (href: string) => {
     setFilterOpen(false);
     navigate(href);
@@ -387,6 +446,10 @@ export default function Collection() {
     setSortBy('featured');
     setBlouseFilter('none');
     setSelectedColors([]);
+    setFilterFabrics([]);
+    setFilterPatterns([]);
+    setFilterOccasions([]);
+    navigate('/collections/all');
   };
 
   // Active URL filters from hamburger menu
@@ -619,7 +682,14 @@ export default function Collection() {
                         onClick={() => toggleCategory('fabric')}
                         className="flex items-center justify-between w-full text-sm font-body uppercase tracking-wide mb-2"
                       >
-                        Shop by Fabric
+                        <span className="flex items-center gap-2">
+                          Shop by Fabric
+                          {filterFabrics.length > 0 && (
+                            <span className="bg-accent text-accent-foreground text-xs px-1.5 py-0.5 rounded-full">
+                              {filterFabrics.length}
+                            </span>
+                          )}
+                        </span>
                         <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'fabric' ? 'rotate-180' : ''}`} />
                       </button>
                       <AnimatePresence>
@@ -631,16 +701,25 @@ export default function Collection() {
                             transition={{ duration: 0.2 }}
                             className="overflow-hidden"
                           >
-                            <div className="space-y-2 pt-2">
-                              {collectionCategories.fabric.items.map((item) => (
-                                <button
-                                  key={item.name}
-                                  onClick={() => handleCategoryNavigation(item.href)}
-                                  className="block w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
-                                >
-                                  {item.name}
-                                </button>
-                              ))}
+                            <div className="space-y-1 pt-2">
+                              {collectionCategories.fabric.items.map((item) => {
+                                const value = item.name.toLowerCase();
+                                const isSelected = filterFabrics.includes(value);
+                                return (
+                                  <button
+                                    key={item.name}
+                                    onClick={() => toggleFilterFabric(value)}
+                                    className="flex items-center gap-3 w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
+                                  >
+                                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                                      isSelected ? 'bg-accent border-accent' : 'border-border'
+                                    }`}>
+                                      {isSelected && <Check className="w-3 h-3 text-accent-foreground" />}
+                                    </div>
+                                    {item.name}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </motion.div>
                         )}
@@ -653,7 +732,14 @@ export default function Collection() {
                         onClick={() => toggleCategory('patterns')}
                         className="flex items-center justify-between w-full text-sm font-body uppercase tracking-wide mb-2"
                       >
-                        Shop by Patterns
+                        <span className="flex items-center gap-2">
+                          Shop by Patterns
+                          {filterPatterns.length > 0 && (
+                            <span className="bg-accent text-accent-foreground text-xs px-1.5 py-0.5 rounded-full">
+                              {filterPatterns.length}
+                            </span>
+                          )}
+                        </span>
                         <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'patterns' ? 'rotate-180' : ''}`} />
                       </button>
                       <AnimatePresence>
@@ -665,16 +751,25 @@ export default function Collection() {
                             transition={{ duration: 0.2 }}
                             className="overflow-hidden"
                           >
-                            <div className="space-y-2 pt-2">
-                              {collectionCategories.patterns.items.map((item) => (
-                                <button
-                                  key={item.name}
-                                  onClick={() => handleCategoryNavigation(item.href)}
-                                  className="block w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
-                                >
-                                  {item.name}
-                                </button>
-                              ))}
+                            <div className="space-y-1 pt-2">
+                              {collectionCategories.patterns.items.map((item) => {
+                                const value = item.name.toLowerCase();
+                                const isSelected = filterPatterns.includes(value);
+                                return (
+                                  <button
+                                    key={item.name}
+                                    onClick={() => toggleFilterPattern(value)}
+                                    className="flex items-center gap-3 w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
+                                  >
+                                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                                      isSelected ? 'bg-accent border-accent' : 'border-border'
+                                    }`}>
+                                      {isSelected && <Check className="w-3 h-3 text-accent-foreground" />}
+                                    </div>
+                                    {item.name}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </motion.div>
                         )}
@@ -687,7 +782,14 @@ export default function Collection() {
                         onClick={() => toggleCategory('occasions')}
                         className="flex items-center justify-between w-full text-sm font-body uppercase tracking-wide mb-2"
                       >
-                        Shop by Occasions
+                        <span className="flex items-center gap-2">
+                          Shop by Occasions
+                          {filterOccasions.length > 0 && (
+                            <span className="bg-accent text-accent-foreground text-xs px-1.5 py-0.5 rounded-full">
+                              {filterOccasions.length}
+                            </span>
+                          )}
+                        </span>
                         <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedCategory === 'occasions' ? 'rotate-180' : ''}`} />
                       </button>
                       <AnimatePresence>
@@ -699,23 +801,51 @@ export default function Collection() {
                             transition={{ duration: 0.2 }}
                             className="overflow-hidden"
                           >
-                            <div className="space-y-2 pt-2">
-                              {collectionCategories.occasions.items.map((item) => (
-                                <button
-                                  key={item.name}
-                                  onClick={() => handleCategoryNavigation(item.href)}
-                                  className="block w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
-                                >
-                                  {item.name}
-                                </button>
-                              ))}
+                            <div className="space-y-1 pt-2">
+                              {collectionCategories.occasions.items.map((item) => {
+                                const value = item.name.toLowerCase();
+                                const isSelected = filterOccasions.includes(value);
+                                return (
+                                  <button
+                                    key={item.name}
+                                    onClick={() => toggleFilterOccasion(value)}
+                                    className="flex items-center gap-3 w-full text-left py-1.5 text-sm text-muted-foreground hover:text-accent transition-colors pl-2"
+                                  >
+                                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                                      isSelected ? 'bg-accent border-accent' : 'border-border'
+                                    }`}>
+                                      {isSelected && <Check className="w-3 h-3 text-accent-foreground" />}
+                                    </div>
+                                    {item.name}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
                     </div>
 
-                    {/* Clear Filters */}
+                    {/* Apply & Clear Buttons */}
+                    {hasFilterSelections && (
+                      <div className="pt-4 space-y-2 border-t border-border">
+                        <Button
+                          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                          onClick={handleFilterApply}
+                        >
+                          Apply Filters ({filterFabrics.length + filterPatterns.length + filterOccasions.length})
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full text-muted-foreground"
+                          onClick={clearFilterSelections}
+                        >
+                          Clear Selection
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* Clear All Filters */}
                     <Button
                       variant="outline" 
                       className="w-full"
@@ -757,6 +887,30 @@ export default function Collection() {
                       />
                       {color}
                       <button onClick={() => toggleColor(color)}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {urlFabrics.map(fabric => (
+                    <span key={`fabric-${fabric}`} className="text-xs bg-accent/10 text-accent px-2 py-1 rounded flex items-center gap-1 capitalize">
+                      {fabric}
+                      <button onClick={() => clearUrlFilter('fabrics', fabric)}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {urlPatterns.map(pattern => (
+                    <span key={`pattern-${pattern}`} className="text-xs bg-accent/10 text-accent px-2 py-1 rounded flex items-center gap-1 capitalize">
+                      {pattern}
+                      <button onClick={() => clearUrlFilter('patterns', pattern)}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {urlOccasions.map(occasion => (
+                    <span key={`occasion-${occasion}`} className="text-xs bg-accent/10 text-accent px-2 py-1 rounded flex items-center gap-1 capitalize">
+                      {occasion}
+                      <button onClick={() => clearUrlFilter('occasions', occasion)}>
                         <X className="w-3 h-3" />
                       </button>
                     </span>
