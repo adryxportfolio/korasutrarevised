@@ -686,12 +686,10 @@ export default function ProductDetail() {
                   <div className="flex flex-col items-center justify-center gap-2">
                     <Button
                       onClick={handleBuyNow}
-                      disabled={!currentVariant?.availableForSale || isCheckingOut}
+                      disabled={isCheckingOut}
                       className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
                     >
-                      {!currentVariant?.availableForSale ? (
-                        'Sold Out'
-                      ) : isCheckingOut ? (
+                      {isCheckingOut ? (
                         <>
                           <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-spin" />
                           Processing...
@@ -703,22 +701,6 @@ export default function ProductDetail() {
                         </>
                       )}
                     </Button>
-                    {!currentVariant?.availableForSale && (
-                      <a
-                        href={`https://wa.me/917995862266?text=${encodeURIComponent(`Hi, I'm interested in "${product.title}" which is currently out of stock.\n\nSKU: ${currentSKU}\n\nPlease notify me when it's back in stock.\n\nProduct: ${window.location.href}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full"
-                      >
-                        <Button
-                          variant="outline"
-                          className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest rounded-full border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white"
-                        >
-                          <Bell className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-                          Notify Me
-                        </Button>
-                      </a>
-                    )}
                   </div>
                 </div>
                 
@@ -753,11 +735,11 @@ export default function ProductDetail() {
               {/* Add to Cart Button - Large */}
               <Button
                 onClick={handleBuyNow}
-                disabled={!currentVariant?.availableForSale || isCheckingOut}
+                disabled={isCheckingOut}
                 className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white"
                 size="lg"
               >
-                {!currentVariant?.availableForSale ? 'Sold Out' : isCheckingOut ? 'Processing...' : 'Buy Now'}
+                {isCheckingOut ? 'Processing...' : 'Buy Now'}
               </Button>
 
               {/* Similar Products */}
