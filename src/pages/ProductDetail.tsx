@@ -94,23 +94,59 @@ function extractPatternFromTitle(title: string, description: string): string {
   return 'Handcrafted';
 }
 
-// Check if blouse piece is included
-function hasBlousePiece(title: string, description: string): boolean {
+// Check if blouse piece is included - returns true/false/null (null = not specified)
+function hasBlousePiece(title: string, description: string): boolean | null {
   const combined = `${title} ${description}`.toLowerCase();
-  // Check for explicit mentions
-  if (combined.includes('without blouse') || combined.includes('no blouse') || combined.includes('blouse not included')) {
+  // Check for explicit mentions of NO blouse
+  if (combined.includes('without blouse') || combined.includes('no blouse') || combined.includes('blouse not included') || combined.includes('blouse piece: no') || combined.includes('blouse: no')) {
     return false;
   }
-  if (combined.includes('with blouse') || combined.includes('blouse piece') || combined.includes('blouse included')) {
+  // Check for explicit mentions of WITH blouse
+  if (combined.includes('with blouse') || combined.includes('blouse piece') || combined.includes('blouse included') || combined.includes('blouse piece: yes') || combined.includes('blouse: yes') || combined.includes('includes blouse')) {
     return true;
   }
-  // Default to yes for most sarees
-  return true;
+  // Return null if nothing is mentioned
+  return null;
+}
+
+// Extract length from description - returns the length or null if not specified
+function extractLength(title: string, description: string): string | null {
+  const combined = `${title} ${description}`.toLowerCase();
+  
+  // Look for explicit length mentions in various formats
+  const lengthPatterns = [
+    /length[:\s]+(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)/i,
+    /(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)\s*(?:length|long)/i,
+    /saree\s*length[:\s]+(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)?/i,
+    /(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)\s*saree/i,
+    /size[:\s]+(\d+(?:\.\d+)?)\s*(?:meters?|m|mtr)/i,
+    /(\d+(?:\.\d+)?)\s*meters?\s*(?:with|including)/i,
+  ];
+  
+  for (const pattern of lengthPatterns) {
+    const match = combined.match(pattern);
+    if (match && match[1]) {
+      return `${match[1]} meters`;
+    }
+  }
+  
+  // Check for common saree lengths mentioned as text
+  if (combined.includes('6.5 meters') || combined.includes('6.5m') || combined.includes('6.5 m')) {
+    return '6.5 meters';
+  }
+  if (combined.includes('5.5 meters') || combined.includes('5.5m') || combined.includes('5.5 m')) {
+    return '5.5 meters';
+  }
+  if (combined.includes('6 meters') || combined.includes('6m ') || combined.includes('6 m ')) {
+    return '6 meters';
+  }
+  
+  return null;
 }
 
 // Parse product description to extract structured details
-function parseProductDetails(title: string, description: string): Record<string, string | boolean> {
-  const details: Record<string, string | boolean> = {};
+function parseProductDetails(title: string, description: string): Record<string, string | boolean | null> {
+  const details: Record<string, string | boolean | null> = {};
   
   // Extract Fabric from title
   details['Fabric'] = extractFabricFromTitle(title);
@@ -121,10 +157,10 @@ function parseProductDetails(title: string, description: string): Record<string,
   // Extract Pattern
   details['Pattern'] = extractPatternFromTitle(title, description);
   
-  // Standard size for sarees - 6.5 meters
-  details['Size'] = '6.5 meters (with blouse piece)';
+  // Extract Length from description - now derived from Shopify input
+  details['Length'] = extractLength(title, description);
   
-  // Blouse Piece - boolean for checkbox
+  // Blouse Piece - derived from Shopify input, null if not specified
   details['Blouse Piece'] = hasBlousePiece(title, description);
   
   // Always set Wash Care to Dry clean
@@ -134,7 +170,7 @@ function parseProductDetails(title: string, description: string): Record<string,
 }
 
 // Generate automatic description based on product details
-function generateAutoDescription(title: string, details: Record<string, string | boolean>): string {
+function generateAutoDescription(title: string, details: Record<string, string | boolean | null>): string {
   const fabric = details['Fabric'] as string || 'Handwoven';
   const colour = details['Colour'] as string || 'elegant';
   const pattern = details['Pattern'] as string || 'handcrafted';
@@ -165,19 +201,52 @@ function getRandomStock(handle: string): number {
   return Math.abs(hash % 5) + 1; // Returns 1-5
 }
 
-// Product Details Table Component with Blouse Piece selection
+// Product Details Table Component with Blouse Piece display
 function ProductDetailsTable({ 
-  details, 
-  blousePieceSelected, 
-  onBlousePieceChange 
+  details
 }: { 
-  details: Record<string, string | boolean>;
-  blousePieceSelected: boolean;
-  onBlousePieceChange: (value: boolean) => void;
+  details: Record<string, string | boolean | null>;
 }) {
   const entries = Object.entries(details);
   
   if (entries.length === 0) return null;
+
+  const renderValue = (key: string, value: string | boolean | null) => {
+    // Handle Blouse Piece - show status derived from Shopify
+    if (key === 'Blouse Piece') {
+      if (value === null) {
+        return (
+          <span className="text-amber-600 italic text-xs">
+            Waiting For Admin Input
+          </span>
+        );
+      }
+      return (
+        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+          value === true 
+            ? 'bg-green-100 text-green-700 border border-green-200' 
+            : 'bg-red-100 text-red-700 border border-red-200'
+        }`}>
+          {value === true ? 'Yes' : 'No'}
+        </span>
+      );
+    }
+    
+    // Handle Length - show value or waiting message
+    if (key === 'Length') {
+      if (value === null) {
+        return (
+          <span className="text-amber-600 italic text-xs">
+            Waiting For Admin Input
+          </span>
+        );
+      }
+      return value;
+    }
+    
+    // Default rendering for other fields
+    return value?.toString() || '';
+  };
 
   return (
     <div className="border border-border rounded-sm overflow-hidden">
@@ -190,32 +259,7 @@ function ProductDetailsTable({
             {key}
           </div>
           <div className="w-2/3 px-4 py-3 text-sm text-foreground/80 flex items-center">
-            {key === 'Blouse Piece' ? (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => onBlousePieceChange(true)}
-                  className={`px-4 py-1.5 text-xs font-medium rounded-l-full border transition-all ${
-                    blousePieceSelected 
-                      ? 'bg-green-500 border-green-500 text-white' 
-                      : 'border-border hover:border-foreground text-foreground/70'
-                  }`}
-                >
-                  Yes
-                </button>
-                <button
-                  onClick={() => onBlousePieceChange(false)}
-                  className={`px-4 py-1.5 text-xs font-medium rounded-r-full border -ml-px transition-all ${
-                    !blousePieceSelected 
-                      ? 'bg-red-500 border-red-500 text-white' 
-                      : 'border-border hover:border-foreground text-foreground/70'
-                  }`}
-                >
-                  No
-                </button>
-              </div>
-            ) : (
-              value
-            )}
+            {renderValue(key, value)}
           </div>
         </div>
       ))}
@@ -378,7 +422,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const [blousePieceSelected, setBlousePieceSelected] = useState(true);
+  
   
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
@@ -739,8 +783,6 @@ export default function ProductDetail() {
                   <AccordionContent className="pb-4">
                     <ProductDetailsTable 
                       details={productDetails} 
-                      blousePieceSelected={blousePieceSelected}
-                      onBlousePieceChange={setBlousePieceSelected}
                     />
                     {Object.keys(productDetails).length === 0 && (
                       <p className="text-sm text-muted-foreground font-body">
