@@ -159,12 +159,14 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
 
     setIsLoading(true);
     try {
+      const { sessionToken } = useAuthStore.getState();
       const { data, error } = await supabase.functions.invoke('sync-shopify-customer', {
         body: { 
           customerId: customer?.id,
           name: name.trim(),
           email: email.trim() || undefined,
         },
+        headers: sessionToken ? { 'x-session-token': sessionToken } : undefined,
       });
 
       if (error) throw error;
@@ -192,6 +194,7 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
 
     setIsLoading(true);
     try {
+      const { sessionToken } = useAuthStore.getState();
       const { data, error } = await supabase.functions.invoke('sync-shopify-customer', {
         body: { 
           customerId: customer?.id,
@@ -204,6 +207,7 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
             country: 'India',
           },
         },
+        headers: sessionToken ? { 'x-session-token': sessionToken } : undefined,
       });
 
       if (error) throw error;

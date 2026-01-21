@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-session-token",
 };
 
 interface SyncCustomerRequest {
@@ -23,6 +23,39 @@ interface SyncCustomerRequest {
 const SHOPIFY_STORE_DOMAIN = "korasutrarevised-iv76s.myshopify.com";
 const SHOPIFY_API_VERSION = "2025-01";
 
+// Validate session token and return customer ID
+async function validateSession(
+  supabaseUrl: string,
+  supabaseServiceKey: string,
+  sessionToken: string | null
+): Promise<{ customerId: string | null; error: string | null }> {
+  if (!sessionToken) {
+    return { customerId: null, error: "Session token required" };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+  const { data: session, error } = await supabase
+    .from("customer_sessions")
+    .select("customer_id, expires_at")
+    .eq("token", sessionToken)
+    .single();
+
+  if (error || !session) {
+    return { customerId: null, error: "Invalid session token" };
+  }
+
+  const sessionData = session as { customer_id: string; expires_at: string };
+
+  if (new Date(sessionData.expires_at) < new Date()) {
+    // Clean up expired session
+    await supabase.from("customer_sessions").delete().eq("token", sessionToken);
+    return { customerId: null, error: "Session expired" };
+  }
+
+  return { customerId: sessionData.customer_id, error: null };
+}
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -39,10 +72,35 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Initialize Supabase client
+    // Initialize Supabase client with service role
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Get session token from headers
+    const sessionToken = req.headers.get("x-session-token");
+
+    // Validate session and ensure user can only modify their own data
+    const { customerId: authenticatedCustomerId, error: authError } = await validateSession(
+      supabaseUrl,
+      supabaseServiceKey,
+      sessionToken
+    );
+
+    if (authError || !authenticatedCustomerId) {
+      return new Response(
+        JSON.stringify({ error: authError || "Authentication required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Ensure user can only modify their own data
+    if (authenticatedCustomerId !== customerId) {
+      return new Response(
+        JSON.stringify({ error: "Not authorized to modify this customer" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     // Get customer from database
     const { data: customer, error: fetchError } = await supabase
