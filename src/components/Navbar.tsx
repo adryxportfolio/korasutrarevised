@@ -246,7 +246,35 @@ export function Navbar() {
     setSelectedOccasions([]);
   };
 
+  // Check if any filters are selected across all categories (including colors)
   const hasCollectionFilters = selectedFabrics.length > 0 || selectedPatterns.length > 0 || selectedOccasions.length > 0;
+  const hasAnyFilters = hasCollectionFilters || selectedColors.length > 0;
+  const totalFilterCount = selectedFabrics.length + selectedPatterns.length + selectedOccasions.length + selectedColors.length;
+
+  // Unified filter apply function that includes colors
+  const handleUnifiedFilterApply = () => {
+    setIsOpen(false);
+    const params = new URLSearchParams();
+    if (selectedFabrics.length > 0) params.set('fabrics', selectedFabrics.join(','));
+    if (selectedPatterns.length > 0) params.set('patterns', selectedPatterns.join(','));
+    if (selectedOccasions.length > 0) params.set('occasions', selectedOccasions.join(','));
+    if (selectedColors.length > 0) params.set('colors', selectedColors.join(','));
+    if (priceRange[0] > 0 || priceRange[1] < 50000) {
+      params.set('minPrice', priceRange[0].toString());
+      params.set('maxPrice', priceRange[1].toString());
+    }
+    
+    const queryString = params.toString();
+    navigate(`/collections/all${queryString ? `?${queryString}` : ''}`);
+  };
+
+  const clearAllFilters = () => {
+    setSelectedFabrics([]);
+    setSelectedPatterns([]);
+    setSelectedOccasions([]);
+    setSelectedColors([]);
+    setPriceRange([0, 50000]);
+  };
   return <>
       <motion.header initial={{
       y: -100
@@ -420,7 +448,14 @@ export function Navbar() {
                 {/* Color Filter */}
                 <li>
                   <button onClick={() => setColorFilterExpanded(!colorFilterExpanded)} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50">
-                    Filter by Color
+                    <span className="flex items-center gap-2">
+                      Filter by Color
+                      {selectedColors.length > 0 && (
+                        <Badge className="h-5 px-2 bg-accent text-accent-foreground text-xs">
+                          {selectedColors.length}
+                        </Badge>
+                      )}
+                    </span>
                     <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${colorFilterExpanded ? 'rotate-180' : ''}`} />
                   </button>
                   
@@ -453,11 +488,13 @@ export function Navbar() {
                                   </span>;
                       })}
                             </div>}
-                          <button onClick={handleColorFilterApply} className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors">
-                            Apply Filter
-                          </button>
+                          {selectedColors.length > 0 && !hasCollectionFilters && (
+                            <button onClick={handleColorFilterApply} className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors">
+                              Apply Color Filter
+                            </button>
+                          )}
                           {selectedColors.length > 0 && <button onClick={() => setSelectedColors([])} className="w-full py-2 text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
-                              Clear Selection
+                              Clear Colors
                             </button>}
                         </div>
                       </motion.div>}
@@ -632,20 +669,20 @@ export function Navbar() {
                             </AnimatePresence>
                           </div>
 
-                          {/* Apply & Clear Buttons */}
-                          {hasCollectionFilters && (
+                          {/* Apply & Clear Buttons - Show when any filters are selected */}
+                          {hasAnyFilters && (
                             <div className="pt-4 space-y-2 border-t border-border/50">
                               <button 
-                                onClick={handleCollectionFilterApply} 
-                                className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors"
+                                onClick={handleUnifiedFilterApply} 
+                                className="w-full py-3 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors font-medium"
                               >
-                                Apply Filters ({selectedFabrics.length + selectedPatterns.length + selectedOccasions.length})
+                                Apply Filters ({totalFilterCount})
                               </button>
                               <button 
-                                onClick={clearCollectionFilters} 
+                                onClick={clearAllFilters} 
                                 className="w-full py-2 text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
                               >
-                                Clear Selection
+                                Clear All Selections
                               </button>
                             </div>
                           )}

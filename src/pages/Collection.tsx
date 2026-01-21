@@ -428,12 +428,15 @@ export default function Collection() {
     navigate(`/collections/all${queryString ? `?${queryString}` : ''}`);
   };
 
-  const hasFilterSelections = filterFabrics.length > 0 || filterPatterns.length > 0 || filterOccasions.length > 0;
+  // Check if any filters are selected (including colors)
+  const hasFilterSelections = filterFabrics.length > 0 || filterPatterns.length > 0 || filterOccasions.length > 0 || selectedColors.length > 0;
+  const totalFilterSelections = filterFabrics.length + filterPatterns.length + filterOccasions.length + selectedColors.length;
 
   const clearFilterSelections = () => {
     setFilterFabrics([]);
     setFilterPatterns([]);
     setFilterOccasions([]);
+    setSelectedColors([]);
   };
 
   const handleCategoryNavigation = (href: string) => {
@@ -452,18 +455,19 @@ export default function Collection() {
     navigate('/collections/all');
   };
 
-  // Active URL filters from hamburger menu
+  // Active URL filters from hamburger menu (including colors)
   const urlFabrics = fabricsParam ? fabricsParam.split(',').map(f => f.trim()) : [];
   const urlPatterns = patternsParam ? patternsParam.split(',').map(p => p.trim()) : [];
   const urlOccasions = occasionsParam ? occasionsParam.split(',').map(o => o.trim()) : [];
-  const hasUrlFilters = urlFabrics.length > 0 || urlPatterns.length > 0 || urlOccasions.length > 0;
+  const urlColors = colorsParam ? colorsParam.split(',').map(c => c.trim()) : [];
+  const hasUrlFilters = urlFabrics.length > 0 || urlPatterns.length > 0 || urlOccasions.length > 0 || urlColors.length > 0;
 
   const activeFiltersCount = (priceRange[0] > 0 || priceRange[1] < maxPrice ? 1 : 0) + 
     (blouseFilter !== 'none' ? 1 : 0) + 
     selectedColors.length +
-    urlFabrics.length + urlPatterns.length + urlOccasions.length;
+    urlFabrics.length + urlPatterns.length + urlOccasions.length + urlColors.length;
 
-  const clearUrlFilter = (type: 'fabrics' | 'patterns' | 'occasions', value: string) => {
+  const clearUrlFilter = (type: 'fabrics' | 'patterns' | 'occasions' | 'colors', value: string) => {
     const newParams = new URLSearchParams(searchParams);
     const param = newParams.get(type);
     if (param) {
@@ -572,6 +576,20 @@ export default function Collection() {
                   <X className="w-3 h-3" />
                 </button>
               ))}
+              {urlColors.map(color => (
+                <button
+                  key={`color-${color}`}
+                  onClick={() => clearUrlFilter('colors', color)}
+                  className="flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent text-sm rounded-full hover:bg-accent/20 transition-colors"
+                >
+                  <span
+                    className="w-3 h-3 rounded-full border border-border/50"
+                    style={{ backgroundColor: colorMap[color] || '#888' }}
+                  />
+                  {color.charAt(0).toUpperCase() + color.slice(1)}
+                  <X className="w-3 h-3" />
+                </button>
+              ))}
               <button
                 onClick={() => navigate('/collections/all')}
                 className="text-sm text-muted-foreground hover:text-foreground underline"
@@ -653,7 +671,14 @@ export default function Collection() {
                     {/* Color Filter */}
                     {availableColors.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-body uppercase tracking-wide mb-4">Colors</h3>
+                        <h3 className="text-sm font-body uppercase tracking-wide mb-4 flex items-center gap-2">
+                          Colors
+                          {selectedColors.length > 0 && (
+                            <span className="bg-accent text-accent-foreground text-xs px-1.5 py-0.5 rounded-full">
+                              {selectedColors.length}
+                            </span>
+                          )}
+                        </h3>
                         <div className="flex flex-wrap gap-2">
                           {availableColors.map(color => (
                             <button
@@ -826,21 +851,21 @@ export default function Collection() {
                       </AnimatePresence>
                     </div>
 
-                    {/* Apply & Clear Buttons */}
+                    {/* Apply & Clear Buttons - Show when any filters are selected */}
                     {hasFilterSelections && (
                       <div className="pt-4 space-y-2 border-t border-border">
                         <Button
-                          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-medium py-3"
                           onClick={handleFilterApply}
                         >
-                          Apply Filters ({filterFabrics.length + filterPatterns.length + filterOccasions.length})
+                          Apply Filters ({totalFilterSelections})
                         </Button>
                         <Button
                           variant="ghost"
                           className="w-full text-muted-foreground"
                           onClick={clearFilterSelections}
                         >
-                          Clear Selection
+                          Clear All Selections
                         </Button>
                       </div>
                     )}
