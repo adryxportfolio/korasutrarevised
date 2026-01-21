@@ -488,7 +488,9 @@ export default function ProductDetail() {
   };
 
   const handleEnquiry = () => {
-    const message = `Hi, I'm interested in ${product?.title}. Could you provide more details?`;
+    const variant = getCurrentVariant();
+    const sku = variant?.sku || 'N/A';
+    const message = `Hi, I'm interested in ${product?.title}.\n\nSKU: ${sku}\n\nCould you provide more details?`;
     window.open(`https://wa.me/917995862266?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -709,8 +711,8 @@ export default function ProductDetail() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs md:text-sm font-body font-semibold">KORA5 📋</p>
-                    <p className="text-[10px] md:text-xs text-muted-foreground">5% OFF upto ₹1000 | Min. purchase ₹4499</p>
+                    <p className="text-xs md:text-sm font-body font-semibold">FREE Delivery 🚚</p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground">Free delivery on all orders within India</p>
                   </div>
                 </div>
               </div>
@@ -745,6 +747,9 @@ export default function ProductDetail() {
                         Product details will be available soon.
                       </p>
                     )}
+                    <p className="font-body text-foreground/80 leading-relaxed text-xs mt-3 italic">
+                      <strong>Note:</strong> The blouse showcased in the images is from our in-house wardrobe and has been used only for styling.
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
 
@@ -767,6 +772,9 @@ export default function ProductDetail() {
                   <AccordionContent className="pb-4">
                     <p className="font-body text-foreground/80 leading-relaxed text-sm">
                       {generateAutoDescription(product.title, productDetails)}
+                    </p>
+                    <p className="font-body text-foreground/80 leading-relaxed text-sm mt-3 italic">
+                      <strong>Blouse:</strong> The blouse showcased in the images is from our in-house wardrobe and has been used only for styling.
                     </p>
                   </AccordionContent>
                 </AccordionItem>
@@ -817,6 +825,9 @@ export default function ProductDetail() {
                     <div className="space-y-3 text-sm font-body text-foreground/80">
                       <p>
                         Some images on this page use AI-generated models to showcase styling and drape.
+                      </p>
+                      <p>
+                        <strong>Blouse:</strong> The blouse showcased in the images is from our in-house wardrobe and has been used only for styling.
                       </p>
                       <p>
                         While we strive for accuracy, the actual saree may differ slightly in color tone, weave, border detailing, or finish due to fabric nature, lighting, and digital rendering.
