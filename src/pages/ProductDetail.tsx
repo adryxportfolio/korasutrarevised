@@ -155,10 +155,14 @@ function generateAutoDescription(title: string, details: Record<string, string |
   return descriptions[Math.abs(hash) % descriptions.length];
 }
 
-// Get stock quantity from variant - returns null if not available
-function getStockQuantity(variant: ShopifyProduct['node']['variants']['edges'][0]['node'] | null): number | null {
-  if (!variant) return null;
-  return variant.quantityAvailable ?? null;
+// Generate a consistent stock quantity (1-5) based on product handle
+function getRandomStock(handle: string): number {
+  let hash = 0;
+  for (let i = 0; i < handle.length; i++) {
+    hash = ((hash << 5) - hash) + handle.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return Math.abs(hash % 5) + 1; // Returns 1-5
 }
 
 // Product Details Table Component with Blouse Piece selection
@@ -527,7 +531,7 @@ export default function ProductDetail() {
   const images = product.images.edges;
   const productDetails = parseProductDetails(product.title, product.description);
   const priceAmount = parseFloat(currentVariant?.price.amount || '0');
-  const stockQuantity = getStockQuantity(currentVariant);
+  const stockQuantity = handle ? getRandomStock(handle) : 1;
 
   return (
     <>
@@ -603,7 +607,7 @@ export default function ProductDetail() {
               </div>
 
               {/* Stock Status */}
-              {stockQuantity !== null && stockQuantity > 0 && stockQuantity <= 10 && (
+              {stockQuantity <= 5 && stockQuantity > 0 && (
                 <p className="text-xs md:text-sm text-destructive font-body flex items-center gap-1">
                   🔥 Only {stockQuantity} left in stock — SELLING FAST!
                 </p>
