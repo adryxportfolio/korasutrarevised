@@ -21,7 +21,7 @@ async function hashOTP(otp: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Generate a simple session token
+// Generate a cryptographically secure session token
 function generateSessionToken(): string {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
@@ -47,7 +47,7 @@ const handler = async (req: Request): Promise<Response> => {
     const cleanPhone = phone.replace(/\D/g, "");
     const otpHash = await hashOTP(otp);
 
-    // Initialize Supabase client
+    // Initialize Supabase client with service role for full access
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -115,7 +115,6 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     let customer;
-    const sessionToken = generateSessionToken();
 
     if (existingCustomer) {
       // Update existing customer as verified
@@ -152,8 +151,44 @@ const handler = async (req: Request): Promise<Response> => {
       customer = newCustomer;
     }
 
+    // Generate session token and store it server-side
+    const sessionToken = generateSessionToken();
+    
+    // Session expires in 30 days
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    // Delete any existing sessions for this customer (single session per customer)
+    await supabase
+      .from("customer_sessions")
+      .delete()
+      .eq("customer_id", customer.id);
+
+    // Store the new session in the database
+    const { error: sessionError } = await supabase
+      .from("customer_sessions")
+      .insert({
+        customer_id: customer.id,
+        token: sessionToken,
+        expires_at: expiresAt,
+      });
+
+    if (sessionError) {
+      console.error("Failed to create session:", sessionError);
+      return new Response(
+        JSON.stringify({ error: "Failed to create session" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Clean up old OTP records
     await supabase.from("otp_verifications").delete().eq("id", otpRecord.id);
+
+    // Also cleanup expired sessions periodically
+    try {
+      await supabase.rpc("cleanup_expired_sessions");
+    } catch (e) {
+      // Ignore cleanup errors
+    }
 
     return new Response(
       JSON.stringify({

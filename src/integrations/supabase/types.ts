@@ -64,6 +64,30 @@ export type Database = {
           },
         ]
       }
+      customer_sessions: {
+        Row: {
+          created_at: string
+          customer_id: string
+          expires_at: string
+          id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          expires_at: string
+          id?: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          expires_at?: string
+          id?: string
+          token?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           country_code: string
@@ -186,6 +210,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_sessions: { Args: never; Returns: undefined }
       get_approved_reviews: {
         Args: { p_product_handle?: string }
         Returns: {
@@ -203,6 +228,7 @@ export type Database = {
           updated_at: string
         }[]
       }
+      get_current_customer_id: { Args: never; Returns: string }
       get_product_review_stats: {
         Args: { p_handle: string }
         Returns: {
