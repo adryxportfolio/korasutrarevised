@@ -474,21 +474,35 @@ export default function ProductDetail() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const handleBuyNow = async () => {
-    if (!product || !selectedVariant) return;
+    if (!product || !selectedVariant) {
+      toast.error('Please select a variant', { position: 'top-center' });
+      return;
+    }
     
     const variant = getCurrentVariant();
-    if (!variant) return;
+    if (!variant) {
+      toast.error('Variant not found', { position: 'top-center' });
+      return;
+    }
 
     setIsCheckingOut(true);
     try {
+      console.log('Creating checkout for variant:', variant.id);
       const checkoutUrl = await createStorefrontCheckout([
         { variantId: variant.id, quantity: 1 }
       ]);
-      window.open(checkoutUrl, '_blank');
+      console.log('Checkout URL created:', checkoutUrl);
+      
+      if (checkoutUrl) {
+        toast.success('Redirecting to checkout...', { position: 'top-center' });
+        window.open(checkoutUrl, '_blank');
+      } else {
+        throw new Error('No checkout URL returned');
+      }
     } catch (error) {
       console.error('Checkout failed:', error);
       toast.error('Failed to create checkout', {
-        description: 'Please try again',
+        description: error instanceof Error ? error.message : 'Please try again',
         position: 'top-center',
       });
     } finally {

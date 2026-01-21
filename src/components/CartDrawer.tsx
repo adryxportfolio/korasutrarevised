@@ -12,6 +12,7 @@ import {
 import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, Package, MapPin } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
+import { toast } from "sonner";
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,15 +38,33 @@ export const CartDrawer = () => {
   };
 
   const handleCheckout = async () => {
+    if (items.length === 0) {
+      toast.error('Your cart is empty', { position: 'top-center' });
+      return;
+    }
+    
     try {
+      console.log('Creating checkout for cart items:', items.map(i => ({ id: i.variantId, qty: i.quantity })));
       const checkoutUrl = await createCheckout();
+      console.log('Checkout URL:', checkoutUrl);
+      
       if (checkoutUrl) {
+        toast.success('Redirecting to checkout...', { position: 'top-center' });
         window.open(checkoutUrl, '_blank');
         clearCart();
         setIsOpen(false);
+      } else {
+        toast.error('Failed to create checkout', { 
+          description: 'Please try again',
+          position: 'top-center' 
+        });
       }
     } catch (error) {
       console.error('Checkout failed:', error);
+      toast.error('Checkout failed', { 
+        description: error instanceof Error ? error.message : 'Please try again',
+        position: 'top-center' 
+      });
     }
   };
 
