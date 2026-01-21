@@ -191,12 +191,6 @@ function generateAutoDescription(title: string, details: Record<string, string |
   return descriptions[Math.abs(hash) % descriptions.length];
 }
 
-// Get stock quantity from variant - returns actual Shopify inventory
-function getStockQuantity(variant: { quantityAvailable: number | null } | undefined): number | null {
-  if (!variant) return null;
-  return variant.quantityAvailable;
-}
-
 // Format SKU for display - returns SKU or fallback message
 function formatSKU(sku: string | null | undefined): string {
   return sku || 'Waiting For Admin Changes';
@@ -576,7 +570,6 @@ export default function ProductDetail() {
   const images = product.images.edges;
   const productDetails = parseProductDetails(product.title, product.description);
   const priceAmount = parseFloat(currentVariant?.price.amount || '0');
-  const stockQuantity = getStockQuantity(currentVariant);
   const currentSKU = formatSKU(currentVariant?.sku);
 
   return (
@@ -652,22 +645,6 @@ export default function ProductDetail() {
                 </span>
               </div>
 
-              {/* Stock Status - Real inventory from Shopify */}
-              {stockQuantity !== null && stockQuantity === 0 && (
-                <p className="text-xs md:text-sm text-destructive font-body flex items-center gap-1">
-                  ⚠️ 0 available in stock
-                </p>
-              )}
-              {stockQuantity !== null && stockQuantity > 0 && stockQuantity <= 5 && (
-                <p className="text-xs md:text-sm text-destructive font-body flex items-center gap-1">
-                  🔥 Only {stockQuantity} left in stock — SELLING FAST!
-                </p>
-              )}
-              {stockQuantity !== null && stockQuantity > 5 && (
-                <p className="text-xs md:text-sm text-green-600 font-body flex items-center gap-1">
-                  ✓ {stockQuantity} in stock
-                </p>
-              )}
 
               {/* Variant Options */}
               {product.options.filter(opt => opt.name !== 'Title').map((option) => (
