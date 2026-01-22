@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import heroVideo from '@/assets/hero-video.mp4';
+import heroBanner from '@/assets/hero-banner.jpeg';
 
 // Floating particles animation component
 function FloatingParticles() {
@@ -172,9 +172,13 @@ export function HeroSection() {
               repeat: Infinity
             }} />
               
-              {/* Video */}
+              {/* Hero Image */}
               <div className="relative overflow-hidden rounded-sm shadow-elegant w-full h-full flex items-center justify-center">
-                <video src={heroVideo} autoPlay loop muted playsInline className="w-full h-full object-contain max-h-full" />
+                <img 
+                  src={heroBanner} 
+                  alt="Kora Sutra Sarees - Wear It With Pride" 
+                  className="w-full h-full object-contain max-h-full"
+                />
                 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />

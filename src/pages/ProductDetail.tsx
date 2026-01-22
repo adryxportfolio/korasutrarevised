@@ -496,7 +496,8 @@ export default function ProductDetail() {
       
       if (checkoutUrl) {
         toast.success('Redirecting to checkout...', { position: 'top-center' });
-        window.open(checkoutUrl, '_blank');
+        // Use location.href for better mobile compatibility (window.open gets blocked in async contexts)
+        window.location.href = checkoutUrl;
       } else {
         throw new Error('No checkout URL returned');
       }
@@ -506,7 +507,6 @@ export default function ProductDetail() {
         description: error instanceof Error ? error.message : 'Please try again',
         position: 'top-center',
       });
-    } finally {
       setIsCheckingOut(false);
     }
   };

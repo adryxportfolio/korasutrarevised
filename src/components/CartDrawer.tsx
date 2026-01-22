@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, Package, MapPin, LogOut } from "lucide-react";
+import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, Package, MapPin, LogOut, Truck } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { useAuthStore } from "@/stores/authStore";
 import { formatPrice } from "@/lib/shopify";
@@ -57,9 +58,10 @@ export const CartDrawer = () => {
       
       if (checkoutUrl) {
         toast.success('Redirecting to checkout...', { position: 'top-center' });
-        window.open(checkoutUrl, '_blank');
         clearCart();
         setIsOpen(false);
+        // Use location.href for better mobile compatibility (window.open gets blocked in async contexts)
+        window.location.href = checkoutUrl;
       } else {
         toast.error('Failed to create checkout', { 
           description: 'Please try again',
@@ -221,13 +223,16 @@ export const CartDrawer = () => {
                       {/* Account Links */}
                       <div className="flex gap-2">
                         <Button 
-                          onClick={handleOpenAuthModal}
+                          onClick={() => {
+                            setIsOpen(false);
+                            window.location.href = '/order-tracking';
+                          }}
                           variant="ghost"
                           className="flex-1 text-xs"
                           size="sm"
                         >
-                          <Package className="w-3 h-3 mr-1" />
-                          My Account
+                          <Truck className="w-3 h-3 mr-1" />
+                          Track Orders
                         </Button>
                         <Button 
                           onClick={handleOpenAuthModal}
