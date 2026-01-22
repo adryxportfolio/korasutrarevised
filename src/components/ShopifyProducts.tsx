@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
+import { StockIndicator } from '@/components/StockStatus';
 
 export function ShopifyProducts() {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
@@ -134,12 +135,20 @@ export function ShopifyProducts() {
                   <h3 className="font-heading text-sm md:text-base truncate group-hover:text-accent transition-colors">
                     {product.node.title}
                   </h3>
-                  <p className="text-sm font-body text-muted-foreground">
-                    {formatPrice(
-                      product.node.priceRange.minVariantPrice.amount,
-                      product.node.priceRange.minVariantPrice.currencyCode
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-body text-muted-foreground">
+                      {formatPrice(
+                        product.node.priceRange.minVariantPrice.amount,
+                        product.node.priceRange.minVariantPrice.currencyCode
+                      )}
+                    </p>
+                    {product.node.variants.edges[0]?.node && (
+                      <StockIndicator
+                        availableForSale={product.node.variants.edges[0].node.availableForSale}
+                        quantityAvailable={product.node.variants.edges[0].node.quantityAvailable}
+                      />
                     )}
-                  </p>
+                  </div>
                 </div>
               </Link>
             </motion.div>
