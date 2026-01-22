@@ -145,7 +145,6 @@ export function ShopifyProducts() {
                     {product.node.variants.edges[0]?.node && (
                       <StockIndicator
                         availableForSale={product.node.variants.edges[0].node.availableForSale}
-                        quantityAvailable={product.node.variants.edges[0].node.quantityAvailable}
                       />
                     )}
                   </div>

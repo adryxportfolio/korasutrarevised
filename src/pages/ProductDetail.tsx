@@ -691,8 +691,6 @@ export default function ProductDetail() {
                 {currentVariant && (
                   <StockStatus 
                     availableForSale={currentVariant.availableForSale}
-                    quantityAvailable={currentVariant.quantityAvailable}
-                    showQuantity={true}
                     size="sm"
                   />
                 )}

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 interface StockStatusProps {
   availableForSale: boolean;
-  quantityAvailable: number | null;
+  quantityAvailable?: number | null;
   showQuantity?: boolean;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
