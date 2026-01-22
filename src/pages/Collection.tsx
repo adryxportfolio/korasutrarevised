@@ -1213,7 +1213,6 @@ export default function Collection() {
                         {node.variants.edges[0]?.node && (
                           <StockIndicator
                             availableForSale={node.variants.edges[0].node.availableForSale}
-                            quantityAvailable={node.variants.edges[0].node.quantityAvailable}
                           />
                         )}
                       </div>
