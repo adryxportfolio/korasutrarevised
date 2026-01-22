@@ -794,27 +794,6 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              {/* Large Buttons - Buy Now & Add to Cart */}
-              <div className="flex flex-col gap-3">
-                <Button
-                  onClick={handleBuyNow}
-                  disabled={isCheckingOut}
-                  className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white"
-                  size="lg"
-                >
-                  {isCheckingOut ? 'Processing...' : 'Buy Now'}
-                </Button>
-                <Button
-                  onClick={handleAddToCart}
-                  variant="outline"
-                  className="w-full h-12 md:h-14 text-sm md:text-base font-body uppercase tracking-widest border-foreground hover:bg-foreground hover:text-background"
-                  size="lg"
-                >
-                  <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-                  Add to Cart
-                </Button>
-              </div>
-
               {/* Similar Products */}
               <SimilarProducts currentHandle={handle || ''} currentProductType={extractProductType(product.title)} currentFabric={extractFabricFromTitle(product.title)} products={relatedProducts} />
 
