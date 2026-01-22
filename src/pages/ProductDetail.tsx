@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus } from 'lucide-react';
+import { StockStatus } from '@/components/StockStatus';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
@@ -673,17 +674,28 @@ export default function ProductDetail() {
                 {product.description?.substring(0, 100) || 'Handcrafted saree with exquisite detailing'}
               </p>
 
-              {/* Price & Top Rated Badge */}
-              <div className="flex items-center justify-between gap-2">
-                <div>
-                  <p className="text-xl md:text-2xl font-heading">
-                    {currentVariant && formatPrice(currentVariant.price.amount, currentVariant.price.currencyCode)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">MRP Inclusive of all taxes</p>
+              {/* Price, Stock Status & Top Rated Badge */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-xl md:text-2xl font-heading">
+                      {currentVariant && formatPrice(currentVariant.price.amount, currentVariant.price.currencyCode)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">MRP Inclusive of all taxes</p>
+                  </div>
+                  <span className="px-3 py-1 bg-foreground text-background text-xs font-body uppercase tracking-wide">
+                    Top Rated
+                  </span>
                 </div>
-                <span className="px-3 py-1 bg-foreground text-background text-xs font-body uppercase tracking-wide">
-                  Top Rated
-                </span>
+                {/* Stock Status */}
+                {currentVariant && (
+                  <StockStatus 
+                    availableForSale={currentVariant.availableForSale}
+                    quantityAvailable={currentVariant.quantityAvailable}
+                    showQuantity={true}
+                    size="sm"
+                  />
+                )}
               </div>
 
 
