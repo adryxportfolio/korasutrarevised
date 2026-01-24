@@ -271,7 +271,7 @@ export function MyOrders() {
             variant="outline"
             size="sm"
             className="flex-shrink-0 border-accent/50 hover:bg-accent hover:text-accent-foreground"
-            onClick={() => window.open('https://accounts.korasutra.com', '_blank')}
+            onClick={() => window.open('https://account.korasutra.com', '_blank')}
           >
             Track Live
           </Button>
