@@ -121,7 +121,7 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.7
-          }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed text-xl">
+          }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body font-semibold leading-relaxed text-xl">
               Bengal’s Rich Handloom Legacy  
             </motion.p>
             
