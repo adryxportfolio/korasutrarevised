@@ -258,6 +258,26 @@ export function MyOrders() {
         </Button>
       </div>
 
+      {/* Link to Shopify Account for Real-time Tracking */}
+      <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <ExternalLink className="w-4 h-4 text-accent flex-shrink-0" />
+            <p className="text-sm text-muted-foreground truncate">
+              For real-time tracking updates
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-shrink-0 border-accent/50 hover:bg-accent hover:text-accent-foreground"
+            onClick={() => window.open('https://accounts.korasutra.com', '_blank')}
+          >
+            Track Live
+          </Button>
+        </div>
+      </div>
+
       <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
         {orders.map((order) => (
           <motion.div
