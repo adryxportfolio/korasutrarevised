@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus } from 'lucide-react';
+import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus, Bell } from 'lucide-react';
 import { StockStatus } from '@/components/StockStatus';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
@@ -731,38 +731,56 @@ export default function ProductDetail() {
                 </div>
               ))}
 
-              {/* Add-Ons Section - Buy Now & Add to Cart */}
+              {/* Add-Ons Section - Buy Now & Add to Cart or Notify Me */}
               <div className="border border-border rounded-sm overflow-hidden">
                 <div className="p-3 md:p-4 bg-accent/5 border-b border-border">
                   <div className="flex flex-col items-center justify-center gap-2">
-                    {/* Buy Now Button */}
-                    <Button
-                      onClick={handleBuyNow}
-                      disabled={isCheckingOut}
-                      className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
-                    >
-                      {isCheckingOut ? (
-                        <>
-                          <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-                          Buy Now
-                        </>
-                      )}
-                    </Button>
-                    
-                    {/* Add to Cart Button */}
-                    <Button
-                      onClick={handleAddToCart}
-                      variant="outline"
-                      className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest rounded-full border-foreground hover:bg-foreground hover:text-background"
-                    >
-                      <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-                      Add to Cart
-                    </Button>
+                    {currentVariant?.availableForSale ? (
+                      <>
+                        {/* Buy Now Button */}
+                        <Button
+                          onClick={handleBuyNow}
+                          disabled={isCheckingOut}
+                          className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-full"
+                        >
+                          {isCheckingOut ? (
+                            <>
+                              <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-spin" />
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                              Buy Now
+                            </>
+                          )}
+                        </Button>
+                        
+                        {/* Add to Cart Button */}
+                        <Button
+                          onClick={handleAddToCart}
+                          variant="outline"
+                          className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest rounded-full border-foreground hover:bg-foreground hover:text-background"
+                        >
+                          <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                          Add to Cart
+                        </Button>
+                      </>
+                    ) : (
+                      /* Notify Me Button - for out of stock items */
+                      <Button
+                        onClick={() => {
+                          const variant = getCurrentVariant();
+                          const sku = formatSKU(variant?.sku);
+                          const message = `Hi, I'd like to be notified when this product is back in stock:\n\n*${product?.title}*\nSKU: ${sku}\n\nPlease notify me when it's available again.`;
+                          window.open(`https://wa.me/917995862266?text=${encodeURIComponent(message)}`, '_blank');
+                        }}
+                        className="w-full h-11 md:h-12 text-sm md:text-base font-body uppercase tracking-widest bg-[#25D366] hover:bg-[#1da851] text-white rounded-full"
+                      >
+                        <Bell className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                        Notify Me on WhatsApp
+                      </Button>
+                    )}
                   </div>
                 </div>
                 
