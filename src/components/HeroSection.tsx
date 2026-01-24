@@ -122,7 +122,7 @@ export function HeroSection() {
             duration: 0.6,
             delay: 0.7
           }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body leading-relaxed text-xl">
-              Discover the artistry of handcrafted sarees, where every thread tells a story of pure elegance and timeless beauty. 
+              Bengal’s Rich Handloom Legacy  
             </motion.p>
             
             <motion.div initial={{
@@ -174,11 +174,7 @@ export function HeroSection() {
               
               {/* Hero Image */}
               <div className="relative overflow-hidden rounded-sm shadow-elegant w-full h-full flex items-center justify-center">
-                <img 
-                  src={heroBanner} 
-                  alt="Kora Sutra Sarees - Wear It With Pride" 
-                  className="w-full h-full object-contain max-h-full"
-                />
+                <img src={heroBanner} alt="Kora Sutra Sarees - Wear It With Pride" className="w-full h-full object-contain max-h-full" />
                 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
