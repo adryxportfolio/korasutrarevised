@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Package, MapPin, Clock, CheckCircle, Truck, LogIn } from 'lucide-react';
+import { Package, MapPin, Clock, CheckCircle, Truck, LogIn, ExternalLink } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -108,11 +108,34 @@ export default function OrderTracking() {
             </div>
           </motion.div>
 
-          {/* Help Section */}
+          {/* Real-time Tracking Link */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-center"
+          >
+            <div className="p-6 bg-accent/10 border border-accent/20 rounded-lg">
+              <ExternalLink className="w-8 h-8 text-accent mx-auto mb-3" />
+              <h3 className="font-heading mb-2">Real-Time Order Tracking</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Visit your Kora Sutra account for live tracking updates
+              </p>
+              <Button
+                onClick={() => window.open('https://accounts.korasutra.com', '_blank')}
+                className="bg-accent hover:bg-accent/90"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Go to accounts.korasutra.com
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Help Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-12 text-center border-t border-border pt-8"
           >
             <h3 className="font-heading mb-2">Need Help?</h3>
