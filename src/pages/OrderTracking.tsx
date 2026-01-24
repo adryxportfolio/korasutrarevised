@@ -122,7 +122,7 @@ export default function OrderTracking() {
                 Visit your Kora Sutra account for live tracking updates
               </p>
               <Button
-                onClick={() => window.open('https://accounts.korasutra.com', '_blank')}
+                onClick={() => window.open('https://account.korasutra.com', '_blank')}
                 className="bg-accent hover:bg-accent/90"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
