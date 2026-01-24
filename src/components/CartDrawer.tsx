@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { OTPAuthModal } from "./OTPAuthModal";
 
 export const CartDrawer = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   
@@ -225,14 +226,14 @@ export const CartDrawer = () => {
                         <Button 
                           onClick={() => {
                             setIsOpen(false);
-                            window.location.href = '/order-tracking';
+                            navigate('/order-tracking');
                           }}
                           variant="ghost"
                           className="flex-1 text-xs"
                           size="sm"
                         >
                           <Truck className="w-3 h-3 mr-1" />
-                          Track Orders
+                          My Orders
                         </Button>
                         <Button 
                           onClick={handleOpenAuthModal}
