@@ -258,22 +258,33 @@ export function MyOrders() {
         </Button>
       </div>
 
-      {/* Link to Shopify Account for Real-time Tracking */}
-      <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg">
+      {/* Link to Shopify Account for Order Management */}
+      <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg space-y-2">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <ExternalLink className="w-4 h-4 text-accent flex-shrink-0" />
             <p className="text-sm text-muted-foreground truncate">
-              For real-time tracking updates
+              Real-time tracking & order management
             </p>
           </div>
+        </div>
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
-            className="flex-shrink-0 border-accent/50 hover:bg-accent hover:text-accent-foreground"
+            className="flex-1 border-accent/50 hover:bg-accent hover:text-accent-foreground"
             onClick={() => window.open('https://account.korasutra.com', '_blank')}
           >
+            <ExternalLink className="w-3 h-3 mr-1" />
             Track Live
+          </Button>
+          <Button
+            size="sm"
+            className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground"
+            onClick={() => window.open('https://account.korasutra.com', '_blank')}
+          >
+            <Package className="w-3 h-3 mr-1" />
+            Manage Orders
           </Button>
         </div>
       </div>
