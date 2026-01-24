@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Phone, ArrowLeft, Loader2, User, Mail, MapPin } from 'lucide-react';
+import { X, Phone, ArrowLeft, Loader2, User, Mail, MapPin, Package } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,13 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuthStore } from '@/stores/authStore';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { MyOrders } from '@/components/MyOrders';
 
 interface OTPAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type Step = 'phone' | 'otp' | 'profile' | 'address' | 'account';
+type Step = 'phone' | 'otp' | 'profile' | 'address' | 'account' | 'orders';
 
 const countryCodes = [
   { code: '+91', country: 'India', flag: '🇮🇳' },
@@ -259,6 +260,9 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
       case 'address':
         setStep('profile');
         break;
+      case 'orders':
+        setStep('account');
+        break;
       default:
         break;
     }
@@ -266,8 +270,8 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 bg-background border-border">
-        <DialogHeader className="p-6 pb-4 border-b border-border">
+      <DialogContent className="sm:max-w-md p-0 gap-0 bg-background border-border max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="p-6 pb-4 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-3">
             {step !== 'phone' && step !== 'account' && (
               <button 
@@ -283,11 +287,12 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
               {step === 'profile' && 'Complete Profile'}
               {step === 'address' && 'Add Address'}
               {step === 'account' && 'My Account'}
+              {step === 'orders' && 'My Orders'}
             </DialogTitle>
           </div>
         </DialogHeader>
 
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto flex-1">
           <AnimatePresence mode="wait">
             {/* Phone Input Step */}
             {step === 'phone' && (
@@ -581,6 +586,14 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
                 <div className="space-y-2">
                   <Button 
                     variant="outline" 
+                    className="w-full justify-start bg-accent/10 hover:bg-accent/20 border-accent/30"
+                    onClick={() => setStep('orders')}
+                  >
+                    <Package className="w-4 h-4 mr-2" />
+                    My Orders
+                  </Button>
+                  <Button 
+                    variant="outline" 
                     className="w-full justify-start"
                     onClick={() => {
                       setName(customer.name || '');
@@ -607,6 +620,26 @@ export function OTPAuthModal({ isOpen, onClose }: OTPAuthModalProps) {
                   onClick={handleLogout}
                 >
                   Logout
+                </Button>
+              </motion.div>
+            )}
+
+            {/* My Orders Step */}
+            {step === 'orders' && (
+              <motion.div
+                key="orders"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+              >
+                <MyOrders />
+                <Button 
+                  variant="ghost" 
+                  className="w-full mt-4"
+                  onClick={() => setStep('account')}
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Account
                 </Button>
               </motion.div>
             )}
