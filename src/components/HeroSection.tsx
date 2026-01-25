@@ -121,7 +121,8 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.7
-          }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body font-semibold leading-relaxed text-xl">Discover the artistry of handcrafted sarees, where every thread narrates <em className="italic">Bengal's rich handloom legacy</em></motion.p>
+          }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body font-semibold leading-relaxed text-xl">Discover the artistry of handcrafted sarees, where every thread narrates
+Bengal's rich handloom legacy<em className="italic">Bengal's rich handloom legacy</em></motion.p>
             
             <motion.div initial={{
             opacity: 0,
