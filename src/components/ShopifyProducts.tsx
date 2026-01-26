@@ -35,6 +35,7 @@ export function ShopifyProducts() {
       variantTitle: variant.title,
       price: variant.price,
       quantity: 1,
+      maxQuantity: 1, // Sarees are typically one-of-a-kind
       selectedOptions: variant.selectedOptions || [],
     });
 
