@@ -413,9 +413,10 @@ export function Navbar() {
                   duration: 0.3
                 }} className="overflow-hidden">
                         <div className="pl-4 py-4 space-y-4">
-                          <Slider value={priceRange} min={0} max={50000} step={500} onValueChange={value => setPriceRange(value as [number, number])} />
-                          <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <Slider value={priceRange} min={0} max={50000} step={500} onValueChange={value => setPriceRange(value as [number, number])} showMarks />
+                          <div className="flex items-center justify-between text-sm text-muted-foreground font-medium">
                             <span>₹{priceRange[0].toLocaleString()}</span>
+                            <span>to</span>
                             <span>₹{priceRange[1].toLocaleString()}</span>
                           </div>
                           <button onClick={handlePriceFilterApply} className="w-full py-2 bg-accent text-accent-foreground text-sm font-body rounded-sm hover:bg-accent/90 transition-colors">

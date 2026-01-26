@@ -11,6 +11,7 @@ export interface CartItem {
     currencyCode: string;
   };
   quantity: number;
+  maxQuantity: number; // Stock limit - defaults to 1 for sarees when unknown
   selectedOptions: Array<{
     name: string;
     value: string;
@@ -47,17 +48,23 @@ export const useCartStore = create<CartStore>()(
       addItem: (item) => {
         const { items } = get();
         const existingItem = items.find(i => i.variantId === item.variantId);
+        const maxQty = item.maxQuantity || 1;
         
         if (existingItem) {
+          const newQuantity = Math.min(existingItem.quantity + item.quantity, maxQty);
+          if (existingItem.quantity >= maxQty) {
+            // Already at max quantity, don't add more
+            return;
+          }
           set({
             items: items.map(i =>
               i.variantId === item.variantId
-                ? { ...i, quantity: i.quantity + item.quantity }
+                ? { ...i, quantity: newQuantity }
                 : i
             )
           });
         } else {
-          set({ items: [...items, item] });
+          set({ items: [...items, { ...item, quantity: Math.min(item.quantity, maxQty) }] });
         }
       },
 
@@ -67,9 +74,13 @@ export const useCartStore = create<CartStore>()(
           return;
         }
         
+        const item = get().items.find(i => i.variantId === variantId);
+        const maxQty = item?.maxQuantity || 1;
+        const clampedQuantity = Math.min(quantity, maxQty);
+        
         set({
           items: get().items.map(item =>
-            item.variantId === variantId ? { ...item, quantity } : item
+            item.variantId === variantId ? { ...item, quantity: clampedQuantity } : item
           )
         });
       },

@@ -162,6 +162,7 @@ export const CartDrawer = () => {
                               size="icon"
                               className="h-6 w-6"
                               onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                              disabled={item.quantity >= (item.maxQuantity || 1)}
                             >
                               <Plus className="h-3 w-3" />
                             </Button>

@@ -460,6 +460,7 @@ export default function Collection() {
       variantTitle: variant.title,
       price: variant.price,
       quantity: 1,
+      maxQuantity: 1, // Sarees are typically one-of-a-kind
       selectedOptions: variant.selectedOptions || [],
     });
 
@@ -724,9 +725,11 @@ export default function Collection() {
                         step={500}
                         onValueChange={(value) => setPriceRange(value as [number, number])}
                         className="mb-4"
+                        showMarks
                       />
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center justify-between text-sm text-muted-foreground font-medium">
                         <span>₹{priceRange[0].toLocaleString()}</span>
+                        <span>to</span>
                         <span>₹{priceRange[1].toLocaleString()}</span>
                       </div>
                     </div>
