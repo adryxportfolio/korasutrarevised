@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import {
@@ -50,10 +51,51 @@ const faqs = [
   }
 ];
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://korasutra.com" },
+    { "@type": "ListItem", position: 2, name: "FAQs", item: "https://korasutra.com/faqs" }
+  ]
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map(faq => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer
+    }
+  }))
+};
+
 export default function FAQs() {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <>
+      <Helmet>
+        <title>FAQs - Kora Sutra | Frequently Asked Questions About Handcrafted Sarees</title>
+        <meta 
+          name="description" 
+          content="Find answers to common questions about Kora Sutra sarees - shipping, returns, payment methods, saree care, sizing, and more. Get help with your saree purchase." 
+        />
+        <meta name="keywords" content="Kora Sutra FAQ, saree questions, shipping policy, returns policy, saree care, saree sizing, payment methods" />
+        <link rel="canonical" href="https://korasutra.com/faqs" />
+        
+        <meta property="og:title" content="FAQs - Kora Sutra | Frequently Asked Questions" />
+        <meta property="og:description" content="Find answers to common questions about Kora Sutra sarees - shipping, returns, payment methods, and more." />
+        <meta property="og:url" content="https://korasutra.com/faqs" />
+        <meta property="og:type" content="website" />
+        
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
+      
+      <div className="min-h-screen bg-background">
+        <Navbar />
       <main className="pt-32 pb-20">
         <div className="container mx-auto px-6 max-w-4xl">
           <h1 className="text-4xl md:text-5xl font-heading font-light mb-8">Frequently Asked Questions</h1>
@@ -90,5 +132,6 @@ export default function FAQs() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }

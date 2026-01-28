@@ -172,8 +172,14 @@ export function HeroSection() {
               
               {/* Hero Image */}
               <div className="relative overflow-hidden rounded-sm shadow-elegant w-full h-full flex items-center justify-center">
-                <img src={heroBanner} alt="Kora Sutra Sarees - Wear It With Pride" className="w-full h-full object-contain max-h-full" />
+                <img 
+                  src={heroBanner} 
+                  alt="Kora Sutra Handcrafted Saree - Premium Tussar and Muslin Sarees from Bengal worn with pride" 
+                  className="w-full h-full object-contain max-h-full"
+                  loading="eager"
+                />
                 
+                {/* Overlay */}
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
               </div>

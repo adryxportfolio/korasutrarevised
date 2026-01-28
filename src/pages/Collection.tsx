@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, SlidersHorizontal, ChevronDown, ChevronRight, Heart, X, Check } from 'lucide-react';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
@@ -613,8 +614,72 @@ export default function Collection() {
       ? `Showing products matching your selected filters` 
       : config?.description || '';
 
+  // SEO meta content
+  const seoTitle = searchQuery 
+    ? `Search: ${searchQuery} - Kora Sutra Sarees`
+    : `${title} - Kora Sutra | Handcrafted Sarees Online`;
+  
+  const seoDescription = searchQuery
+    ? `Search results for "${searchQuery}" at Kora Sutra. Find handcrafted sarees matching your search.`
+    : config?.description 
+      ? `${config.description}. Shop authentic handcrafted ${slug} sarees at Kora Sutra. Free shipping across India.`
+      : 'Browse our complete collection of handcrafted sarees at Kora Sutra. Tussar, Muslin, Linen, Jamdani, and more.';
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://korasutra.com" },
+      { "@type": "ListItem", position: 2, name: title, item: `https://korasutra.com/collections/${slug || 'all'}` }
+    ]
+  };
+
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description: seoDescription,
+    url: `https://korasutra.com/collections/${slug || 'all'}`,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: filteredProducts.length,
+      itemListElement: filteredProducts.slice(0, 10).map((product, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Product",
+          name: product.node.title,
+          url: `https://korasutra.com/product/${product.node.handle}`,
+          image: product.node.images.edges[0]?.node.url,
+          offers: {
+            "@type": "Offer",
+            price: product.node.priceRange.minVariantPrice.amount,
+            priceCurrency: "INR",
+            availability: "https://schema.org/InStock"
+          }
+        }
+      }))
+    }
+  };
+
   return (
     <>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={`${title}, Kora Sutra, handcrafted sarees, ${slug} sarees, buy sarees online, Indian sarees`} />
+        <link rel="canonical" href={`https://korasutra.com/collections/${slug || 'all'}`} />
+        
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={`https://korasutra.com/collections/${slug || 'all'}`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(collectionSchema)}</script>
+      </Helmet>
+      
       <Navbar />
       <main className="min-h-screen pt-24 md:pt-28 pb-16 overflow-x-hidden">
         <div className="container mx-auto px-3 md:px-6 max-w-full">

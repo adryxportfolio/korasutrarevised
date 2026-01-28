@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
@@ -43,6 +44,12 @@ export default function Wishlist() {
 
   return (
     <>
+      <Helmet>
+        <title>My Wishlist - Kora Sutra | Saved Handcrafted Sarees</title>
+        <meta name="description" content="View your saved sarees at Kora Sutra. Keep track of your favorite handcrafted sarees and add them to cart when ready." />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      
       <Navbar />
       <main className="min-h-screen pt-28 pb-16">
         <div className="container mx-auto px-4 md:px-6">

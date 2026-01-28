@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
@@ -6,10 +7,58 @@ const WHATSAPP_NUMBER = '+917995862266';
 const WHATSAPP_MESSAGE = 'Hey!';
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://korasutra.com" },
+    { "@type": "ListItem", position: 2, name: "Contact Us", item: "https://korasutra.com/contact" }
+  ]
+};
+
+const contactSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact Kora Sutra",
+  description: "Get in touch with Kora Sutra for inquiries about handcrafted sarees",
+  url: "https://korasutra.com/contact",
+  mainEntity: {
+    "@type": "Organization",
+    name: "Kora Sutra",
+    telephone: "+91-79958-62266",
+    email: "korasutra.official@gmail.com",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Hyderabad",
+      addressRegion: "Telangana",
+      addressCountry: "IN"
+    }
+  }
+};
+
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <>
+      <Helmet>
+        <title>Contact Kora Sutra | Get in Touch - Customer Support</title>
+        <meta 
+          name="description" 
+          content="Contact Kora Sutra for inquiries about handcrafted sarees. Reach us via phone +91 79958 62266, email korasutra.official@gmail.com, or WhatsApp. We're here to help!" 
+        />
+        <meta name="keywords" content="contact Kora Sutra, Kora Sutra phone number, Kora Sutra email, customer support, saree inquiries" />
+        <link rel="canonical" href="https://korasutra.com/contact" />
+        
+        <meta property="og:title" content="Contact Kora Sutra | Get in Touch" />
+        <meta property="og:description" content="Contact us for inquiries about handcrafted sarees. Phone, email, or WhatsApp - we're here to help!" />
+        <meta property="og:url" content="https://korasutra.com/contact" />
+        <meta property="og:type" content="website" />
+        
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(contactSchema)}</script>
+      </Helmet>
+      
+      <div className="min-h-screen bg-background">
+        <Navbar />
       <main className="pt-32 pb-20">
         <div className="container mx-auto px-6 max-w-4xl">
           <h1 className="text-4xl md:text-5xl font-heading font-light mb-8">Contact Us</h1>
@@ -139,5 +188,6 @@ export default function Contact() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }
