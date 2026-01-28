@@ -59,7 +59,12 @@ function CollectionCard({
       <div className="group relative cursor-pointer">
         <div className="relative aspect-[3/4] overflow-hidden rounded-sm">
           {/* Image */}
-          <img src={collection.image} alt={collection.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          <img 
+            src={collection.image} 
+            alt={`${collection.name} Sarees - ${collection.description} | Kora Sutra Collection`}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
           
           {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent opacity-70 group-hover:opacity-85 transition-opacity duration-500" />

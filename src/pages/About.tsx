@@ -5,15 +5,34 @@ import { ChevronRight } from 'lucide-react';
 
 const DUKAAN_STORE = 'https://mydukaan.io/korasutra';
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://korasutra.com" },
+    { "@type": "ListItem", position: 2, name: "About Us", item: "https://korasutra.com/about" }
+  ]
+};
+
 export default function About() {
   return (
     <>
       <Helmet>
-        <title>About Us - Kora Sutra | Our Story & Heritage</title>
+        <title>About Kora Sutra | Our Story & Heritage - Handcrafted Sarees from Bengal</title>
         <meta 
           name="description" 
-          content="Discover the story behind Kora Sutra - a space where artisans, weaves, and stories meet with honesty. Where a saree is not just worn, but chosen, cherished, and passed on." 
+          content="Discover the story behind Kora Sutra. We celebrate Bengal's rich textile heritage through handcrafted sarees - where artisans, weaves, and stories meet with honesty." 
         />
+        <meta name="keywords" content="Kora Sutra story, about Kora Sutra, Bengal textile heritage, handcrafted sarees story, artisan sarees, Indian textile tradition" />
+        <link rel="canonical" href="https://korasutra.com/about" />
+        
+        <meta property="og:title" content="About Kora Sutra | Our Story & Heritage" />
+        <meta property="og:description" content="Discover the story behind Kora Sutra - celebrating Bengal's rich textile heritage through handcrafted sarees." />
+        <meta property="og:url" content="https://korasutra.com/about" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
       
       <div className="min-h-screen bg-background">
