@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Loader2 } from 'lucide-react';
+import { ShoppingBag, Loader2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 import { StockIndicator } from '@/components/StockStatus';
+import { Button } from '@/components/ui/button';
+
+const PRODUCTS_TO_SHOW = 8;
 
 export function ShopifyProducts() {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
@@ -15,7 +18,7 @@ export function ShopifyProducts() {
   useEffect(() => {
     async function loadProducts() {
       setLoading(true);
-      const data = await fetchProducts(20);
+      const data = await fetchProducts(PRODUCTS_TO_SHOW);
       setProducts(data);
       setLoading(false);
     }
@@ -35,7 +38,7 @@ export function ShopifyProducts() {
       variantTitle: variant.title,
       price: variant.price,
       quantity: 1,
-      maxQuantity: 1, // Sarees are typically one-of-a-kind
+      maxQuantity: 1,
       selectedOptions: variant.selectedOptions || [],
     });
 
@@ -100,13 +103,14 @@ export function ShopifyProducts() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {products.map((product, index) => (
+        {/* Products Grid - Show limited products */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {products.slice(0, PRODUCTS_TO_SHOW).map((product, index) => (
             <motion.div
               key={product.node.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
               viewport={{ once: true }}
             >
               <Link 
@@ -154,6 +158,27 @@ export function ShopifyProducts() {
             </motion.div>
           ))}
         </div>
+
+        {/* View All Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="flex justify-center mt-12"
+        >
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="group"
+          >
+            <Link to="/collection">
+              View All Sarees
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
+        </motion.div>
       </div>
     </section>
   );
