@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus, Bell } from 'lucide-react';
 import { StockStatus } from '@/components/StockStatus';
@@ -393,8 +394,9 @@ function RelatedProducts({ currentHandle, currentProductType, currentFabric, pro
               {node.images.edges[0]?.node && (
                 <img
                   src={node.images.edges[0].node.url}
-                  alt={node.images.edges[0].node.altText || node.title}
+                  alt={node.images.edges[0].node.altText || `${node.title} - Handcrafted Saree by Kora Sutra`}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
                 />
               )}
             </div>
@@ -615,8 +617,75 @@ export default function ProductDetail() {
   const priceAmount = parseFloat(currentVariant?.price.amount || '0');
   const currentSKU = formatSKU(currentVariant?.sku);
 
+  // Generate SEO data
+  const productDescription = product.description 
+    ? product.description.slice(0, 155).replace(/<[^>]*>/g, '') + '...'
+    : `Shop ${product.title} at Kora Sutra. Premium handcrafted saree from Bengal. Free shipping across India.`;
+  
+  const productImage = images[0]?.node.url || 'https://korasutra.com/og-image.png';
+  const productPriceValue = currentVariant?.price.amount || '0';
+  
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: productDescription,
+    image: images.map(img => img.node.url),
+    brand: {
+      "@type": "Brand",
+      name: "Kora Sutra"
+    },
+    sku: currentSKU,
+    offers: {
+      "@type": "Offer",
+      url: `https://korasutra.com/product/${handle}`,
+      priceCurrency: "INR",
+      price: productPriceValue,
+      availability: currentVariant?.availableForSale 
+        ? "https://schema.org/InStock" 
+        : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "Organization",
+        name: "Kora Sutra"
+      }
+    }
+  };
+
+  const breadcrumbSchemaPDP = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://korasutra.com" },
+      { "@type": "ListItem", position: 2, name: "Products", item: "https://korasutra.com/collections/all" },
+      { "@type": "ListItem", position: 3, name: product.title, item: `https://korasutra.com/product/${handle}` }
+    ]
+  };
+
   return (
     <>
+      <Helmet>
+        <title>{product.title} | Kora Sutra - Handcrafted Sarees</title>
+        <meta name="description" content={productDescription} />
+        <meta name="keywords" content={`${product.title}, Kora Sutra, handcrafted saree, buy saree online, ${extractFabricFromTitle(product.title)} saree, Indian saree`} />
+        <link rel="canonical" href={`https://korasutra.com/product/${handle}`} />
+        
+        <meta property="og:title" content={`${product.title} | Kora Sutra`} />
+        <meta property="og:description" content={productDescription} />
+        <meta property="og:image" content={productImage} />
+        <meta property="og:url" content={`https://korasutra.com/product/${handle}`} />
+        <meta property="og:type" content="product" />
+        <meta property="product:price:amount" content={productPriceValue} />
+        <meta property="product:price:currency" content="INR" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${product.title} | Kora Sutra`} />
+        <meta name="twitter:description" content={productDescription} />
+        <meta name="twitter:image" content={productImage} />
+        
+        <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchemaPDP)}</script>
+      </Helmet>
+      
       <Navbar />
       <main className="min-h-screen pt-28 pb-24 md:pb-16 overflow-x-hidden">
         <div className="container mx-auto px-3 md:px-6 max-w-full overflow-hidden">

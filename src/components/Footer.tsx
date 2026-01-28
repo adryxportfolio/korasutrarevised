@@ -23,8 +23,8 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
-            <Link to="/" className="inline-block mb-6">
-              <img src={logo} alt="Kora Sutra" className="h-16 w-auto" />
+            <Link to="/" className="inline-block mb-6" aria-label="Kora Sutra - Home">
+              <img src={logo} alt="Kora Sutra - Handcrafted Sarees from Bengal" className="h-16 w-auto" loading="lazy" />
             </Link>
             <p className="text-muted-foreground font-body text-sm leading-relaxed mb-6 max-w-xs">
               Celebrating the art of Indian textiles with curated collections of handcrafted sarees.
@@ -32,21 +32,26 @@ export function Footer() {
             
             {/* Social Links */}
             <div className="flex gap-4">
-              {[
-                { icon: Instagram, href: 'https://www.instagram.com/korasutraofficial/' },
-                { icon: Facebook, href: 'https://www.facebook.com/people/Korasutraofficial/61585129572992' },
-              ].map((social, index) => (
-                <motion.a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1 }}
-                  className="w-10 h-10 bg-background rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  <social.icon className="w-4 h-4" />
-                </motion.a>
-              ))}
+              <motion.a
+                href="https://www.instagram.com/korasutraofficial/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow Kora Sutra on Instagram"
+                whileHover={{ scale: 1.1 }}
+                className="w-10 h-10 bg-background rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                <Instagram className="w-4 h-4" aria-hidden="true" />
+              </motion.a>
+              <motion.a
+                href="https://www.facebook.com/people/Korasutraofficial/61585129572992"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow Kora Sutra on Facebook"
+                whileHover={{ scale: 1.1 }}
+                className="w-10 h-10 bg-background rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                <Facebook className="w-4 h-4" aria-hidden="true" />
+              </motion.a>
             </div>
           </div>
 
