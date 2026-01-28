@@ -1226,8 +1226,9 @@ export default function Collection() {
                           {node.images.edges[0]?.node && (
                             <img
                               src={node.images.edges[0].node.url}
-                              alt={node.images.edges[0].node.altText || node.title}
+                              alt={node.images.edges[0].node.altText || `${node.title} - Handcrafted Saree by Kora Sutra`}
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              loading="lazy"
                             />
                           )}
                           

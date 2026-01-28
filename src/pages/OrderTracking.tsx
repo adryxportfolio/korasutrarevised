@@ -13,11 +13,24 @@ export default function OrderTracking() {
   const navigate = useNavigate();
   const { isAuthenticated, customer } = useAuthStore();
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://korasutra.com" },
+      { "@type": "ListItem", position: 2, name: "Order Tracking", item: "https://korasutra.com/order-tracking" }
+    ]
+  };
+
   return (
     <>
       <Helmet>
-        <title>Track Your Order - Kora Sutra</title>
-        <meta name="description" content="Track your Kora Sutra order status. View shipping updates and delivery information for your purchases." />
+        <title>Track Your Order - Kora Sutra | Order Status & Delivery Updates</title>
+        <meta name="description" content="Track your Kora Sutra order status. View shipping updates, delivery information, and order history for your handcrafted saree purchases." />
+        <meta name="keywords" content="Kora Sutra order tracking, track order, shipping status, delivery updates, order history" />
+        <link rel="canonical" href="https://korasutra.com/order-tracking" />
+        
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
       <Navbar />

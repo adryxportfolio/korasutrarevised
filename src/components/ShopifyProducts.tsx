@@ -121,8 +121,9 @@ export function ShopifyProducts() {
                   {product.node.images.edges[0]?.node && (
                     <img
                       src={product.node.images.edges[0].node.url}
-                      alt={product.node.images.edges[0].node.altText || product.node.title}
+                      alt={product.node.images.edges[0].node.altText || `${product.node.title} - Handcrafted Saree by Kora Sutra`}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
                     />
                   )}
                   
