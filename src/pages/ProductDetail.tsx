@@ -23,6 +23,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ProductReviews } from '@/components/ProductReviews';
+import { SecureCheckoutBadges } from '@/components/SecureCheckoutBadges';
 
 // Extract fabric type from product title
 function extractFabricFromTitle(title: string): string {
@@ -852,6 +853,9 @@ export default function ProductDetail() {
                       </Button>
                     )}
                   </div>
+                  
+                  {/* Secure Checkout Badges */}
+                  <SecureCheckoutBadges />
                 </div>
                 
                 {/* Size Chart Link */}
