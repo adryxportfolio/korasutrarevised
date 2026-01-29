@@ -201,6 +201,31 @@ export const CartDrawer = () => {
                       </>
                     )}
                   </Button>
+                  
+                  {/* Secure Checkout Badges */}
+                  <div className="flex items-center justify-center gap-4 pt-3">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                      </svg>
+                      <span className="text-[10px]">Secure</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                        <path d="m9 12 2 2 4-4"/>
+                      </svg>
+                      <span className="text-[10px]">Verified</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        <line x1="2" x2="22" y1="10" y2="10"/>
+                      </svg>
+                      <span className="text-[10px]">SSL 256-bit</span>
+                    </div>
+                  </div>
 
                   {/* Auth Section - Show different content based on auth state */}
                   {isAuthenticated && customer ? (
