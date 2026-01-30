@@ -23,6 +23,16 @@ export default function Terms() {
         <meta name="keywords" content="Kora Sutra terms, terms and conditions, legal terms, saree purchase terms" />
         <link rel="canonical" href="https://korasutra.com/terms" />
         
+        <meta property="og:title" content="Terms & Conditions - Kora Sutra" />
+        <meta property="og:description" content="Read our terms and conditions for shopping handcrafted sarees." />
+        <meta property="og:url" content="https://korasutra.com/terms" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Terms & Conditions - Kora Sutra" />
+        <meta name="twitter:description" content="Read our terms and conditions for shopping handcrafted sarees." />
+        
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
       

@@ -26,6 +26,12 @@ export default function Returns() {
         <meta property="og:title" content="Returns & Exchange Policy - Kora Sutra" />
         <meta property="og:description" content="Easy 7-day returns with hassle-free refund process for handcrafted sarees." />
         <meta property="og:url" content="https://korasutra.com/returns" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Returns & Exchange Policy - Kora Sutra" />
+        <meta name="twitter:description" content="Easy 7-day returns with hassle-free refund process for handcrafted sarees." />
         
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>

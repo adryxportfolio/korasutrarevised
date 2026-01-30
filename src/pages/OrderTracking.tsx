@@ -30,6 +30,16 @@ export default function OrderTracking() {
         <meta name="keywords" content="Kora Sutra order tracking, track order, shipping status, delivery updates, order history" />
         <link rel="canonical" href="https://korasutra.com/order-tracking" />
         
+        <meta property="og:title" content="Track Your Order - Kora Sutra" />
+        <meta property="og:description" content="Track your Kora Sutra order status and view shipping updates." />
+        <meta property="og:url" content="https://korasutra.com/order-tracking" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Track Your Order - Kora Sutra" />
+        <meta name="twitter:description" content="Track your Kora Sutra order status and delivery updates." />
+        
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 

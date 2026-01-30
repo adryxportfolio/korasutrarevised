@@ -23,6 +23,16 @@ export default function SizeGuide() {
         <meta name="keywords" content="saree size guide, saree measurements, saree dimensions, blouse size, saree length, saree width" />
         <link rel="canonical" href="https://korasutra.com/size-guide" />
         
+        <meta property="og:title" content="Saree Size Guide - Kora Sutra" />
+        <meta property="og:description" content="Find the perfect saree size with our measurement guide." />
+        <meta property="og:url" content="https://korasutra.com/size-guide" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Saree Size Guide - Kora Sutra" />
+        <meta name="twitter:description" content="Standard saree dimensions and sizing help for Kora Sutra sarees." />
+        
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
       
