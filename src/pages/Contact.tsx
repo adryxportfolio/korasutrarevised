@@ -26,7 +26,7 @@ const contactSchema = {
     "@type": "Organization",
     name: "Kora Sutra",
     telephone: "+91-79958-62266",
-    email: "korasutra.official@gmail.com",
+    email: "customer.support@korasutra.com",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Hyderabad",
@@ -43,7 +43,7 @@ export default function Contact() {
         <title>Contact Kora Sutra | Get in Touch - Customer Support</title>
         <meta 
           name="description" 
-          content="Contact Kora Sutra for inquiries about handcrafted sarees. Reach us via phone +91 79958 62266, email korasutra.official@gmail.com, or WhatsApp. We're here to help!" 
+          content="Contact Kora Sutra for inquiries about handcrafted sarees. Reach us via phone +91 79958 62266, email customer.support@korasutra.com, or WhatsApp. We're here to help!" 
         />
         <meta name="keywords" content="contact Kora Sutra, Kora Sutra phone number, Kora Sutra email, customer support, saree inquiries" />
         <link rel="canonical" href="https://korasutra.com/contact" />
@@ -89,8 +89,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-heading text-lg mb-1">Email</h3>
-                    <a href="mailto:korasutra.official@gmail.com" className="text-muted-foreground font-body hover:text-foreground transition-colors">
-                      korasutra.official@gmail.com
+                    <a href="mailto:customer.support@korasutra.com" className="text-muted-foreground font-body hover:text-foreground transition-colors">
+                      customer.support@korasutra.com
                     </a>
                   </div>
                 </div>

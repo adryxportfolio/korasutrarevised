@@ -118,7 +118,7 @@ export default function Legal() {
                 </p>
                 <p className="text-muted-foreground mb-4">
                   <strong>Kora Sutra</strong><br />
-                  Email: korasutra.official@gmail.com<br />
+                  Email: customer.support@korasutra.com<br />
                   Phone: +91 79958 62266
                 </p>
               </section>

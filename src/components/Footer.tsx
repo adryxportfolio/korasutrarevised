@@ -94,9 +94,9 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm text-muted-foreground font-body">
-              <a href="mailto:korasutra.official@gmail.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
+              <a href="mailto:customer.support@korasutra.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Mail className="w-4 h-4" />
-                korasutra.official@gmail.com
+                customer.support@korasutra.com
               </a>
               <a href="tel:+917995862266" className="flex items-center gap-2 hover:text-foreground transition-colors">
                 <Phone className="w-4 h-4" />

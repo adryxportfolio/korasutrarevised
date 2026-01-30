@@ -69,7 +69,7 @@ export default function SizeGuide() {
                   If you need assistance with sizing or have any questions, please don't hesitate to contact us:
                 </p>
                 <ul className="list-disc pl-6 text-muted-foreground">
-                  <li>Email: korasutra.official@gmail.com</li>
+                  <li>Email: customer.support@korasutra.com</li>
                   <li>Phone: +91 79958 62266</li>
                 </ul>
               </section>
