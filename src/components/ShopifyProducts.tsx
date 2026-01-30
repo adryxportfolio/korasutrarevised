@@ -174,7 +174,7 @@ export function ShopifyProducts() {
             size="lg"
             className="group"
           >
-            <Link to="/collection">
+            <Link to="/collections/all">
               View All Sarees
               <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
             </Link>
