@@ -23,6 +23,16 @@ export default function Cookies() {
         <meta name="keywords" content="Kora Sutra cookies, cookie policy, website cookies, privacy" />
         <link rel="canonical" href="https://korasutra.com/cookies" />
         
+        <meta property="og:title" content="Cookie Policy - Kora Sutra" />
+        <meta property="og:description" content="Understand how Kora Sutra uses cookies to enhance your shopping experience." />
+        <meta property="og:url" content="https://korasutra.com/cookies" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Cookie Policy - Kora Sutra" />
+        <meta name="twitter:description" content="Understand how Kora Sutra uses cookies to enhance your shopping experience." />
+        
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
       
@@ -140,7 +150,7 @@ export default function Cookies() {
               <section className="mb-8">
                 <h2 className="text-2xl font-heading mb-4">9. Contact Us</h2>
                 <p className="text-muted-foreground mb-4">
-                  For questions about our cookie policy, contact us at korasutra.official@gmail.com or call +91 79958 62266.
+                  For questions about our cookie policy, contact us at customer.support@korasutra.com or call +91 79958 62266.
                 </p>
               </section>
             </div>

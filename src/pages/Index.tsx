@@ -18,7 +18,7 @@ const organizationSchema = {
   url: "https://korasutra.com",
   logo: {
     "@type": "ImageObject",
-    url: "https://korasutra.com/logo.png",
+    url: "https://korasutra.com/favicon.png",
     width: 512,
     height: 512
   },
@@ -126,7 +126,7 @@ const Index = () => {
           name="keywords"
           content="Kora Sutra, KoraSutra, kora sutra sarees, handcrafted sarees, tussar silk sarees, muslin sarees, linen sarees, jamdani sarees, kantha stitch sarees, block print sarees, Bengal sarees, Indian sarees, handloom sarees, luxury sarees, designer sarees, silk sarees online, buy sarees online India, traditional sarees, wedding sarees, party wear sarees"
         />
-        <link rel="canonical" href="https://korasutra.com" />
+        <link rel="canonical" href="https://korasutra.com/" />
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />

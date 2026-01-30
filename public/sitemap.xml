@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://korasutra.com/</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -13,115 +13,133 @@
   </url>
   <url>
     <loc>https://korasutra.com/about</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/contact</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/collections/all</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://korasutra.com/collections/tussar</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/collections/muslin</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/collections/linen</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/collections/jamdani</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/collections/kantha-stitch</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/collections/block-print</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://korasutra.com/collections/cotton</loc>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://korasutra.com/collections/pure-silk</loc>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://korasutra.com/collections/baluchari</loc>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://korasutra.com/faqs</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://korasutra.com/shipping</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://korasutra.com/returns</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://korasutra.com/size-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://korasutra.com/terms</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://korasutra.com/privacy</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://korasutra.com/cookies</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://korasutra.com/legal</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://korasutra.com/wishlist</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://korasutra.com/order-tracking</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

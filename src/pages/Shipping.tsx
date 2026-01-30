@@ -26,6 +26,12 @@ export default function Shipping() {
         <meta property="og:title" content="Shipping Policy - Kora Sutra" />
         <meta property="og:description" content="Learn about our shipping policy. We deliver handcrafted sarees across India." />
         <meta property="og:url" content="https://korasutra.com/shipping" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://korasutra.com/og-image.png" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Shipping Policy - Kora Sutra" />
+        <meta name="twitter:description" content="Learn about our shipping policy for handcrafted sarees delivery across India." />
         
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
