@@ -43,7 +43,7 @@ const faqs = [
   },
   {
     question: "How can I contact customer support?",
-    answer: "You can reach us via email at korasutra.official@gmail.com or call us at +91 79958 62266. We're available Monday to Saturday, 10 AM to 6 PM IST."
+    answer: "You can reach us via email at customer.support@korasutra.com or call us at +91 79958 62266. We're available Monday to Saturday, 10 AM to 6 PM IST."
   },
   {
     question: "Are the colors in the images accurate?",

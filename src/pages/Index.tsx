@@ -37,7 +37,7 @@ const organizationSchema = {
       "@type": "ContactPoint",
       telephone: "+91-79958-62266",
       contactType: "customer service",
-      email: "korasutra.official@gmail.com",
+      email: "customer.support@korasutra.com",
       availableLanguage: ["English", "Hindi"],
       areaServed: "IN"
     }
@@ -74,7 +74,7 @@ const localBusinessSchema = {
   image: "https://korasutra.com/og-image.png",
   url: "https://korasutra.com",
   telephone: "+91-79958-62266",
-  email: "korasutra.official@gmail.com",
+  email: "customer.support@korasutra.com",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Hyderabad",

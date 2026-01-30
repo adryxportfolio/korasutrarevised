@@ -74,7 +74,7 @@ export default function Returns() {
               <section className="mb-8">
                 <h2 className="text-2xl font-heading mb-4">How to Initiate a Return</h2>
                 <ol className="list-decimal pl-6 text-muted-foreground mb-4">
-                  <li className="mb-2">Email us at korasutra.official@gmail.com with your order number</li>
+                  <li className="mb-2">Email us at customer.support@korasutra.com with your order number</li>
                   <li className="mb-2">Attach your unboxing video clearly showing the issue</li>
                   <li className="mb-2">Describe the reason for return</li>
                   <li className="mb-2">Our team will review and respond within 24-48 hours</li>
@@ -106,7 +106,7 @@ export default function Returns() {
               <section className="mb-8">
                 <h2 className="text-2xl font-heading mb-4">Contact Us</h2>
                 <p className="text-muted-foreground mb-4">
-                  For return-related queries, reach us at korasutra.official@gmail.com or call +91 79958 62266.
+                  For return-related queries, reach us at customer.support@korasutra.com or call +91 79958 62266.
                 </p>
               </section>
             </div>
