@@ -365,7 +365,8 @@ export default function Collection() {
       
       // Set fixed max price of 50,000
       setMaxPrice(50000);
-      setPriceRange([0, 50000]);
+      // Only reset price range if it hasn't been modified by user (initial load)
+      // Don't reset on subsequent loads to preserve user's filter selection
       
       setLoading(false);
     }
