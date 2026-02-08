@@ -168,6 +168,8 @@ export default function Collection() {
   const fabricsParam = searchParams.get('fabrics');
   const patternsParam = searchParams.get('patterns');
   const occasionsParam = searchParams.get('occasions');
+  const minPriceParam = searchParams.get('minPrice');
+  const maxPriceParam = searchParams.get('maxPrice');
 
   // Initialize filters from URL params
   useEffect(() => {
@@ -189,7 +191,13 @@ export default function Collection() {
     } else {
       setFilterOccasions([]);
     }
-  }, [colorsParam, fabricsParam, patternsParam, occasionsParam]);
+    // Initialize price range from URL params
+    const minPrice = minPriceParam ? parseInt(minPriceParam, 10) : 0;
+    const maxPrice = maxPriceParam ? parseInt(maxPriceParam, 10) : 50000;
+    if (minPriceParam || maxPriceParam) {
+      setPriceRange([minPrice, maxPrice]);
+    }
+  }, [colorsParam, fabricsParam, patternsParam, occasionsParam, minPriceParam, maxPriceParam]);
 
   // Extract available colors from products - derived primarily from title
   const availableColors = useMemo(() => {
@@ -520,6 +528,9 @@ export default function Collection() {
     if (filterPatterns.length > 0) params.set('patterns', filterPatterns.join(','));
     if (filterOccasions.length > 0) params.set('occasions', filterOccasions.join(','));
     if (selectedColors.length > 0) params.set('colors', selectedColors.join(','));
+    // Persist price range in URL if not default
+    if (priceRange[0] > 0) params.set('minPrice', priceRange[0].toString());
+    if (priceRange[1] < maxPrice) params.set('maxPrice', priceRange[1].toString());
     
     const queryString = params.toString();
     navigate(`/collections/all${queryString ? `?${queryString}` : ''}`);
