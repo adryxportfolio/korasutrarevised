@@ -8,6 +8,7 @@ import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, creat
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
+import { useAuthStore } from '@/stores/authStore';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
@@ -15,6 +16,7 @@ import { Footer } from '@/components/Footer';
 import { SwipeableImageGallery } from '@/components/SwipeableImageGallery';
 import { StickyMobileCartBar } from '@/components/StickyMobileCartBar';
 import { RecentlyViewed } from '@/components/RecentlyViewed';
+import { OTPAuthModal } from '@/components/OTPAuthModal';
 
 import {
   Accordion,
@@ -421,11 +423,12 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const addToRecentlyViewed = useRecentlyViewedStore(state => state.addProduct);
+  const { isAuthenticated } = useAuthStore();
 
   const isWishlisted = product ? isInWishlist(product.id) : false;
 
@@ -480,6 +483,16 @@ export default function ProductDetail() {
   const handleBuyNow = async () => {
     if (!product || !selectedVariant) {
       toast.error('Please select a variant', { position: 'top-center' });
+      return;
+    }
+
+    // MANDATORY: Must be signed in with OTP before checkout
+    if (!isAuthenticated) {
+      toast.error('Sign in required', {
+        description: 'Please sign in with your mobile number to place an order.',
+        position: 'top-center',
+      });
+      setIsAuthModalOpen(true);
       return;
     }
     
@@ -1029,6 +1042,12 @@ export default function ProductDetail() {
         )}
       </main>
       <Footer />
+
+      {/* OTP Auth Modal - triggered when unauthenticated user tries to checkout */}
+      <OTPAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </>
   );
 }

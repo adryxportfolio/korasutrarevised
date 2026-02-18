@@ -51,6 +51,16 @@ export const CartDrawer = () => {
       toast.error('Your cart is empty', { position: 'top-center' });
       return;
     }
+
+    // MANDATORY: Must be signed in with OTP before checkout
+    if (!isAuthenticated) {
+      toast.error('Sign in required', {
+        description: 'Please sign in with your mobile number to place an order.',
+        position: 'top-center',
+      });
+      setIsAuthModalOpen(true);
+      return;
+    }
     
     try {
       console.log('Creating checkout for cart items:', items.map(i => ({ id: i.variantId, qty: i.quantity })));
@@ -182,6 +192,14 @@ export const CartDrawer = () => {
                     </span>
                   </div>
                   
+                  {/* Mandatory Sign In Notice */}
+                  {!isAuthenticated && (
+                    <div className="flex items-center gap-2 p-2.5 bg-accent/10 border border-accent/30 rounded-sm text-xs font-body text-foreground/80">
+                      <span>🔒</span>
+                      <span>Sign in with your mobile number to place an order — required for all purchases.</span>
+                    </div>
+                  )}
+
                   {/* Checkout Button */}
                   <Button 
                     onClick={handleCheckout}
@@ -197,7 +215,7 @@ export const CartDrawer = () => {
                     ) : (
                       <>
                         <ExternalLink className="w-4 h-4 mr-2" />
-                        {isAuthenticated ? 'Proceed to Checkout' : 'Continue as Guest'}
+                        {isAuthenticated ? 'Proceed to Checkout' : 'Sign In to Checkout'}
                       </>
                     )}
                   </Button>
