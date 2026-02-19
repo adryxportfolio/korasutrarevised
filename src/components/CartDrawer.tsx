@@ -10,8 +10,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, Package, MapPin, LogOut, Truck } from "lucide-react";
-import { useCartStore } from "@/stores/cartStore";
+import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, MapPin, LogOut, Truck, CreditCard, Banknote } from "lucide-react";
+import { useCartStore, COD_FEE_AMOUNT } from "@/stores/cartStore";
 import { useAuthStore } from "@/stores/authStore";
 import { formatPrice } from "@/lib/shopify";
 import { toast } from "sonner";
@@ -29,12 +29,16 @@ export const CartDrawer = () => {
     removeItem, 
     createCheckout,
     clearCart,
+    paymentMethod,
+    setPaymentMethod,
   } = useCartStore();
   
   const { isAuthenticated, customer, logout } = useAuthStore();
   
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
+  const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
+  const codFee = paymentMethod === 'cod' ? COD_FEE_AMOUNT : 0;
+  const totalPrice = subtotal + codFee;
   const currencyCode = items[0]?.price.currencyCode || 'INR';
 
   const handleOpenAuthModal = () => {
@@ -185,7 +189,56 @@ export const CartDrawer = () => {
                 
                 {/* Fixed checkout section */}
                 <div className="flex-shrink-0 space-y-4 pt-4 border-t border-border bg-background">
-                  <div className="flex justify-between items-center">
+                  
+                  {/* Payment Method Selector */}
+                  <div className="space-y-2">
+                    <p className="text-sm font-heading font-medium">Payment Method</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setPaymentMethod('prepaid')}
+                        className={`flex items-center gap-2 p-3 rounded-sm border text-sm font-body transition-all ${
+                          paymentMethod === 'prepaid'
+                            ? 'border-primary bg-primary/5 text-primary'
+                            : 'border-border text-muted-foreground hover:border-primary/50'
+                        }`}
+                      >
+                        <CreditCard className="w-4 h-4 flex-shrink-0" />
+                        <span>Prepaid</span>
+                      </button>
+                      <button
+                        onClick={() => setPaymentMethod('cod')}
+                        className={`flex items-center gap-2 p-3 rounded-sm border text-sm font-body transition-all ${
+                          paymentMethod === 'cod'
+                            ? 'border-primary bg-primary/5 text-primary'
+                            : 'border-border text-muted-foreground hover:border-primary/50'
+                        }`}
+                      >
+                        <Banknote className="w-4 h-4 flex-shrink-0" />
+                        <span>Cash on Delivery</span>
+                      </button>
+                    </div>
+                    {paymentMethod === 'cod' && (
+                      <p className="text-xs text-muted-foreground font-body bg-secondary/30 px-3 py-2 rounded-sm">
+                        ₹200 COD handling fee will be added to your order.
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Order Summary */}
+                  <div className="space-y-1 text-sm font-body">
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Subtotal</span>
+                      <span>{formatPrice(subtotal.toString(), currencyCode)}</span>
+                    </div>
+                    {paymentMethod === 'cod' && (
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>COD Fee</span>
+                        <span>+ {formatPrice(COD_FEE_AMOUNT.toString(), currencyCode)}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex justify-between items-center pt-1 border-t border-border">
                     <span className="text-lg font-heading">Total</span>
                     <span className="text-xl font-bold">
                       {formatPrice(totalPrice.toString(), currencyCode)}
