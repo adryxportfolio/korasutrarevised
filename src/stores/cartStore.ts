@@ -2,6 +2,9 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { ShopifyProduct, createStorefrontCheckout } from '@/lib/shopify';
 
+export const COD_FEE_VARIANT_ID = 'gid://shopify/ProductVariant/47613602922714';
+export const COD_FEE_AMOUNT = 200;
+
 export interface CartItem {
   product: ShopifyProduct;
   variantId: string;
@@ -23,6 +26,7 @@ interface CartStore {
   cartId: string | null;
   checkoutUrl: string | null;
   isLoading: boolean;
+  paymentMethod: 'prepaid' | 'cod';
   
   // Actions
   addItem: (item: CartItem) => void;
@@ -32,6 +36,7 @@ interface CartStore {
   setCartId: (cartId: string) => void;
   setCheckoutUrl: (url: string) => void;
   setLoading: (loading: boolean) => void;
+  setPaymentMethod: (method: 'prepaid' | 'cod') => void;
   createCheckout: () => Promise<string | null>;
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -44,6 +49,7 @@ export const useCartStore = create<CartStore>()(
       cartId: null,
       checkoutUrl: null,
       isLoading: false,
+      paymentMethod: 'prepaid',
 
       addItem: (item) => {
         const { items } = get();
@@ -53,7 +59,6 @@ export const useCartStore = create<CartStore>()(
         if (existingItem) {
           const newQuantity = Math.min(existingItem.quantity + item.quantity, maxQty);
           if (existingItem.quantity >= maxQty) {
-            // Already at max quantity, don't add more
             return;
           }
           set({
@@ -92,15 +97,16 @@ export const useCartStore = create<CartStore>()(
       },
 
       clearCart: () => {
-        set({ items: [], cartId: null, checkoutUrl: null });
+        set({ items: [], cartId: null, checkoutUrl: null, paymentMethod: 'prepaid' });
       },
 
       setCartId: (cartId) => set({ cartId }),
       setCheckoutUrl: (checkoutUrl) => set({ checkoutUrl }),
       setLoading: (isLoading) => set({ isLoading }),
+      setPaymentMethod: (paymentMethod) => set({ paymentMethod }),
 
       createCheckout: async () => {
-        const { items, setLoading, setCheckoutUrl } = get();
+        const { items, paymentMethod, setLoading, setCheckoutUrl } = get();
         if (items.length === 0) return null;
 
         setLoading(true);
@@ -109,6 +115,15 @@ export const useCartStore = create<CartStore>()(
             variantId: item.variantId,
             quantity: item.quantity,
           }));
+
+          // Add COD fee line item if COD is selected
+          if (paymentMethod === 'cod') {
+            cartItems.push({
+              variantId: COD_FEE_VARIANT_ID,
+              quantity: 1,
+            });
+          }
+
           const checkoutUrl = await createStorefrontCheckout(cartItems);
           setCheckoutUrl(checkoutUrl);
           return checkoutUrl;
