@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus, Bell } from 'lucide-react';
 import { StockStatus } from '@/components/StockStatus';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
+import { COD_FEE_VARIANT_ID } from '@/stores/cartStore';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
@@ -17,6 +18,7 @@ import { SwipeableImageGallery } from '@/components/SwipeableImageGallery';
 import { StickyMobileCartBar } from '@/components/StickyMobileCartBar';
 import { RecentlyViewed } from '@/components/RecentlyViewed';
 import { OTPAuthModal } from '@/components/OTPAuthModal';
+import { PaymentMethodModal } from '@/components/PaymentMethodModal';
 
 import {
   Accordion,
@@ -479,14 +481,14 @@ export default function ProductDetail() {
   };
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = () => {
     if (!product || !selectedVariant) {
       toast.error('Please select a variant', { position: 'top-center' });
       return;
     }
 
-    // MANDATORY: Must be signed in with OTP before checkout
     if (!isAuthenticated) {
       toast.error('Sign in required', {
         description: 'Please sign in with your mobile number to place an order.',
@@ -495,34 +497,42 @@ export default function ProductDetail() {
       setIsAuthModalOpen(true);
       return;
     }
-    
-    const variant = getCurrentVariant();
-    if (!variant) {
-      toast.error('Variant not found', { position: 'top-center' });
-      return;
-    }
+
+    // Open payment method selection modal
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleBuyNowCheckout = async (paymentMethod: 'prepaid' | 'cod') => {
+    const variant = product?.variants.edges.find(
+      (e) => e.node.id === selectedVariant
+    )?.node;
+
+    if (!variant) return;
 
     setIsCheckingOut(true);
     try {
-      console.log('Creating checkout for variant:', variant.id);
-      const checkoutUrl = await createStorefrontCheckout([
-        { variantId: variant.id, quantity: 1 }
-      ]);
-      console.log('Checkout URL created:', checkoutUrl);
-      
+      const cartItems: { variantId: string; quantity: number }[] = [
+        { variantId: variant.id, quantity: 1 },
+      ];
+
+      // Add COD fee line item if COD selected
+      if (paymentMethod === 'cod') {
+        cartItems.push({ variantId: COD_FEE_VARIANT_ID, quantity: 1 });
+      }
+
+      const checkoutUrl = await createStorefrontCheckout(cartItems);
+
       if (checkoutUrl) {
+        setIsPaymentModalOpen(false);
         toast.success('Redirecting to checkout...', { position: 'top-center' });
-        // Use location.href for better mobile compatibility (window.open gets blocked in async contexts)
         window.location.href = checkoutUrl;
       } else {
-        throw new Error('No checkout URL returned');
+        toast.error('Failed to create checkout. Please try again.', { position: 'top-center' });
       }
     } catch (error) {
-      console.error('Checkout failed:', error);
-      toast.error('Failed to create checkout', {
-        description: error instanceof Error ? error.message : 'Please try again',
-        position: 'top-center',
-      });
+      console.error('Checkout error:', error);
+      toast.error('Checkout failed. Please try again.', { position: 'top-center' });
+    } finally {
       setIsCheckingOut(false);
     }
   };
@@ -1048,6 +1058,21 @@ export default function ProductDetail() {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
       />
+
+      {/* Payment Method Modal - shown before Buy Now checkout */}
+      {product && selectedVariant && (() => {
+        const variant = product.variants.edges.find(e => e.node.id === selectedVariant)?.node;
+        if (!variant) return null;
+        return (
+          <PaymentMethodModal
+            isOpen={isPaymentModalOpen}
+            onClose={() => setIsPaymentModalOpen(false)}
+            baseAmount={parseFloat(variant.price.amount)}
+            currencyCode={variant.price.currencyCode}
+            onConfirm={handleBuyNowCheckout}
+          />
+        );
+      })()}
     </>
   );
 }

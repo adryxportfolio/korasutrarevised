@@ -10,35 +10,33 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, MapPin, LogOut, Truck, CreditCard, Banknote } from "lucide-react";
-import { useCartStore, COD_FEE_AMOUNT } from "@/stores/cartStore";
+import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2, User, MapPin, LogOut, Truck } from "lucide-react";
+import { useCartStore, COD_FEE_VARIANT_ID } from "@/stores/cartStore";
 import { useAuthStore } from "@/stores/authStore";
-import { formatPrice } from "@/lib/shopify";
+import { formatPrice, createStorefrontCheckout } from "@/lib/shopify";
 import { toast } from "sonner";
 import { OTPAuthModal } from "./OTPAuthModal";
+import { PaymentMethodModal } from "./PaymentMethodModal";
 
 export const CartDrawer = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  
-  const { 
-    items, 
-    isLoading, 
-    updateQuantity, 
-    removeItem, 
-    createCheckout,
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  const {
+    items,
+    isLoading,
+    updateQuantity,
+    removeItem,
     clearCart,
-    paymentMethod,
-    setPaymentMethod,
   } = useCartStore();
-  
+
   const { isAuthenticated, customer, logout } = useAuthStore();
-  
+
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
-  const codFee = paymentMethod === 'cod' ? COD_FEE_AMOUNT : 0;
-  const totalPrice = subtotal + codFee;
   const currencyCode = items[0]?.price.currencyCode || 'INR';
 
   const handleOpenAuthModal = () => {
@@ -50,13 +48,12 @@ export const CartDrawer = () => {
     toast.success('Logged out successfully', { position: 'top-center' });
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (items.length === 0) {
       toast.error('Your cart is empty', { position: 'top-center' });
       return;
     }
 
-    // MANDATORY: Must be signed in with OTP before checkout
     if (!isAuthenticated) {
       toast.error('Sign in required', {
         description: 'Please sign in with your mobile number to place an order.',
@@ -65,30 +62,46 @@ export const CartDrawer = () => {
       setIsAuthModalOpen(true);
       return;
     }
-    
+
+    // Open payment method modal
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleCartCheckout = async (method: 'prepaid' | 'cod') => {
+    setIsCheckingOut(true);
     try {
-      console.log('Creating checkout for cart items:', items.map(i => ({ id: i.variantId, qty: i.quantity })));
-      const checkoutUrl = await createCheckout();
-      console.log('Checkout URL:', checkoutUrl);
-      
+      const cartItems = items.map(item => ({
+        variantId: item.variantId,
+        quantity: item.quantity,
+      }));
+
+      // Add COD fee line item if COD selected
+      if (method === 'cod') {
+        cartItems.push({ variantId: COD_FEE_VARIANT_ID, quantity: 1 });
+      }
+
+      const checkoutUrl = await createStorefrontCheckout(cartItems);
+
       if (checkoutUrl) {
         toast.success('Redirecting to checkout...', { position: 'top-center' });
         clearCart();
         setIsOpen(false);
-        // Use location.href for better mobile compatibility (window.open gets blocked in async contexts)
+        setIsPaymentModalOpen(false);
         window.location.href = checkoutUrl;
       } else {
-        toast.error('Failed to create checkout', { 
+        toast.error('Failed to create checkout', {
           description: 'Please try again',
-          position: 'top-center' 
+          position: 'top-center',
         });
       }
     } catch (error) {
       console.error('Checkout failed:', error);
-      toast.error('Checkout failed', { 
+      toast.error('Checkout failed', {
         description: error instanceof Error ? error.message : 'Please try again',
-        position: 'top-center' 
+        position: 'top-center',
       });
+    } finally {
+      setIsCheckingOut(false);
     }
   };
 
@@ -105,7 +118,7 @@ export const CartDrawer = () => {
             )}
           </button>
         </SheetTrigger>
-        
+
         <SheetContent className="w-full sm:max-w-lg flex flex-col h-full">
           <SheetHeader className="flex-shrink-0">
             <SheetTitle className="font-heading">Shopping Cart</SheetTitle>
@@ -113,7 +126,7 @@ export const CartDrawer = () => {
               {totalItems === 0 ? "Your cart is empty" : `${totalItems} item${totalItems !== 1 ? 's' : ''} in your cart`}
             </SheetDescription>
           </SheetHeader>
-          
+
           <div className="flex flex-col flex-1 pt-6 min-h-0">
             {items.length === 0 ? (
               <div className="flex-1 flex items-center justify-center">
@@ -138,7 +151,7 @@ export const CartDrawer = () => {
                             />
                           )}
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
                           <h4 className="font-heading text-sm truncate">{item.product.node.title}</h4>
                           {item.variantTitle !== 'Default Title' && (
@@ -150,7 +163,7 @@ export const CartDrawer = () => {
                             {formatPrice(item.price.amount, item.price.currencyCode)}
                           </p>
                         </div>
-                        
+
                         <div className="flex flex-col items-end gap-2 flex-shrink-0">
                           <Button
                             variant="ghost"
@@ -160,7 +173,7 @@ export const CartDrawer = () => {
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
-                          
+
                           <div className="flex items-center gap-1">
                             <Button
                               variant="outline"
@@ -186,65 +199,16 @@ export const CartDrawer = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Fixed checkout section */}
                 <div className="flex-shrink-0 space-y-4 pt-4 border-t border-border bg-background">
-                  
-                  {/* Payment Method Selector */}
-                  <div className="space-y-2">
-                    <p className="text-sm font-heading font-medium">Payment Method</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => setPaymentMethod('prepaid')}
-                        className={`flex items-center gap-2 p-3 rounded-sm border text-sm font-body transition-all ${
-                          paymentMethod === 'prepaid'
-                            ? 'border-primary bg-primary/5 text-primary'
-                            : 'border-border text-muted-foreground hover:border-primary/50'
-                        }`}
-                      >
-                        <CreditCard className="w-4 h-4 flex-shrink-0" />
-                        <span>Prepaid</span>
-                      </button>
-                      <button
-                        onClick={() => setPaymentMethod('cod')}
-                        className={`flex items-center gap-2 p-3 rounded-sm border text-sm font-body transition-all ${
-                          paymentMethod === 'cod'
-                            ? 'border-primary bg-primary/5 text-primary'
-                            : 'border-border text-muted-foreground hover:border-primary/50'
-                        }`}
-                      >
-                        <Banknote className="w-4 h-4 flex-shrink-0" />
-                        <span>Cash on Delivery</span>
-                      </button>
-                    </div>
-                    {paymentMethod === 'cod' && (
-                      <p className="text-xs text-muted-foreground font-body bg-secondary/30 px-3 py-2 rounded-sm">
-                        ₹200 COD handling fee will be added to your order.
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Order Summary */}
-                  <div className="space-y-1 text-sm font-body">
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Subtotal</span>
-                      <span>{formatPrice(subtotal.toString(), currencyCode)}</span>
-                    </div>
-                    {paymentMethod === 'cod' && (
-                      <div className="flex justify-between text-muted-foreground">
-                        <span>COD Fee</span>
-                        <span>+ {formatPrice(COD_FEE_AMOUNT.toString(), currencyCode)}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex justify-between items-center pt-1 border-t border-border">
-                    <span className="text-lg font-heading">Total</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-heading">Subtotal</span>
                     <span className="text-xl font-bold">
-                      {formatPrice(totalPrice.toString(), currencyCode)}
+                      {formatPrice(subtotal.toString(), currencyCode)}
                     </span>
                   </div>
-                  
+
                   {/* Mandatory Sign In Notice */}
                   {!isAuthenticated && (
                     <div className="flex items-center gap-2 p-2.5 bg-accent/10 border border-accent/30 rounded-sm text-xs font-body text-foreground/80">
@@ -254,13 +218,13 @@ export const CartDrawer = () => {
                   )}
 
                   {/* Checkout Button */}
-                  <Button 
+                  <Button
                     onClick={handleCheckout}
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90" 
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                     size="lg"
-                    disabled={items.length === 0 || isLoading}
+                    disabled={items.length === 0 || isLoading || isCheckingOut}
                   >
-                    {isLoading ? (
+                    {isLoading || isCheckingOut ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                         Creating Checkout...
@@ -272,9 +236,9 @@ export const CartDrawer = () => {
                       </>
                     )}
                   </Button>
-                  
+
                   {/* Secure Checkout Badges */}
-                  <div className="flex items-center justify-center gap-4 pt-3">
+                  <div className="flex items-center justify-center gap-4 pt-1">
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
@@ -298,7 +262,7 @@ export const CartDrawer = () => {
                     </div>
                   </div>
 
-                  {/* Auth Section - Show different content based on auth state */}
+                  {/* Auth Section */}
                   {isAuthenticated && customer ? (
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 p-3 bg-secondary/30 rounded-sm">
@@ -307,7 +271,7 @@ export const CartDrawer = () => {
                           <p className="text-sm font-medium truncate">{customer.name || 'Customer'}</p>
                           <p className="text-xs text-muted-foreground">{customer.phone}</p>
                         </div>
-                        <Button 
+                        <Button
                           onClick={handleLogout}
                           variant="ghost"
                           size="sm"
@@ -317,10 +281,9 @@ export const CartDrawer = () => {
                           Logout
                         </Button>
                       </div>
-                      
-                      {/* Account Links */}
+
                       <div className="flex gap-2">
-                        <Button 
+                        <Button
                           onClick={() => {
                             setIsOpen(false);
                             navigate('/order-tracking');
@@ -332,7 +295,7 @@ export const CartDrawer = () => {
                           <Truck className="w-3 h-3 mr-1" />
                           My Orders
                         </Button>
-                        <Button 
+                        <Button
                           onClick={handleOpenAuthModal}
                           variant="ghost"
                           className="flex-1 text-xs"
@@ -344,7 +307,7 @@ export const CartDrawer = () => {
                       </div>
                     </div>
                   ) : (
-                    <Button 
+                    <Button
                       onClick={handleOpenAuthModal}
                       variant="outline"
                       className="w-full"
@@ -360,11 +323,20 @@ export const CartDrawer = () => {
           </div>
         </SheetContent>
       </Sheet>
-      
+
       {/* OTP Auth Modal */}
-      <OTPAuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
+      <OTPAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
+
+      {/* Payment Method Modal */}
+      <PaymentMethodModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        baseAmount={subtotal}
+        currencyCode={currencyCode}
+        onConfirm={handleCartCheckout}
       />
     </>
   );
