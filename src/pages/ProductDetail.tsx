@@ -321,7 +321,7 @@ function SimilarProducts({ currentHandle, currentProductType, currentFabric, pro
         {filteredProducts.map(({ node }) => (
           <Link
             key={node.id}
-            to={`/product/${node.handle}`}
+            to={`/products/${node.handle}`}
             className="flex-shrink-0 w-24"
           >
             <div className="aspect-[3/4] overflow-hidden bg-secondary/20 rounded-sm">
@@ -392,7 +392,7 @@ function RelatedProducts({ currentHandle, currentProductType, currentFabric, pro
         {filteredProducts.map(({ node }) => (
           <Link
             key={node.id}
-            to={`/product/${node.handle}`}
+            to={`/products/${node.handle}`}
             className="group"
           >
             <div className="aspect-[3/4] overflow-hidden bg-secondary/20 mb-3">
@@ -662,7 +662,7 @@ export default function ProductDetail() {
     sku: currentSKU,
     offers: {
       "@type": "Offer",
-      url: `https://korasutra.com/product/${handle}`,
+      url: `https://korasutra.com/products/${handle}`,
       priceCurrency: "INR",
       price: productPriceValue,
       availability: currentVariant?.availableForSale 
@@ -681,7 +681,7 @@ export default function ProductDetail() {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: "https://korasutra.com" },
       { "@type": "ListItem", position: 2, name: "Products", item: "https://korasutra.com/collections/all" },
-      { "@type": "ListItem", position: 3, name: product.title, item: `https://korasutra.com/product/${handle}` }
+      { "@type": "ListItem", position: 3, name: product.title, item: `https://korasutra.com/products/${handle}` }
     ]
   };
 
@@ -691,12 +691,12 @@ export default function ProductDetail() {
         <title>{product.title} | Kora Sutra - Handcrafted Sarees</title>
         <meta name="description" content={productDescription} />
         <meta name="keywords" content={`${product.title}, Kora Sutra, handcrafted saree, buy saree online, ${extractFabricFromTitle(product.title)} saree, Indian saree`} />
-        <link rel="canonical" href={`https://korasutra.com/product/${handle}`} />
+        <link rel="canonical" href={`https://korasutra.com/products/${handle}`} />
         
         <meta property="og:title" content={`${product.title} | Kora Sutra`} />
         <meta property="og:description" content={productDescription} />
         <meta property="og:image" content={productImage} />
-        <meta property="og:url" content={`https://korasutra.com/product/${handle}`} />
+        <meta property="og:url" content={`https://korasutra.com/products/${handle}`} />
         <meta property="og:type" content="product" />
         <meta property="product:price:amount" content={productPriceValue} />
         <meta property="product:price:currency" content="INR" />

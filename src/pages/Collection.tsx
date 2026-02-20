@@ -661,7 +661,7 @@ export default function Collection() {
         item: {
           "@type": "Product",
           name: product.node.title,
-          url: `https://korasutra.com/product/${product.node.handle}`,
+          url: `https://korasutra.com/products/${product.node.handle}`,
           image: product.node.images.edges[0]?.node.url,
           offers: {
             "@type": "Offer",
@@ -1233,7 +1233,7 @@ export default function Collection() {
                     className="group"
                   >
                     <div className="relative">
-                      <Link to={`/product/${node.handle}`}>
+                      <Link to={`/products/${node.handle}`}>
                         <div className="aspect-[3/4] overflow-hidden bg-secondary/20 mb-2 relative rounded-sm">
                           {node.images.edges[0]?.node && (
                             <img
@@ -1275,7 +1275,7 @@ export default function Collection() {
                       </button>
                     </div>
                     
-                    <Link to={`/product/${node.handle}`} className="block">
+                    <Link to={`/products/${node.handle}`} className="block">
                       <h3 className="font-heading text-xs md:text-sm text-foreground group-hover:text-accent transition-colors line-clamp-2 uppercase leading-tight">
                         {node.title}
                       </h3>
