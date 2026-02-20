@@ -28,7 +28,7 @@ export function RecentlyViewed({ currentHandle }: RecentlyViewedProps) {
           {recentProducts.map(({ node }) => (
             <Link
               key={node.id}
-              to={`/product/${node.handle}`}
+              to={`/products/${node.handle}`}
               className="group flex-shrink-0 w-36"
             >
               <div className="aspect-[3/4] overflow-hidden bg-secondary/20 mb-2 rounded-sm">
@@ -57,7 +57,7 @@ export function RecentlyViewed({ currentHandle }: RecentlyViewedProps) {
         {recentProducts.slice(0, 4).map(({ node }) => (
           <Link
             key={node.id}
-            to={`/product/${node.handle}`}
+            to={`/products/${node.handle}`}
             className="group"
           >
             <div className="aspect-[3/4] overflow-hidden bg-secondary/20 mb-3 rounded-sm">

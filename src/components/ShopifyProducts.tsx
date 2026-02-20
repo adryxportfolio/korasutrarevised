@@ -114,7 +114,7 @@ export function ShopifyProducts() {
               viewport={{ once: true }}
             >
               <Link 
-                to={`/product/${product.node.handle}`}
+                to={`/products/${product.node.handle}`}
                 className="group block"
               >
                 <div className="relative aspect-[3/4] overflow-hidden rounded-sm bg-secondary/20">

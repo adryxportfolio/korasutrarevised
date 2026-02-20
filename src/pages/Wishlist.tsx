@@ -102,7 +102,7 @@ export default function Wishlist() {
                   transition={{ delay: index * 0.05 }}
                   className="group relative"
                 >
-                  <Link to={`/product/${node.handle}`}>
+                  <Link to={`/products/${node.handle}`}>
                     <div className="aspect-[3/4] overflow-hidden bg-secondary/20 mb-3">
                       {node.images.edges[0]?.node && (
                         <img
