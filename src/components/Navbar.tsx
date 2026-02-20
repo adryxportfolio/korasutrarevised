@@ -385,10 +385,10 @@ export function Navbar() {
                   </button>
                 </li>
 
-                {/* All Products */}
+                {/* Products */}
                 <li>
                   <button onClick={() => handleNavigation('/collections/all')} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left">
-                    All Products
+                    Products
                   </button>
                 </li>
 
