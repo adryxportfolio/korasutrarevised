@@ -525,7 +525,7 @@ export default function ProductDetail() {
       if (checkoutUrl) {
         setIsPaymentModalOpen(false);
         toast.success('Redirecting to checkout...', { position: 'top-center' });
-        window.location.href = checkoutUrl;
+        window.open(checkoutUrl, '_blank');
       } else {
         toast.error('Failed to create checkout. Please try again.', { position: 'top-center' });
       }
