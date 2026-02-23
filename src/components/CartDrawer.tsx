@@ -87,7 +87,7 @@ export const CartDrawer = () => {
         clearCart();
         setIsOpen(false);
         setIsPaymentModalOpen(false);
-        window.location.href = checkoutUrl;
+        window.open(checkoutUrl, '_blank');
       } else {
         toast.error('Failed to create checkout', {
           description: 'Please try again',
