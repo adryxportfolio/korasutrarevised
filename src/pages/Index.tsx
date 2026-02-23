@@ -8,6 +8,7 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { NewsletterSection } from "@/components/NewsletterSection";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { FirstTimeBuyerPopup } from "@/components/FirstTimeBuyerPopup";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -161,6 +162,7 @@ const Index = () => {
         </main>
         <Footer />
         <WhatsAppButton />
+        <FirstTimeBuyerPopup />
       </div>
     </>
   );
