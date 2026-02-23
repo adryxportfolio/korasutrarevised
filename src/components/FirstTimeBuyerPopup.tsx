@@ -74,7 +74,7 @@ export function FirstTimeBuyerPopup() {
                     Use code at checkout
                   </p>
                   <span className="inline-block mt-2 px-4 py-1.5 border-2 border-dashed border-accent rounded font-heading text-lg text-accent tracking-widest">
-                    KORA10
+                    FIRST10
                   </span>
                 </div>
 
