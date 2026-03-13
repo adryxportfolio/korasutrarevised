@@ -58,58 +58,17 @@ export function HeroSection() {
           duration: 0.8,
           delay: 0.2
         }} className="text-center lg:text-left">
-            <motion.div initial={{
+            <motion.h1 initial={{
             opacity: 0,
-            y: 20
+            y: 30
           }} animate={{
             opacity: 1,
             y: 0
           }} transition={{
-            duration: 0.6,
+            duration: 0.8,
             delay: 0.4
-          }} className="mb-6 flex flex-col items-center lg:items-start">
-              <span className="font-heading text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight font-light">
-                Kora Sutra Sarees
-              </span>
-            </motion.div>
-            
-            <motion.h1 initial={{
-            opacity: 0
-          }} animate={{
-            opacity: 1
-          }} transition={{
-            duration: 0.5,
-            delay: 0.5
-          }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-light leading-tight mb-6">
-              <motion.span initial={{
-              opacity: 0,
-              y: 30
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} transition={{
-              duration: 0.6,
-              delay: 0.6
-            }} className="inline-block text-[#570000]">
-                Wear It With
-              </motion.span>
-              <br />
-              <motion.span initial={{
-              opacity: 0,
-              scale: 0.8,
-              rotateX: -90
-            }} animate={{
-              opacity: 1,
-              scale: 1,
-              rotateX: 0
-            }} transition={{
-              duration: 0.8,
-              delay: 0.9,
-              type: "spring",
-              stiffness: 100
-            }} className="inline-block italic text-[#570000]">
-                Pride
-              </motion.span>
+          }} className="text-4xl md:text-5xl lg:text-6xl font-heading font-semibold leading-tight mb-6 text-[#570000]">
+              Sarees Woven by Bengal's Master Artisans — Delivered to Your Door.
             </motion.h1>
             
             <motion.p initial={{
@@ -121,7 +80,9 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.7
-          }} className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8 font-body font-semibold leading-relaxed text-xl">Handcrafted Sarees Celebrating Bengal’s Handloom Heritage.​​<em className="italic text-2xl">​</em></motion.p>
+          }} className="text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-8 font-body text-lg leading-relaxed">
+              Authentic Tussar, Muslin, Jamdani & Kantha sarees. Free shipping across India.
+            </motion.p>
             
             <motion.div initial={{
             opacity: 0,
@@ -132,15 +93,10 @@ export function HeroSection() {
           }} transition={{
             duration: 0.6,
             delay: 0.9
-          }} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/collections/all" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
-                Explore Collection
+          }} className="flex justify-center lg:justify-start">
+              <Link to="/collections/all" className="inline-flex items-center justify-center px-10 py-4 bg-primary text-primary-foreground font-body text-sm tracking-wide rounded-sm hover:bg-primary/90 transition-colors">
+                Shop the Collection
               </Link>
-              <button onClick={() => document.getElementById('about-section')?.scrollIntoView({
-              behavior: 'smooth'
-            })} className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-foreground font-body text-sm tracking-wide uppercase rounded-sm hover:bg-foreground hover:text-background transition-colors">
-                Our Story
-              </button>
             </motion.div>
           </motion.div>
 
