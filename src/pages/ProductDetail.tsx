@@ -6,6 +6,7 @@ import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus, Bell } from 'lucide-r
 import { StockStatus } from '@/components/StockStatus';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
 import { COD_FEE_VARIANT_ID } from '@/stores/cartStore';
+import { toTitleCase } from '@/lib/titleCase';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
