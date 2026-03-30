@@ -115,8 +115,8 @@ function ProductCard({
           {product.name}
         </h3>
         <div className="flex items-center gap-2">
-          <span className="font-body font-medium">{formatPrice(product.price)}</span>
-          {product.originalPrice && <span className="text-sm text-muted-foreground line-through font-body">
+          <span className="font-price font-medium">{formatPrice(product.price)}</span>
+          {product.originalPrice && <span className="text-sm text-muted-foreground line-through font-price">
               {formatPrice(product.originalPrice)}
             </span>}
         </div>
