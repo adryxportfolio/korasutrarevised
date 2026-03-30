@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, SlidersHorizontal, ChevronDown, ChevronRight, Heart, X, Check } from 'lucide-react';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
+import { toTitleCase } from '@/lib/titleCase';
 import { StockIndicator } from '@/components/StockStatus';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
