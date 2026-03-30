@@ -225,7 +225,7 @@ Tips for different fabrics: Silk sarees hold pleats well but can be slippery —
 For beginners, we recommend starting with a cotton or linen saree — they're easier to handle and more forgiving of imperfect pleats. As you gain confidence, move to silk and other fabrics.
 
 Remember: the best-draped saree is the one you feel comfortable in. Don't stress about perfection. The saree has been worn for thousands of years precisely because it adapts to the woman wearing it, not the other way around.`,
-    image: pinkTissueMuslinImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/4BB8364E-F5BB-4AD6-85ED-141CC868C40B.png?v=1767530519',
     author: 'Sreelakshmi Nair',
     date: '2024-12-15',
     category: 'Journal',
