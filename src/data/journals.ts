@@ -277,7 +277,7 @@ For stain removal, act quickly. Blot (don't rub) the stain with a clean cloth. F
 Ironing should be done on the reverse side with a cool iron or through a thin cotton cloth. Steam works beautifully on silk without the risk of scorching.
 
 At Kora Sutra, we include care instructions with every saree we sell, because we believe a saree isn't just a purchase — it's the beginning of a relationship.`,
-    image: saree2,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/GreyPureSilkWaxBatik1.jpg?v=1767449606',
     author: 'Gargi Majumdar',
     date: '2024-11-25',
     category: 'Journal',
