@@ -170,6 +170,10 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof testimoni
 export function TestimonialsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const [showAll, setShowAll] = useState(false);
+
+  // Show 4 on mobile initially, all on desktop
+  const visibleTestimonials = showAll ? testimonials : testimonials.slice(0, 6);
 
   return (
     <section ref={ref} className="py-24 bg-secondary/30 overflow-hidden">
@@ -206,10 +210,22 @@ export function TestimonialsSection() {
 
         {/* Testimonials Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-          {testimonials.map((testimonial, index) => (
+          {visibleTestimonials.map((testimonial, index) => (
             <TestimonialCard key={testimonial.id} testimonial={testimonial} index={index} />
           ))}
         </div>
+
+        {/* Load More on mobile */}
+        {!showAll && testimonials.length > 6 && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => setShowAll(true)}
+              className="px-6 py-2 border border-border rounded-sm text-sm font-body text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+            >
+              Show More Reviews
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

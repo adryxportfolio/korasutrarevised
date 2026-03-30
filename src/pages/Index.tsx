@@ -159,6 +159,7 @@ const Index = () => {
           <ShopifyProducts />
           <AboutSection />
           <TestimonialsSection />
+          <JournalsSection />
           <NewsletterSection />
         </main>
         <Footer />
