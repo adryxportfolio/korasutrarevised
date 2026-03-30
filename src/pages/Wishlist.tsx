@@ -7,6 +7,7 @@ import { Footer } from '@/components/Footer';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useCartStore } from '@/stores/cartStore';
 import { formatPrice } from '@/lib/shopify';
+import { toTitleCase } from '@/lib/titleCase';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
