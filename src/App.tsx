@@ -22,6 +22,8 @@ import Wishlist from "./pages/Wishlist";
 import Legal from "./pages/Legal";
 import OrderTracking from "./pages/OrderTracking";
 import Admin from "./pages/Admin";
+import Journals from "./pages/Journals";
+import JournalArticle from "./pages/JournalArticle";
 
 const queryClient = new QueryClient();
 
