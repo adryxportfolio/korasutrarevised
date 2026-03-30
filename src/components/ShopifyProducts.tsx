@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
+import { toTitleCase } from '@/lib/titleCase';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 import { StockIndicator } from '@/components/StockStatus';
