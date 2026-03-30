@@ -44,7 +44,7 @@ export function RecentlyViewed({ currentHandle }: RecentlyViewedProps) {
               <h3 className="font-heading text-xs text-foreground group-hover:text-accent transition-colors line-clamp-2 leading-tight">
                 {node.title}
               </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5 font-price">
                 {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
               </p>
             </Link>
