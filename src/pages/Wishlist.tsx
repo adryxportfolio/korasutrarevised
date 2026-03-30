@@ -114,9 +114,9 @@ export default function Wishlist() {
                       )}
                     </div>
                     <h3 className="font-heading text-sm md:text-base text-foreground group-hover:text-accent transition-colors line-clamp-2">
-                      {node.title}
+                      {toTitleCase(node.title)}
                     </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1" style={{ fontFamily: 'var(--font-price)' }}>
                       {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
                     </p>
                   </Link>
