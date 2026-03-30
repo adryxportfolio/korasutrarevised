@@ -1,17 +1,4 @@
-import brownTussarImg from '@/assets/brown-tussar-baluchari.png';
-import pinkTissueImg from '@/assets/pink-tissue-muslin-sequins.png';
-import jamdaniImg from '@/assets/jamdani.jpeg';
-import kanthaImg from '@/assets/kantha.jpeg';
-import tussarImg from '@/assets/tussar.jpeg';
-import muslinImg from '@/assets/muslin.jpeg';
-import blockPrintImg from '@/assets/block-print.jpeg';
-import linenImg from '@/assets/linen.jpeg';
-import pinkTissueMuslinImg from '@/assets/pink-tissue-muslin.jpeg';
-import heroImg1 from '@/assets/hero-1.jpeg';
-import heroImg2 from '@/assets/hero-2.jpeg';
-import heroImg3 from '@/assets/hero-3.jpeg';
-import saree1 from '@/assets/saree-1.jpg';
-import saree2 from '@/assets/saree-2.jpg';
+// Using Shopify product images as journal thumbnails
 
 export interface JournalArticle {
   slug: string;
