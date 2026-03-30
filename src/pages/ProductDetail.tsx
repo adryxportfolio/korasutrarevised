@@ -773,7 +773,7 @@ export default function ProductDetail() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <div>
-                    <p className="text-xl md:text-2xl font-heading">
+                    <p className="text-xl md:text-2xl font-heading" style={{ fontFamily: 'var(--font-price)' }}>
                       {currentVariant && formatPrice(currentVariant.price.amount, currentVariant.price.currencyCode)}
                     </p>
                     <p className="text-xs text-muted-foreground">MRP Inclusive of all taxes</p>
