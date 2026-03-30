@@ -69,7 +69,7 @@ export function FirstTimeBuyerPopup() {
                 </p>
 
                 <div className="bg-secondary/50 rounded-md py-4 px-3 mb-5">
-                  <p className="font-heading text-4xl text-primary mb-1">10% OFF</p>
+                  <p className="font-price text-5xl md:text-6xl text-primary mb-1 font-bold">10% OFF</p>
                   <p className="text-muted-foreground text-xs font-body tracking-wide">
                     Use code at checkout
                   </p>

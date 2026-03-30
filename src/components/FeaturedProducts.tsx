@@ -197,14 +197,14 @@ export function FeaturedProducts() {
                     </h3>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="font-body font-medium text-lg">
+                        <span className="font-price font-medium text-lg">
                           {new Intl.NumberFormat('en-IN', {
                         style: 'currency',
                         currency: 'INR',
                         maximumFractionDigits: 0
                       }).format(product.price)}
                         </span>
-                        {product.originalPrice && <span className="text-sm text-muted-foreground line-through font-body">
+                        {product.originalPrice && <span className="text-sm text-muted-foreground line-through font-price">
                             {new Intl.NumberFormat('en-IN', {
                         style: 'currency',
                         currency: 'INR',
