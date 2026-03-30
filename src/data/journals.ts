@@ -29,7 +29,7 @@ The danger of the modern "revival" movement is commodification. When handloom be
 At Kora Sutra, we believe revival is measured not in Instagram posts but in looms that continue to operate, in families that can sustain themselves through their ancestral craft, and in a younger generation that sees dignity in weaving.
 
 The recipe is simple but demanding: patience, respect, consistency, and a willingness to let the craft lead rather than the market.`,
-    image: heroImg1,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/MaroonPureSilkKantha1.jpg?v=1767428179',
     author: 'Ananya Mukherjee',
     date: '2025-03-15',
     category: 'Journal',
