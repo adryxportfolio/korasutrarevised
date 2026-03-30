@@ -1277,8 +1277,8 @@ export default function Collection() {
                     </div>
                     
                     <Link to={`/products/${node.handle}`} className="block">
-                      <h3 className="font-heading text-xs md:text-sm text-foreground group-hover:text-accent transition-colors line-clamp-2 uppercase leading-tight">
-                        {node.title}
+                      <h3 className="font-heading text-xs md:text-sm text-foreground group-hover:text-accent transition-colors line-clamp-2 leading-tight">
+                        {toTitleCase(node.title)}
                       </h3>
                       
                       {/* Blouse Badge */}
