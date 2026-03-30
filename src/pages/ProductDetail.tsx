@@ -731,8 +731,8 @@ export default function ProductDetail() {
             <div className="space-y-3 md:space-y-4">
               {/* Title Row with Share & Wishlist */}
               <div className="flex items-start justify-between gap-3">
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-heading tracking-wide uppercase flex-1 leading-tight">
-                  {product.title}
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-heading tracking-wide flex-1 leading-tight">
+                  {toTitleCase(product.title)}
                 </h1>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button
