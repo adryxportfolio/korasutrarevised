@@ -51,7 +51,7 @@ The colours used in traditional Baluchari weaving hold significance. Deep maroon
 Kora Sutra's Baluchari collection honours this heritage. Each piece we curate comes directly from the master weavers of Bishnupur. We ensure that the pricing reflects the true value of the artisan's time and skill — not the discounted rate that mass production demands.
 
 When you drape a Baluchari saree, you're not just wearing fabric. You're carrying a chapter of Indian history on your shoulders.`,
-    image: brownTussarImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/5C778505-3213-4F9C-8D0B-F7B4AAC96F01.png?v=1767670371',
     author: 'Priyanka Dasgupta',
     date: '2025-03-08',
     category: 'Journal',
