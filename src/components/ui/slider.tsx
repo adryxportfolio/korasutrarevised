@@ -18,7 +18,7 @@ const Slider = React.forwardRef<
     <div className="relative w-full">
       {/* Min/Max marks above the slider */}
       {showMarks && (
-        <div className="flex justify-between mb-2 text-xs text-muted-foreground font-body">
+        <div className="flex justify-between mb-2 text-xs text-muted-foreground font-price">
           <span>₹{Number(min).toLocaleString()}</span>
           <span>₹{Number(max).toLocaleString()}</span>
         </div>
