@@ -159,7 +159,7 @@ export const CartDrawer = () => {
                               {item.selectedOptions.map(option => option.value).join(' • ')}
                             </p>
                           )}
-                          <p className="font-semibold text-sm mt-1">
+                          <p className="font-semibold text-sm mt-1 font-price">
                             {formatPrice(item.price.amount, item.price.currencyCode)}
                           </p>
                         </div>
