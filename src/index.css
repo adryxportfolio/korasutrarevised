@@ -55,6 +55,7 @@
     --font-heading: 'Cormorant Garamond', serif;
     --font-body: 'DM Sans', sans-serif;
     --font-script: 'Dancing Script', cursive;
+    --font-price: 'Poppins', sans-serif;
 
     /* Shadows */
     --shadow-soft: 0 4px 20px -4px hsl(150 25% 25% / 0.08);

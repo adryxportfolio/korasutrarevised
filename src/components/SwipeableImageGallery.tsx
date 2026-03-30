@@ -241,7 +241,7 @@ export function SwipeableImageGallery({ images, productTitle }: SwipeableImageGa
       <div className="flex-1 relative overflow-hidden" ref={constraintsRef}>
         <div 
           ref={imageContainerRef}
-          className="aspect-[3/4] overflow-hidden bg-secondary/20 touch-none relative"
+          className={`aspect-[3/4] overflow-hidden bg-secondary/20 relative ${isZoomed ? 'touch-none' : 'touch-pan-y'}`}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
