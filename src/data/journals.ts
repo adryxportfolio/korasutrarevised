@@ -128,7 +128,7 @@ The beauty of Kantha lies in its imperfection. No two Kantha pieces are identica
 When Kantha stitch is applied to silk sarees, the result is extraordinary. The embroidery adds texture and depth to the silk surface, creating a tactile experience that printed or woven patterns cannot replicate. At Kora Sutra, our Kantha stitch sarees feature motifs that range from traditional (paisley, lotus, birds) to contemporary (geometric patterns, abstract designs), all executed by skilled artisans from Bengal's Birbhum and Bolpur regions.
 
 A Kantha stitch saree is not just clothing — it's portable art. Each motif tells a story, and the woman who wears it becomes part of that narrative tradition.`,
-    image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800&q=80',
+    image: kanthaImg,
     author: 'Supriya Ghosh',
     date: '2025-02-10',
     category: 'Journal',
