@@ -212,7 +212,7 @@ At Kora Sutra, we pair linen with traditional Bengal weaving techniques — Jamd
 The care for linen is simpler than most assume. While it wrinkles — that's part of its charm — a light iron or steamer restores its crisp finish. Over time, linen softens without losing its structure, becoming more comfortable with each wear.
 
 Linen isn't just a fabric; it's an attitude. Relaxed, confident, and inherently sophisticated.`,
-    image: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=800&q=80',
+    image: linenImg,
     author: 'Nandita Bose',
     date: '2024-12-28',
     category: 'Journal',
