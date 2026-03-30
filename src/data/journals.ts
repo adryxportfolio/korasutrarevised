@@ -177,7 +177,7 @@ What makes silk Batik special is the way the fabric interacts with the wax and d
 Kora Sutra's pure silk Batik sarees come from the Bishnupur region, where Batik printing has been practiced for over a century. Our artisans use a combination of hand-drawn (tulis) and stamped (cap) Batik techniques, sometimes on a single saree, creating layers of pattern complexity.
 
 A Batik saree is wearable art — each one bearing the unique signature of the artisan's hand, the unpredictable beauty of the resist-dyeing process, and the living quality of pure silk.`,
-    image: saree1,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/120B7527-F607-40B0-9916-EF70E1FFCCF7.png?v=1767530272',
     author: 'Debalina Chatterjee',
     date: '2025-01-10',
     category: 'Journal',
