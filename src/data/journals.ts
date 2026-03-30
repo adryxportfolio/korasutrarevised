@@ -95,7 +95,7 @@ Kora Sutra's Muslin sarees are woven from fine cotton and cotton-silk blends tha
 What makes modern Muslin special is its versatility. A Muslin saree transitions effortlessly from a work meeting to a dinner party. It doesn't crease easily, it breathes in humid weather, and it develops a beautiful softness over time.
 
 For the woman who wants to drape history without sacrificing comfort, Muslin is not just a fabric — it's a philosophy of dressing.`,
-    image: muslinImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/351610E0-3729-4B40-816E-F2242F47101D.png?v=1770808032',
     author: 'Kaveri Bhattacharya',
     date: '2025-02-20',
     category: 'Journal',
