@@ -266,7 +266,7 @@ Reversibility: Many handloom sarees, especially Jamdani and Baluchari, look iden
 The Handloom Mark: Look for the Indian government's official Handloom Mark — a certification that guarantees the textile is genuinely handwoven.
 
 At Kora Sutra, every saree we sell is authenticated handloom. We believe transparency isn't a selling point — it's a responsibility.`,
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80',
+    image: heroImg2,
     author: 'Aparajita Dey',
     date: '2024-12-05',
     category: 'Journal',
