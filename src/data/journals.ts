@@ -321,7 +321,7 @@ Autumn and Winter (October to February): This is the season to bring out your si
 Festive Season (typically October to December): For Durga Puja, Diwali, and wedding season, choose sarees that make a statement. Baluchari sarees with mythological motifs, Jamdani with intricate weaving, or block print silks with bold patterns — this is the time to celebrate craftsmanship.
 
 At Kora Sutra, we curate our collections with seasonality in mind, ensuring you always have the perfect saree for the moment.`,
-    image: pinkTissueImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/RustTissueLinenSequins1.png?v=1767450298',
     author: 'Mitali Saha',
     date: '2024-11-05',
     category: 'Journal',
