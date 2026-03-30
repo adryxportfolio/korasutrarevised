@@ -170,7 +170,7 @@ The process begins with the block itself. Skilled carvers — often a separate c
 When block printing meets handloom sarees, the result is a garment of dual craftsmanship. The fabric is handwoven, and the pattern is hand-printed — doubling the artisanal value. At Kora Sutra, our block print sarees feature designs that range from traditional geometric borders to bold all-over patterns inspired by Bengal's flora.
 
 The slight irregularities in block printing — a fractional shift in alignment, a variation in colour intensity — are precisely what makes each piece unique. In a world of identical mass production, these "imperfections" are the most perfect thing about the craft.`,
-    image: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80',
+    image: blockPrintImg,
     author: 'Tanvi Sharma',
     date: '2025-01-20',
     category: 'Journal',
