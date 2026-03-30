@@ -43,7 +43,7 @@ export function StickyMobileCartBar({
       <div className="flex items-center gap-2 px-3 py-2">
         {/* Price */}
         <div className="flex-shrink-0 min-w-0">
-          <p className="text-base font-heading leading-tight">
+          <p className="text-base font-price font-semibold leading-tight">
             {formatPrice(price.amount, price.currencyCode)}
           </p>
           {!isAvailable && (
