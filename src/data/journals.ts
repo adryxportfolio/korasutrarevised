@@ -73,7 +73,7 @@ At Kora Sutra, our Tussar silk sarees come from weaving clusters in Bhagalpur an
 Tussar silk drapes beautifully. It has a natural stiffness that holds pleats well, making it ideal for formal occasions. As you wear it, the silk softens and moulds to your body, becoming more comfortable with each draping.
 
 For women who appreciate understated luxury — fabric that speaks through texture rather than embellishment — Tussar silk is the definitive choice.`,
-    image: tussarImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/780FF1D4-8DDC-4C3E-B27B-4B39EBEAC171.jpg?v=1771694723',
     author: 'Rishita Sen',
     date: '2025-02-28',
     category: 'Journal',
