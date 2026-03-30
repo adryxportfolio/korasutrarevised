@@ -1289,7 +1289,7 @@ export default function Collection() {
                       )}
                       
                       <div className="flex items-center justify-between gap-2 mt-1">
-                        <p className="text-sm md:text-base font-heading">
+                        <p className="text-sm md:text-base font-heading" style={{ fontFamily: 'var(--font-price)' }}>
                           {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
                         </p>
                         {node.variants.edges[0]?.node && (
