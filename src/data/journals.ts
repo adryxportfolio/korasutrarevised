@@ -150,7 +150,7 @@ The motifs in Jamdani weaving are a lexicon of Bengali aesthetics: the "panna" (
 At Kora Sutra, our Jamdani sarees are sourced from weavers in Nadia and Shantipur, West Bengal. We offer both traditional cotton Jamdani and the more luxurious Jamdani work on Tussar and silk bases.
 
 To wear a Jamdani saree is to wear time itself — every motif representing hours of focused human effort, every thread a testament to a weaver's devotion to their art.`,
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80',
+    image: jamdaniImg,
     author: 'Madhurima Roy',
     date: '2025-01-30',
     category: 'Journal',
