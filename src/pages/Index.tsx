@@ -5,6 +5,7 @@ import { CollectionsSection } from "@/components/CollectionsSection";
 import { ShopifyProducts } from "@/components/ShopifyProducts";
 import { AboutSection } from "@/components/AboutSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { JournalsSection } from "@/components/JournalsSection";
 import { NewsletterSection } from "@/components/NewsletterSection";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
