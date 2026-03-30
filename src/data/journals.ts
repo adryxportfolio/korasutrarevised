@@ -1,17 +1,4 @@
-import brownTussarImg from '@/assets/brown-tussar-baluchari.png';
-import pinkTissueImg from '@/assets/pink-tissue-muslin-sequins.png';
-import jamdaniImg from '@/assets/jamdani.jpeg';
-import kanthaImg from '@/assets/kantha.jpeg';
-import tussarImg from '@/assets/tussar.jpeg';
-import muslinImg from '@/assets/muslin.jpeg';
-import blockPrintImg from '@/assets/block-print.jpeg';
-import linenImg from '@/assets/linen.jpeg';
-import pinkTissueMuslinImg from '@/assets/pink-tissue-muslin.jpeg';
-import heroImg1 from '@/assets/hero-1.jpeg';
-import heroImg2 from '@/assets/hero-2.jpeg';
-import heroImg3 from '@/assets/hero-3.jpeg';
-import saree1 from '@/assets/saree-1.jpg';
-import saree2 from '@/assets/saree-2.jpg';
+// Using Shopify product images as journal thumbnails
 
 export interface JournalArticle {
   slug: string;
@@ -42,7 +29,7 @@ The danger of the modern "revival" movement is commodification. When handloom be
 At Kora Sutra, we believe revival is measured not in Instagram posts but in looms that continue to operate, in families that can sustain themselves through their ancestral craft, and in a younger generation that sees dignity in weaving.
 
 The recipe is simple but demanding: patience, respect, consistency, and a willingness to let the craft lead rather than the market.`,
-    image: heroImg1,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/MaroonPureSilkKantha1.jpg?v=1767428179',
     author: 'Ananya Mukherjee',
     date: '2025-03-15',
     category: 'Journal',
@@ -64,7 +51,7 @@ The colours used in traditional Baluchari weaving hold significance. Deep maroon
 Kora Sutra's Baluchari collection honours this heritage. Each piece we curate comes directly from the master weavers of Bishnupur. We ensure that the pricing reflects the true value of the artisan's time and skill — not the discounted rate that mass production demands.
 
 When you drape a Baluchari saree, you're not just wearing fabric. You're carrying a chapter of Indian history on your shoulders.`,
-    image: brownTussarImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/5C778505-3213-4F9C-8D0B-F7B4AAC96F01.png?v=1767670371',
     author: 'Priyanka Dasgupta',
     date: '2025-03-08',
     category: 'Journal',
@@ -86,7 +73,7 @@ At Kora Sutra, our Tussar silk sarees come from weaving clusters in Bhagalpur an
 Tussar silk drapes beautifully. It has a natural stiffness that holds pleats well, making it ideal for formal occasions. As you wear it, the silk softens and moulds to your body, becoming more comfortable with each draping.
 
 For women who appreciate understated luxury — fabric that speaks through texture rather than embellishment — Tussar silk is the definitive choice.`,
-    image: tussarImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/780FF1D4-8DDC-4C3E-B27B-4B39EBEAC171.jpg?v=1771694723',
     author: 'Rishita Sen',
     date: '2025-02-28',
     category: 'Journal',
@@ -108,7 +95,7 @@ Kora Sutra's Muslin sarees are woven from fine cotton and cotton-silk blends tha
 What makes modern Muslin special is its versatility. A Muslin saree transitions effortlessly from a work meeting to a dinner party. It doesn't crease easily, it breathes in humid weather, and it develops a beautiful softness over time.
 
 For the woman who wants to drape history without sacrificing comfort, Muslin is not just a fabric — it's a philosophy of dressing.`,
-    image: muslinImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/351610E0-3729-4B40-816E-F2242F47101D.png?v=1770808032',
     author: 'Kaveri Bhattacharya',
     date: '2025-02-20',
     category: 'Journal',
@@ -128,7 +115,7 @@ The beauty of Kantha lies in its imperfection. No two Kantha pieces are identica
 When Kantha stitch is applied to silk sarees, the result is extraordinary. The embroidery adds texture and depth to the silk surface, creating a tactile experience that printed or woven patterns cannot replicate. At Kora Sutra, our Kantha stitch sarees feature motifs that range from traditional (paisley, lotus, birds) to contemporary (geometric patterns, abstract designs), all executed by skilled artisans from Bengal's Birbhum and Bolpur regions.
 
 A Kantha stitch saree is not just clothing — it's portable art. Each motif tells a story, and the woman who wears it becomes part of that narrative tradition.`,
-    image: kanthaImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/16B10BD3-7E27-4F6E-9062-F26B89A6BF65.jpg?v=1767666128',
     author: 'Supriya Ghosh',
     date: '2025-02-10',
     category: 'Journal',
@@ -150,7 +137,7 @@ The motifs in Jamdani weaving are a lexicon of Bengali aesthetics: the "panna" (
 At Kora Sutra, our Jamdani sarees are sourced from weavers in Nadia and Shantipur, West Bengal. We offer both traditional cotton Jamdani and the more luxurious Jamdani work on Tussar and silk bases.
 
 To wear a Jamdani saree is to wear time itself — every motif representing hours of focused human effort, every thread a testament to a weaver's devotion to their art.`,
-    image: jamdaniImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/4A40BE21-B036-4CD5-A971-EA71F0C5DCDA.jpg?v=1771685929',
     author: 'Madhurima Roy',
     date: '2025-01-30',
     category: 'Journal',
@@ -170,7 +157,7 @@ The process begins with the block itself. Skilled carvers — often a separate c
 When block printing meets handloom sarees, the result is a garment of dual craftsmanship. The fabric is handwoven, and the pattern is hand-printed — doubling the artisanal value. At Kora Sutra, our block print sarees feature designs that range from traditional geometric borders to bold all-over patterns inspired by Bengal's flora.
 
 The slight irregularities in block printing — a fractional shift in alignment, a variation in colour intensity — are precisely what makes each piece unique. In a world of identical mass production, these "imperfections" are the most perfect thing about the craft.`,
-    image: blockPrintImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/E257215B-5A5F-43AB-AE9E-D45DE6D87E11.jpg?v=1771689000',
     author: 'Tanvi Sharma',
     date: '2025-01-20',
     category: 'Journal',
@@ -190,7 +177,7 @@ What makes silk Batik special is the way the fabric interacts with the wax and d
 Kora Sutra's pure silk Batik sarees come from the Bishnupur region, where Batik printing has been practiced for over a century. Our artisans use a combination of hand-drawn (tulis) and stamped (cap) Batik techniques, sometimes on a single saree, creating layers of pattern complexity.
 
 A Batik saree is wearable art — each one bearing the unique signature of the artisan's hand, the unpredictable beauty of the resist-dyeing process, and the living quality of pure silk.`,
-    image: saree1,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/120B7527-F607-40B0-9916-EF70E1FFCCF7.png?v=1767530272',
     author: 'Debalina Chatterjee',
     date: '2025-01-10',
     category: 'Journal',
@@ -212,7 +199,7 @@ At Kora Sutra, we pair linen with traditional Bengal weaving techniques — Jamd
 The care for linen is simpler than most assume. While it wrinkles — that's part of its charm — a light iron or steamer restores its crisp finish. Over time, linen softens without losing its structure, becoming more comfortable with each wear.
 
 Linen isn't just a fabric; it's an attitude. Relaxed, confident, and inherently sophisticated.`,
-    image: linenImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/PinkLinenNiddleWork1.jpg?v=1767428266',
     author: 'Nandita Bose',
     date: '2024-12-28',
     category: 'Journal',
@@ -238,7 +225,7 @@ Tips for different fabrics: Silk sarees hold pleats well but can be slippery —
 For beginners, we recommend starting with a cotton or linen saree — they're easier to handle and more forgiving of imperfect pleats. As you gain confidence, move to silk and other fabrics.
 
 Remember: the best-draped saree is the one you feel comfortable in. Don't stress about perfection. The saree has been worn for thousands of years precisely because it adapts to the woman wearing it, not the other way around.`,
-    image: pinkTissueMuslinImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/4BB8364E-F5BB-4AD6-85ED-141CC868C40B.png?v=1767530519',
     author: 'Sreelakshmi Nair',
     date: '2024-12-15',
     category: 'Journal',
@@ -266,7 +253,7 @@ Reversibility: Many handloom sarees, especially Jamdani and Baluchari, look iden
 The Handloom Mark: Look for the Indian government's official Handloom Mark — a certification that guarantees the textile is genuinely handwoven.
 
 At Kora Sutra, every saree we sell is authenticated handloom. We believe transparency isn't a selling point — it's a responsibility.`,
-    image: heroImg2,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/IMG_8389.png?v=1768012655',
     author: 'Aparajita Dey',
     date: '2024-12-05',
     category: 'Journal',
@@ -290,7 +277,7 @@ For stain removal, act quickly. Blot (don't rub) the stain with a clean cloth. F
 Ironing should be done on the reverse side with a cool iron or through a thin cotton cloth. Steam works beautifully on silk without the risk of scorching.
 
 At Kora Sutra, we include care instructions with every saree we sell, because we believe a saree isn't just a purchase — it's the beginning of a relationship.`,
-    image: saree2,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/GreyPureSilkWaxBatik1.jpg?v=1767449606',
     author: 'Gargi Majumdar',
     date: '2024-11-25',
     category: 'Journal',
@@ -312,7 +299,7 @@ At Kora Sutra, our Jamdani and linen sarees often feature zari pallu work — th
 The warmth of gold zari against natural silk or linen creates a visual harmony that synthetic alternatives simply cannot replicate. When you hold a saree with real zari up to the light, the metallic threads catch and scatter light in a way that feels alive — not the flat, uniform shine of plastic-coated thread.
 
 Real zari is an investment. But like all genuine things, it rewards with beauty that deepens over time.`,
-    image: heroImg3,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/23EEAE6D-68CF-409F-B840-E3611A2B312C.jpg?v=1768894091',
     author: 'Pallavi Menon',
     date: '2024-11-15',
     category: 'Journal',
@@ -334,7 +321,7 @@ Autumn and Winter (October to February): This is the season to bring out your si
 Festive Season (typically October to December): For Durga Puja, Diwali, and wedding season, choose sarees that make a statement. Baluchari sarees with mythological motifs, Jamdani with intricate weaving, or block print silks with bold patterns — this is the time to celebrate craftsmanship.
 
 At Kora Sutra, we curate our collections with seasonality in mind, ensuring you always have the perfect saree for the moment.`,
-    image: pinkTissueImg,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/RustTissueLinenSequins1.png?v=1767450298',
     author: 'Mitali Saha',
     date: '2024-11-05',
     category: 'Journal',
