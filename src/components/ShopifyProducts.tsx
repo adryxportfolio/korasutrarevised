@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
+import { toTitleCase } from '@/lib/titleCase';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 import { StockIndicator } from '@/components/StockStatus';
@@ -139,10 +140,10 @@ export function ShopifyProducts() {
                 
                 <div className="mt-3 space-y-1">
                   <h3 className="font-heading text-sm md:text-base truncate group-hover:text-accent transition-colors">
-                    {product.node.title}
+                    {toTitleCase(product.node.title)}
                   </h3>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-body text-muted-foreground">
+                    <p className="text-sm text-muted-foreground" style={{ fontFamily: 'var(--font-price)' }}>
                       {formatPrice(
                         product.node.priceRange.minVariantPrice.amount,
                         product.node.priceRange.minVariantPrice.currencyCode

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, SlidersHorizontal, ChevronDown, ChevronRight, Heart, X, Check } from 'lucide-react';
 import { fetchProducts, ShopifyProduct, formatPrice } from '@/lib/shopify';
+import { toTitleCase } from '@/lib/titleCase';
 import { StockIndicator } from '@/components/StockStatus';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -1276,8 +1277,8 @@ export default function Collection() {
                     </div>
                     
                     <Link to={`/products/${node.handle}`} className="block">
-                      <h3 className="font-heading text-xs md:text-sm text-foreground group-hover:text-accent transition-colors line-clamp-2 uppercase leading-tight">
-                        {node.title}
+                      <h3 className="font-heading text-xs md:text-sm text-foreground group-hover:text-accent transition-colors line-clamp-2 leading-tight">
+                        {toTitleCase(node.title)}
                       </h3>
                       
                       {/* Blouse Badge */}
@@ -1288,7 +1289,7 @@ export default function Collection() {
                       )}
                       
                       <div className="flex items-center justify-between gap-2 mt-1">
-                        <p className="text-sm md:text-base font-heading">
+                        <p className="text-sm md:text-base font-heading" style={{ fontFamily: 'var(--font-price)' }}>
                           {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
                         </p>
                         {node.variants.edges[0]?.node && (

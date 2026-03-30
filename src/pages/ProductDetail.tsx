@@ -6,6 +6,7 @@ import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus, Bell } from 'lucide-r
 import { StockStatus } from '@/components/StockStatus';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
 import { COD_FEE_VARIANT_ID } from '@/stores/cartStore';
+import { toTitleCase } from '@/lib/titleCase';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
@@ -406,9 +407,9 @@ function RelatedProducts({ currentHandle, currentProductType, currentFabric, pro
               )}
             </div>
             <h3 className="font-heading text-sm md:text-base text-foreground group-hover:text-accent transition-colors truncate">
-              {node.title}
+              {toTitleCase(node.title)}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground" style={{ fontFamily: 'var(--font-price)' }}>
               {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
             </p>
           </Link>
@@ -730,8 +731,8 @@ export default function ProductDetail() {
             <div className="space-y-3 md:space-y-4">
               {/* Title Row with Share & Wishlist */}
               <div className="flex items-start justify-between gap-3">
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-heading tracking-wide uppercase flex-1 leading-tight">
-                  {product.title}
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-heading tracking-wide flex-1 leading-tight">
+                  {toTitleCase(product.title)}
                 </h1>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button
@@ -772,7 +773,7 @@ export default function ProductDetail() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <div>
-                    <p className="text-xl md:text-2xl font-heading">
+                    <p className="text-xl md:text-2xl font-heading" style={{ fontFamily: 'var(--font-price)' }}>
                       {currentVariant && formatPrice(currentVariant.price.amount, currentVariant.price.currencyCode)}
                     </p>
                     <p className="text-xs text-muted-foreground">MRP Inclusive of all taxes</p>

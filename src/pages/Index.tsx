@@ -5,6 +5,7 @@ import { CollectionsSection } from "@/components/CollectionsSection";
 import { ShopifyProducts } from "@/components/ShopifyProducts";
 import { AboutSection } from "@/components/AboutSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { JournalsSection } from "@/components/JournalsSection";
 import { NewsletterSection } from "@/components/NewsletterSection";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -125,7 +126,7 @@ const Index = () => {
         />
         <meta
           name="keywords"
-          content="Kora Sutra, KoraSutra, kora sutra sarees, handcrafted sarees, tussar silk sarees, muslin sarees, linen sarees, jamdani sarees, kantha stitch sarees, block print sarees, Bengal sarees, Indian sarees, handloom sarees, luxury sarees, designer sarees, silk sarees online, buy sarees online India, traditional sarees, wedding sarees, party wear sarees"
+          content="Kora Sutra, KoraSutra, kora sutra sarees, kora sutra official, korasutra.com, buy sarees online, handcrafted sarees, tussar silk sarees, muslin sarees, linen sarees, jamdani sarees, kantha stitch sarees, block print sarees, batik sarees, Bengal sarees, Indian sarees, handloom sarees, luxury sarees, designer sarees, silk sarees online, buy sarees online India, traditional sarees, wedding sarees, party wear sarees, office wear sarees, casual sarees, festive sarees, Durga Puja sarees, Diwali sarees, bridal sarees, pure silk saree, handwoven sarees, artisan sarees, sustainable fashion India, eco-friendly sarees, organic sarees, saree shop online India, best saree brand India, premium sarees India, saree for women, saree collection online, Bengal handloom, Baluchari sarees, Bishnupur silk, Bhagalpur silk, Shantipur saree, cotton sarees, matka silk, katan silk, tissue tussar, tissue muslin, zari saree, zari border saree, hand painted saree, Paithani saree, saree with blouse, running blouse saree, free shipping sarees India, COD sarees, cash on delivery sarees, saree gift, saree for mother, saree for wedding guest, lightweight saree, summer saree, winter saree, monsoon saree, silk saree care, how to drape saree, saree styling, handloom vs powerloom, authentic handloom India, handloom mark, GI tagged sarees, geographical indication sarees, Hyderabad saree shop, saree store Telangana, Indian ethnic wear, traditional Indian clothing, six yards of elegance, handloom revival, support artisans India, weaver community, Bengal weaving, Birbhum handloom, Nadia handloom, bird motif saree, floral motif saree, leaf motif saree, geometric pattern saree, paisley saree, lotus motif saree"
         />
         <link rel="canonical" href="https://korasutra.com/" />
         
@@ -158,6 +159,7 @@ const Index = () => {
           <ShopifyProducts />
           <AboutSection />
           <TestimonialsSection />
+          <JournalsSection />
           <NewsletterSection />
         </main>
         <Footer />

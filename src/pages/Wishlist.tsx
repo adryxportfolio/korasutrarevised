@@ -7,6 +7,7 @@ import { Footer } from '@/components/Footer';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useCartStore } from '@/stores/cartStore';
 import { formatPrice } from '@/lib/shopify';
+import { toTitleCase } from '@/lib/titleCase';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -113,9 +114,9 @@ export default function Wishlist() {
                       )}
                     </div>
                     <h3 className="font-heading text-sm md:text-base text-foreground group-hover:text-accent transition-colors line-clamp-2">
-                      {node.title}
+                      {toTitleCase(node.title)}
                     </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1" style={{ fontFamily: 'var(--font-price)' }}>
                       {formatPrice(node.priceRange.minVariantPrice.amount, node.priceRange.minVariantPrice.currencyCode)}
                     </p>
                   </Link>

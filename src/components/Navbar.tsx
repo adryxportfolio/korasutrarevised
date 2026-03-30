@@ -643,6 +643,13 @@ export function Navbar() {
                   </button>
                 </li>
 
+                {/* Journals */}
+                <li>
+                  <button onClick={() => handleNavigation('/journals')} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left">
+                    Journals
+                  </button>
+                </li>
+
                 {/* About Us */}
                 <li>
                   <button onClick={() => {

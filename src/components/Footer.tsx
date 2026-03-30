@@ -6,6 +6,7 @@ import logo from '@/assets/logo.png';
 const footerLinks = {
   company: [
     { name: 'About Us', href: '/about' },
+    { name: 'Journals', href: '/journals' },
     { name: 'Contact', href: '/contact' },
   ],
   support: [

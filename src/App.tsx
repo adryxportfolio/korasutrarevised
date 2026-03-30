@@ -22,6 +22,8 @@ import Wishlist from "./pages/Wishlist";
 import Legal from "./pages/Legal";
 import OrderTracking from "./pages/OrderTracking";
 import Admin from "./pages/Admin";
+import Journals from "./pages/Journals";
+import JournalArticle from "./pages/JournalArticle";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,8 @@ const App = () => (
             <Route path="/legal" element={<Legal />} />
             <Route path="/order-tracking" element={<OrderTracking />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/journals" element={<Journals />} />
+            <Route path="/journals/:slug" element={<JournalArticle />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
