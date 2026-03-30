@@ -299,7 +299,7 @@ At Kora Sutra, our Jamdani and linen sarees often feature zari pallu work — th
 The warmth of gold zari against natural silk or linen creates a visual harmony that synthetic alternatives simply cannot replicate. When you hold a saree with real zari up to the light, the metallic threads catch and scatter light in a way that feels alive — not the flat, uniform shine of plastic-coated thread.
 
 Real zari is an investment. But like all genuine things, it rewards with beauty that deepens over time.`,
-    image: heroImg3,
+    image: 'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/23EEAE6D-68CF-409F-B840-E3611A2B312C.jpg?v=1768894091',
     author: 'Pallavi Menon',
     date: '2024-11-15',
     category: 'Journal',
