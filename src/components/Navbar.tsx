@@ -281,11 +281,16 @@ export function Navbar() {
 
         <nav className="container mx-auto px-4 md:px-6 py-4 bg-transparent">
           <div className="flex items-center justify-between flex-nowrap">
-            {/* Left: Hamburger Menu */}
-            <div className="flex items-center shrink-0">
-              <button onClick={() => setIsOpen(true)} className="p-2 hover:bg-secondary/50 rounded-md transition-colors" aria-label="Open navigation menu">
+            {/* Left: Hamburger Menu + Desktop Mega Menu */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button onClick={() => setIsOpen(true)} className="p-2 hover:bg-secondary/50 rounded-md transition-colors lg:hidden" aria-label="Open navigation menu">
                 <Menu className="w-6 h-6" aria-hidden="true" />
               </button>
+              {/* Desktop-only hamburger for sidebar access */}
+              <button onClick={() => setIsOpen(true)} className="p-2 hover:bg-secondary/50 rounded-md transition-colors hidden lg:block" aria-label="Open filters menu">
+                <Menu className="w-5 h-5" aria-hidden="true" />
+              </button>
+              <MegaMenu />
             </div>
 
             {/* Logo - Centered, slightly larger */}
