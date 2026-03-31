@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { CollectionsSection } from "@/components/CollectionsSection";
 import { ShopifyProducts } from "@/components/ShopifyProducts";
 import { AboutSection } from "@/components/AboutSection";
+import { ArtisanSection } from "@/components/ArtisanSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { JournalsSection } from "@/components/JournalsSection";
 import { NewsletterSection } from "@/components/NewsletterSection";
@@ -119,7 +120,7 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Kora Sutra | Handcrafted Sarees - Premium Tussar, Muslin & Silk Sarees from Bengal</title>
+        <title>Kora Sutra | Handcrafted Tussar, Muslin & Silk Sarees</title>
         <meta
           name="description"
           content="Shop authentic handcrafted sarees at Kora Sutra. Discover premium Tussar silk, Muslin, Linen, Jamdani, Kantha stitch & Block print sarees. Free shipping across India. Celebrating Bengal's rich textile heritage."
@@ -157,6 +158,7 @@ const Index = () => {
           <HeroSection />
           <CollectionsSection />
           <ShopifyProducts />
+          <ArtisanSection />
           <AboutSection />
           <TestimonialsSection />
           <JournalsSection />
