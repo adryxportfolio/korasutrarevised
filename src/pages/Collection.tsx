@@ -1245,12 +1245,16 @@ export default function Collection() {
                             />
                           )}
                           
-                          {/* NEW Badge - top left */}
-                          {index < 4 && (
-                            <span className="absolute top-2 left-2 bg-foreground text-background text-[10px] md:text-xs px-2 py-0.5 font-body uppercase tracking-wide">
-                              NEW
-                            </span>
-                          )}
+                          {/* Fabric Badge */}
+                          {(() => {
+                            const fabricKeywords = ['Tussar', 'Matka', 'Muslin', 'Silk', 'Katan', 'Linen', 'Cotton', 'Kantha', 'Jamdani', 'Baluchari', 'Batik', 'Paithani', 'Block Print'];
+                            const fabric = fabricKeywords.find(f => node.title.toLowerCase().includes(f.toLowerCase()));
+                            return fabric ? (
+                              <span className="absolute top-2 left-2 px-2 py-0.5 bg-background/90 backdrop-blur-sm text-[10px] md:text-xs font-body tracking-wider uppercase text-foreground/80 rounded-sm">
+                                {fabric}
+                              </span>
+                            ) : null;
+                          })()}
                           
                           {/* View Button - bottom right */}
                           <div className="absolute bottom-2 right-2">
