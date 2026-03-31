@@ -4,6 +4,7 @@ import { Menu, X, Search, User, ChevronDown, ChevronRight, Heart, Check } from '
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { CartDrawer } from '@/components/CartDrawer';
+import { MegaMenu } from '@/components/MegaMenu';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useAuthStore } from '@/stores/authStore';
 import { OTPAuthModal } from '@/components/OTPAuthModal';
