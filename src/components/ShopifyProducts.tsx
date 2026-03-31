@@ -122,11 +122,23 @@ export function ShopifyProducts() {
                   {product.node.images.edges[0]?.node && (
                     <img
                       src={product.node.images.edges[0].node.url}
-                      alt={product.node.images.edges[0].node.altText || `${product.node.title} - Handcrafted Saree by Kora Sutra`}
+                      alt={`${product.node.title} - Handcrafted Saree by Kora Sutra`}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
                   )}
+                  
+                  {/* Fabric Badge */}
+                  {(() => {
+                    const fabricKeywords = ['Tussar', 'Matka', 'Muslin', 'Silk', 'Katan', 'Linen', 'Cotton', 'Kantha', 'Jamdani', 'Baluchari', 'Batik', 'Paithani', 'Block Print'];
+                    const title = product.node.title;
+                    const fabric = fabricKeywords.find(f => title.toLowerCase().includes(f.toLowerCase()));
+                    return fabric ? (
+                      <span className="absolute top-2 left-2 px-2 py-0.5 bg-background/90 backdrop-blur-sm text-[10px] md:text-xs font-body tracking-wider uppercase text-foreground/80 rounded-sm">
+                        {fabric}
+                      </span>
+                    ) : null;
+                  })()}
                   
                   {/* Quick Add Button */}
                   <button
