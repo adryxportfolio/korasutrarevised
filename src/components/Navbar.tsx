@@ -279,7 +279,7 @@ export function Navbar() {
           🎉 Flat 10% OFF for First-Time Buyers! Use Code <span className="font-bold underline">FIRST10</span> &nbsp;|&nbsp; FREE Shipping All Over India
         </div>
 
-        <nav className="container mx-auto px-4 md:px-6 py-4 bg-transparent">
+        <nav className="container mx-auto px-4 md:px-6 py-4 bg-transparent overflow-visible">
           <div className="flex items-center justify-between flex-nowrap">
             {/* Left: Hamburger Menu + Desktop Mega Menu */}
             <div className="flex items-center gap-2 shrink-0">
