@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
@@ -41,95 +42,143 @@ const quickLinks = [
 
 export function MegaMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  let timeoutId: ReturnType<typeof setTimeout>;
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
 
-  const handleMouseEnter = () => {
-    clearTimeout(timeoutId);
+  const updatePosition = useCallback(() => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + 8,
+        left: rect.left + rect.width / 2,
+      });
+    }
+  }, []);
+
+  const open = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    updatePosition();
     setIsOpen(true);
-  };
+  }, [updatePosition]);
 
-  const handleMouseLeave = () => {
-    timeoutId = setTimeout(() => setIsOpen(false), 200);
-  };
+  const scheduleClose = useCallback(() => {
+    timeoutRef.current = setTimeout(() => setIsOpen(false), 250);
+  }, []);
+
+  // Close on scroll
+  useEffect(() => {
+    if (!isOpen) return;
+    const onScroll = () => setIsOpen(false);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [isOpen]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
-    <div
-      className="hidden lg:block relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <button
-        className="flex items-center gap-1 text-sm font-body tracking-wide text-foreground hover:text-accent transition-colors py-2"
-        onClick={() => setIsOpen(!isOpen)}
+    <>
+      <div
+        className="hidden lg:block relative"
+        onMouseEnter={open}
+        onMouseLeave={scheduleClose}
       >
-        Collections
-        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
+        <button
+          ref={buttonRef}
+          className="flex items-center gap-1 text-sm font-body tracking-wide text-foreground hover:text-accent transition-colors py-2"
+          onClick={() => {
+            if (!isOpen) {
+              open();
+            } else {
+              setIsOpen(false);
+            }
+          }}
+        >
+          Collections
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+      </div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[700px] bg-background border border-border shadow-elegant rounded-sm z-50"
-          >
-            <div className="p-6">
-              <div className="grid grid-cols-4 gap-6">
-                {/* Category Columns */}
-                {Object.entries(megaMenuData).map(([category, items]) => (
-                  <div key={category}>
+      {createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.2 }}
+              onMouseEnter={() => {
+                if (timeoutRef.current) clearTimeout(timeoutRef.current);
+              }}
+              onMouseLeave={scheduleClose}
+              style={{
+                position: 'fixed',
+                top: dropdownPos.top,
+                left: dropdownPos.left,
+                transform: 'translateX(-50%)',
+                zIndex: 9999,
+              }}
+              className="w-[700px] bg-background border border-border shadow-elegant rounded-sm"
+            >
+              <div className="p-6">
+                <div className="grid grid-cols-4 gap-6">
+                  {Object.entries(megaMenuData).map(([category, items]) => (
+                    <div key={category}>
+                      <h3 className="text-xs font-body tracking-[0.2em] uppercase text-muted-foreground mb-3">
+                        {category}
+                      </h3>
+                      <ul className="space-y-2">
+                        {items.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              to={item.href}
+                              onClick={() => setIsOpen(false)}
+                              className="text-sm font-body text-foreground/80 hover:text-accent transition-colors block py-0.5"
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+
+                  <div>
                     <h3 className="text-xs font-body tracking-[0.2em] uppercase text-muted-foreground mb-3">
-                      {category}
+                      Quick Links
                     </h3>
                     <ul className="space-y-2">
-                      {items.map((item) => (
+                      {quickLinks.map((item) => (
                         <li key={item.name}>
                           <Link
                             to={item.href}
                             onClick={() => setIsOpen(false)}
-                            className="text-sm font-body text-foreground/80 hover:text-accent transition-colors block py-0.5"
+                            className="text-sm font-body text-accent font-medium hover:text-accent/80 transition-colors block py-0.5"
                           >
                             {item.name}
                           </Link>
                         </li>
                       ))}
                     </ul>
-                  </div>
-                ))}
 
-                {/* Quick Links Column */}
-                <div>
-                  <h3 className="text-xs font-body tracking-[0.2em] uppercase text-muted-foreground mb-3">
-                    Quick Links
-                  </h3>
-                  <ul className="space-y-2">
-                    {quickLinks.map((item) => (
-                      <li key={item.name}>
-                        <Link
-                          to={item.href}
-                          onClick={() => setIsOpen(false)}
-                          className="text-sm font-body text-accent font-medium hover:text-accent/80 transition-colors block py-0.5"
-                        >
-                          {item.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Brand Tagline */}
-                  <div className="mt-6 pt-4 border-t border-border/50">
-                    <p className="text-xs text-muted-foreground font-body italic leading-relaxed">
-                      "Celebrating Bengal's textile heritage, one saree at a time."
-                    </p>
+                    <div className="mt-6 pt-4 border-t border-border/50">
+                      <p className="text-xs text-muted-foreground font-body italic leading-relaxed">
+                        "Celebrating Bengal's textile heritage, one saree at a time."
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 }
