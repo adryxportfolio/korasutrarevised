@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -43,11 +43,10 @@ const quickLinks = [
 export function MegaMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
-  let timeoutId: ReturnType<typeof setTimeout>;
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
       setDropdownPos({
@@ -55,17 +54,17 @@ export function MegaMenu() {
         left: rect.left + rect.width / 2,
       });
     }
-  };
+  }, []);
 
-  const handleMouseEnter = () => {
-    clearTimeout(timeoutId);
+  const open = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     updatePosition();
     setIsOpen(true);
-  };
+  }, [updatePosition]);
 
-  const handleMouseLeave = () => {
-    timeoutId = setTimeout(() => setIsOpen(false), 200);
-  };
+  const scheduleClose = useCallback(() => {
+    timeoutRef.current = setTimeout(() => setIsOpen(false), 250);
+  }, []);
 
   // Close on scroll
   useEffect(() => {
@@ -75,44 +74,48 @@ export function MegaMenu() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [isOpen]);
 
-  // Handle dropdown mouse enter/leave to keep it open
-  const handleDropdownMouseEnter = () => {
-    clearTimeout(timeoutId);
-  };
-
-  const handleDropdownMouseLeave = () => {
-    timeoutId = setTimeout(() => setIsOpen(false), 200);
-  };
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
-    <div
-      className="hidden lg:block relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <button
-        ref={buttonRef}
-        className="flex items-center gap-1 text-sm font-body tracking-wide text-foreground hover:text-accent transition-colors py-2"
-        onClick={() => {
-          if (!isOpen) updatePosition();
-          setIsOpen(!isOpen);
-        }}
+    <>
+      <div
+        className="hidden lg:block relative"
+        onMouseEnter={open}
+        onMouseLeave={scheduleClose}
       >
-        Collections
-        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
+        <button
+          ref={buttonRef}
+          className="flex items-center gap-1 text-sm font-body tracking-wide text-foreground hover:text-accent transition-colors py-2"
+          onClick={() => {
+            if (!isOpen) {
+              open();
+            } else {
+              setIsOpen(false);
+            }
+          }}
+        >
+          Collections
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+      </div>
 
       {createPortal(
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              ref={dropdownRef}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.2 }}
-              onMouseEnter={handleDropdownMouseEnter}
-              onMouseLeave={handleDropdownMouseLeave}
+              onMouseEnter={() => {
+                if (timeoutRef.current) clearTimeout(timeoutRef.current);
+              }}
+              onMouseLeave={scheduleClose}
               style={{
                 position: 'fixed',
                 top: dropdownPos.top,
@@ -176,6 +179,6 @@ export function MegaMenu() {
         </AnimatePresence>,
         document.body
       )}
-    </div>
+    </>
   );
 }
