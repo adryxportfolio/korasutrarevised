@@ -3,9 +3,9 @@ import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 
 const artisanImages = [
-  'https://cdn.shopify.com/s/files/1/0921/3702/7354/files/IMG_0637_78ae3b2e-e94e-418d-8c09-e6a2c8f6e2f8.jpg?v=1746533826',
-  'https://cdn.shopify.com/s/files/1/0921/3702/7354/files/IMG_0664_ca2b8a53-2b3c-4a86-a8b9-75e65d8a2b0a.jpg?v=1746533826',
-  'https://cdn.shopify.com/s/files/1/0921/3702/7354/files/IMG_0765_c86c75ba-6619-4a75-8acb-7dc45aae9bc3.jpg?v=1746533826',
+  'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/MaroonPureSilkKantha1.jpg?v=1767428179',
+  'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/16B10BD3-7E27-4F6E-9062-F26B89A6BF65.jpg?v=1767666128',
+  'https://cdn.shopify.com/s/files/1/0800/5258/4666/files/IMG_8389.png?v=1768012655',
 ];
 
 export function ArtisanSection() {
