@@ -295,7 +295,7 @@ export function Navbar() {
 
             {/* Logo - Centered, slightly larger */}
             <Link to="/" className="absolute left-1/2 -translate-x-1/2" aria-label="Kora Sutra - Home">
-              <img src={logo} alt="Kora Sutra - Handcrafted Sarees from Bengal" className="h-14 md:h-20 w-auto" />
+              <img src={logo} alt="Kora Sutra - Handcrafted Sarees from Bengal" className="h-16 md:h-24 w-auto" />
             </Link>
 
             {/* Right: Wishlist, Account, Search, Cart */}
