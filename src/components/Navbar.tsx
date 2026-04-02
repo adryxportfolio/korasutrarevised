@@ -302,7 +302,7 @@ export function Navbar() {
             <div className="flex items-center space-x-1 md:space-x-2 shrink-0">
               {/* Wishlist */}
               <Link to="/wishlist" className="p-2 hover:bg-secondary/50 rounded-full transition-colors relative" aria-label="View wishlist">
-                <Heart className="w-5 h-5" aria-hidden="true" />
+                <Heart className="w-6 h-6" aria-hidden="true" />
                 {wishlistCount > 0 && <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-[10px] bg-accent">
                     {wishlistCount}
                   </Badge>}
