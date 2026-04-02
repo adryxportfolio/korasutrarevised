@@ -310,7 +310,7 @@ export function Navbar() {
               
               {/* Account - Opens OTP Auth Modal */}
               <button onClick={() => setAuthModalOpen(true)} className={`p-2 hover:bg-secondary/50 rounded-full transition-colors relative ${isAuthenticated ? 'text-accent' : ''}`} aria-label="Open account menu">
-                <User className="w-5 h-5" aria-hidden="true" />
+                <User className="w-6 h-6" aria-hidden="true" />
                 {isAuthenticated && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background" aria-label="Logged in" />}
               </button>
               
