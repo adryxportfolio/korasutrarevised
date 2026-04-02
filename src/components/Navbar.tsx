@@ -316,7 +316,7 @@ export function Navbar() {
               
               {/* Search */}
               <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 hover:bg-secondary/50 rounded-full transition-colors" aria-label="Search products">
-                <Search className="w-5 h-5" aria-hidden="true" />
+                <Search className="w-6 h-6" aria-hidden="true" />
               </button>
               
               {/* Cart */}
