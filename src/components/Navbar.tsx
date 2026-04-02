@@ -295,14 +295,14 @@ export function Navbar() {
 
             {/* Logo - Centered, slightly larger */}
             <Link to="/" className="absolute left-1/2 -translate-x-1/2" aria-label="Kora Sutra - Home">
-              <img src={logo} alt="Kora Sutra - Handcrafted Sarees from Bengal" className="h-14 md:h-20 w-auto" />
+              <img src={logo} alt="Kora Sutra - Handcrafted Sarees from Bengal" className="h-16 md:h-24 w-auto" />
             </Link>
 
             {/* Right: Wishlist, Account, Search, Cart */}
             <div className="flex items-center space-x-1 md:space-x-2 shrink-0">
               {/* Wishlist */}
               <Link to="/wishlist" className="p-2 hover:bg-secondary/50 rounded-full transition-colors relative" aria-label="View wishlist">
-                <Heart className="w-5 h-5" aria-hidden="true" />
+                <Heart className="w-6 h-6" aria-hidden="true" />
                 {wishlistCount > 0 && <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-[10px] bg-accent">
                     {wishlistCount}
                   </Badge>}
@@ -310,13 +310,13 @@ export function Navbar() {
               
               {/* Account - Opens OTP Auth Modal */}
               <button onClick={() => setAuthModalOpen(true)} className={`p-2 hover:bg-secondary/50 rounded-full transition-colors relative ${isAuthenticated ? 'text-accent' : ''}`} aria-label="Open account menu">
-                <User className="w-5 h-5" aria-hidden="true" />
+                <User className="w-6 h-6" aria-hidden="true" />
                 {isAuthenticated && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background" aria-label="Logged in" />}
               </button>
               
               {/* Search */}
               <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 hover:bg-secondary/50 rounded-full transition-colors" aria-label="Search products">
-                <Search className="w-5 h-5" aria-hidden="true" />
+                <Search className="w-6 h-6" aria-hidden="true" />
               </button>
               
               {/* Cart */}
