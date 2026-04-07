@@ -630,6 +630,13 @@ export function Navbar() {
                   </AnimatePresence>
                 </li>
 
+                {/* Blouse */}
+                <li>
+                  <button onClick={() => handleNavigation('/collections/blouse')} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left">
+                    Blouse
+                  </button>
+                </li>
+
                 {/* Best Sellers - Internal route */}
                 <li>
                   <button onClick={() => handleNavigation('/collections/best-sellers')} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left">
