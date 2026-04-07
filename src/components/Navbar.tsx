@@ -490,7 +490,7 @@ export function Navbar() {
                 {/* Collection - Expandable */}
                 <li>
                   <button onClick={() => setCollectionsExpanded(!collectionsExpanded)} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50">
-                    Collection
+                    Sarees
                     <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${collectionsExpanded ? 'rotate-180' : ''}`} />
                   </button>
                   
@@ -628,6 +628,13 @@ export function Navbar() {
                         </div>
                       </motion.div>}
                   </AnimatePresence>
+                </li>
+
+                {/* Blouse */}
+                <li>
+                  <button onClick={() => handleNavigation('/collections/blouse')} className="flex items-center justify-between w-full py-4 text-lg font-heading tracking-wide text-foreground hover:text-accent transition-colors border-b border-border/50 text-left">
+                    Blouse
+                  </button>
                 </li>
 
                 {/* Best Sellers - Internal route */}

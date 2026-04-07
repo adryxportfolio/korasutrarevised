@@ -23,7 +23,7 @@ export function HeroSection() {
             className="absolute bottom-12 right-12 lg:bottom-16 lg:right-16"
           >
             <span className="inline-flex items-center justify-center px-10 py-4 bg-primary text-primary-foreground font-body text-sm tracking-widest uppercase rounded-sm hover:bg-primary/90 transition-colors shadow-lg">
-              Shop Now
+              Explore Our Collection
             </span>
           </motion.div>
         </Link>
@@ -45,7 +45,7 @@ export function HeroSection() {
             className="absolute bottom-6 left-1/2 -translate-x-1/2"
           >
             <span className="inline-flex items-center justify-center px-8 py-3 bg-primary text-primary-foreground font-body text-xs tracking-widest uppercase rounded-sm hover:bg-primary/90 transition-colors shadow-lg">
-              Shop Now
+              Explore Our Collection
             </span>
           </motion.div>
         </Link>
