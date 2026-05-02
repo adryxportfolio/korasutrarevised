@@ -5,12 +5,10 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus, Bell } from 'lucide-react';
 import { StockStatus } from '@/components/StockStatus';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
-import { COD_FEE_VARIANT_ID } from '@/stores/cartStore';
 import { toTitleCase } from '@/lib/titleCase';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
-import { useAuthStore } from '@/stores/authStore';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
@@ -18,8 +16,6 @@ import { Footer } from '@/components/Footer';
 import { SwipeableImageGallery } from '@/components/SwipeableImageGallery';
 import { StickyMobileCartBar } from '@/components/StickyMobileCartBar';
 import { RecentlyViewed } from '@/components/RecentlyViewed';
-import { OTPAuthModal } from '@/components/OTPAuthModal';
-import { PaymentMethodModal } from '@/components/PaymentMethodModal';
 
 import {
   Accordion,
@@ -426,12 +422,11 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  
+
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const addToRecentlyViewed = useRecentlyViewedStore(state => state.addProduct);
-  const { isAuthenticated } = useAuthStore();
+  
 
   const isWishlisted = product ? isInWishlist(product.id) : false;
 
