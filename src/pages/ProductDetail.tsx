@@ -1027,27 +1027,6 @@ export default function ProductDetail() {
         )}
       </main>
       <Footer />
-
-      {/* OTP Auth Modal - triggered when unauthenticated user tries to checkout */}
-      <OTPAuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
-
-      {/* Payment Method Modal - shown before Buy Now checkout */}
-      {product && selectedVariant && (() => {
-        const variant = product.variants.edges.find(e => e.node.id === selectedVariant)?.node;
-        if (!variant) return null;
-        return (
-          <PaymentMethodModal
-            isOpen={isPaymentModalOpen}
-            onClose={() => setIsPaymentModalOpen(false)}
-            baseAmount={parseFloat(variant.price.amount)}
-            currencyCode={variant.price.currencyCode}
-            onConfirm={handleBuyNowCheckout}
-          />
-        );
-      })()}
     </>
   );
 }
