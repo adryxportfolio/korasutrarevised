@@ -5,12 +5,10 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Loader2, Clock, Heart, Share2, Plus, Bell } from 'lucide-react';
 import { StockStatus } from '@/components/StockStatus';
 import { fetchProductByHandle, fetchProducts, ShopifyProduct, formatPrice, createStorefrontCheckout } from '@/lib/shopify';
-import { COD_FEE_VARIANT_ID } from '@/stores/cartStore';
 import { toTitleCase } from '@/lib/titleCase';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { useRecentlyViewedStore } from '@/stores/recentlyViewedStore';
-import { useAuthStore } from '@/stores/authStore';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
@@ -18,8 +16,6 @@ import { Footer } from '@/components/Footer';
 import { SwipeableImageGallery } from '@/components/SwipeableImageGallery';
 import { StickyMobileCartBar } from '@/components/StickyMobileCartBar';
 import { RecentlyViewed } from '@/components/RecentlyViewed';
-import { OTPAuthModal } from '@/components/OTPAuthModal';
-import { PaymentMethodModal } from '@/components/PaymentMethodModal';
 
 import {
   Accordion,
@@ -426,12 +422,11 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  
+
   const addItem = useCartStore(state => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const addToRecentlyViewed = useRecentlyViewedStore(state => state.addProduct);
-  const { isAuthenticated } = useAuthStore();
+  
 
   const isWishlisted = product ? isInWishlist(product.id) : false;
 
@@ -482,29 +477,14 @@ export default function ProductDetail() {
   };
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!product || !selectedVariant) {
       toast.error('Please select a variant', { position: 'top-center' });
       return;
     }
 
-    if (!isAuthenticated) {
-      toast.error('Sign in required', {
-        description: 'Please sign in with your mobile number to place an order.',
-        position: 'top-center',
-      });
-      setIsAuthModalOpen(true);
-      return;
-    }
-
-    // Open payment method selection modal
-    setIsPaymentModalOpen(true);
-  };
-
-  const handleBuyNowCheckout = async (paymentMethod: 'prepaid' | 'cod') => {
-    const variant = product?.variants.edges.find(
+    const variant = product.variants.edges.find(
       (e) => e.node.id === selectedVariant
     )?.node;
 
@@ -516,16 +496,10 @@ export default function ProductDetail() {
         { variantId: variant.id, quantity: 1 },
       ];
 
-      // Add COD fee line item if COD selected
-      if (paymentMethod === 'cod') {
-        cartItems.push({ variantId: COD_FEE_VARIANT_ID, quantity: 1 });
-      }
-
       const checkoutUrl = await createStorefrontCheckout(cartItems);
 
       if (checkoutUrl) {
-        setIsPaymentModalOpen(false);
-        toast.success('Redirecting to checkout...', { position: 'top-center' });
+        toast.success('Redirecting to secure checkout...', { position: 'top-center' });
         window.open(checkoutUrl, '_blank');
       } else {
         toast.error('Failed to create checkout. Please try again.', { position: 'top-center' });
@@ -1053,27 +1027,6 @@ export default function ProductDetail() {
         )}
       </main>
       <Footer />
-
-      {/* OTP Auth Modal - triggered when unauthenticated user tries to checkout */}
-      <OTPAuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
-
-      {/* Payment Method Modal - shown before Buy Now checkout */}
-      {product && selectedVariant && (() => {
-        const variant = product.variants.edges.find(e => e.node.id === selectedVariant)?.node;
-        if (!variant) return null;
-        return (
-          <PaymentMethodModal
-            isOpen={isPaymentModalOpen}
-            onClose={() => setIsPaymentModalOpen(false)}
-            baseAmount={parseFloat(variant.price.amount)}
-            currencyCode={variant.price.currencyCode}
-            onConfirm={handleBuyNowCheckout}
-          />
-        );
-      })()}
     </>
   );
 }
