@@ -1,18 +1,11 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Package, MapPin, Clock, CheckCircle, Truck, LogIn, ExternalLink } from 'lucide-react';
+import { Package, MapPin, Clock, CheckCircle, Truck, ExternalLink } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/stores/authStore';
-import { MyOrders } from '@/components/MyOrders';
 
 export default function OrderTracking() {
-  const navigate = useNavigate();
-  const { isAuthenticated, customer } = useAuthStore();
-
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -29,22 +22,22 @@ export default function OrderTracking() {
         <meta name="description" content="Track your Kora Sutra order status. View shipping updates, delivery information, and order history for your handcrafted saree purchases." />
         <meta name="keywords" content="Kora Sutra order tracking, track order, shipping status, delivery updates, order history" />
         <link rel="canonical" href="https://korasutra.com/order-tracking" />
-        
+
         <meta property="og:title" content="Track Your Order - Kora Sutra" />
         <meta property="og:description" content="Track your Kora Sutra order status and view shipping updates." />
         <meta property="og:url" content="https://korasutra.com/order-tracking" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://korasutra.com/og-image.png" />
-        
+
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Track Your Order - Kora Sutra" />
         <meta name="twitter:description" content="Track your Kora Sutra order status and delivery updates." />
-        
+
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
       <Navbar />
-      
+
       <main className="min-h-screen pt-32 pb-20">
         <div className="container mx-auto px-4 max-w-2xl">
           <motion.div
@@ -58,46 +51,33 @@ export default function OrderTracking() {
             </div>
             <h1 className="text-3xl md:text-4xl font-heading mb-4">Track Your Orders</h1>
             <p className="text-muted-foreground font-body">
-              {isAuthenticated 
-                ? `Welcome back, ${customer?.name || 'Customer'}! View your order history below.`
-                : 'Login to view and track your orders in real-time'}
+              View live tracking and order history on your Kora Sutra account portal.
             </p>
           </motion.div>
 
-          {isAuthenticated ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="bg-secondary/20 rounded-lg p-6 md:p-8 mb-8"
-            >
-              <MyOrders />
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="bg-secondary/20 rounded-lg p-6 md:p-8 mb-8 text-center"
-            >
-              <LogIn className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h2 className="text-lg font-heading mb-2">Login Required</h2>
+          {/* Real-time Tracking Link */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-center mb-8"
+          >
+            <div className="p-8 bg-accent/10 border border-accent/20 rounded-lg">
+              <ExternalLink className="w-10 h-10 text-accent mx-auto mb-4" />
+              <h3 className="font-heading text-lg mb-2">Real-Time Order Tracking</h3>
               <p className="text-sm text-muted-foreground mb-6">
-                Please login with your phone number to view your orders
+                Sign in with the same mobile number you used at checkout to view live updates and order history.
               </p>
-              <Button 
-                onClick={() => {
-                  // This will be handled by clicking the user icon in navbar
-                  const userButton = document.querySelector('[aria-label="Account"]') as HTMLButtonElement;
-                  if (userButton) userButton.click();
-                }}
+              <Button
+                onClick={() => window.open('https://account.korasutra.com', '_blank')}
                 className="bg-accent hover:bg-accent/90"
+                size="lg"
               >
-                <LogIn className="w-4 h-4 mr-2" />
-                Login to View Orders
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Go to account.korasutra.com
               </Button>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
 
           {/* Order Status Info */}
           <motion.div
@@ -131,34 +111,11 @@ export default function OrderTracking() {
             </div>
           </motion.div>
 
-          {/* Real-time Tracking Link */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-center"
-          >
-            <div className="p-6 bg-accent/10 border border-accent/20 rounded-lg">
-              <ExternalLink className="w-8 h-8 text-accent mx-auto mb-3" />
-              <h3 className="font-heading mb-2">Real-Time Order Tracking</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Visit your Kora Sutra account for live tracking updates
-              </p>
-              <Button
-                onClick={() => window.open('https://account.korasutra.com', '_blank')}
-                className="bg-accent hover:bg-accent/90"
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Go to accounts.korasutra.com
-              </Button>
-            </div>
-          </motion.div>
-
           {/* Help Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             className="mt-12 text-center border-t border-border pt-8"
           >
             <h3 className="font-heading mb-2">Need Help?</h3>

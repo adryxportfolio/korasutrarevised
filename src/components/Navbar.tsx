@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, User, ChevronDown, ChevronRight, Heart, Check } from 'lucide-react';
+import { Menu, X, Search, ChevronDown, ChevronRight, Heart, Check } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { CartDrawer } from '@/components/CartDrawer';
 import { MegaMenu } from '@/components/MegaMenu';
 import { useWishlistStore } from '@/stores/wishlistStore';
-import { useAuthStore } from '@/stores/authStore';
-import { OTPAuthModal } from '@/components/OTPAuthModal';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 // Common color mapping for the filter
@@ -151,18 +149,12 @@ export function Navbar() {
   const [colorFilterExpanded, setColorFilterExpanded] = useState(false);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-
   // Multi-select state for collection filters
   const [selectedFabrics, setSelectedFabrics] = useState<string[]>([]);
   const [selectedPatterns, setSelectedPatterns] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
   const navigate = useNavigate();
   const wishlistCount = useWishlistStore(state => state.getTotalItems());
-  const {
-    isAuthenticated,
-    customer
-  } = useAuthStore();
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -307,12 +299,6 @@ export function Navbar() {
                     {wishlistCount}
                   </Badge>}
               </Link>
-              
-              {/* Account - Opens OTP Auth Modal */}
-              <button onClick={() => setAuthModalOpen(true)} className={`p-2 hover:bg-secondary/50 rounded-full transition-colors relative ${isAuthenticated ? 'text-accent' : ''}`} aria-label="Open account menu">
-                <User className="w-6 h-6" aria-hidden="true" />
-                {isAuthenticated && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background" aria-label="Logged in" />}
-              </button>
               
               {/* Search */}
               <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 hover:bg-secondary/50 rounded-full transition-colors" aria-label="Search products">
@@ -686,7 +672,5 @@ export function Navbar() {
           </motion.div>}
       </AnimatePresence>
 
-      {/* OTP Auth Modal */}
-      <OTPAuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>;
 }
