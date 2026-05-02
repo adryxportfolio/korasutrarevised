@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-Replace the current Shopify-backed storefront with a fully self-hosted, single-page commerce flow on Lovable + Supabase. The platform owns the entire customer journey: catalog → WhatsApp OTP login → checkout → payment (Razorpay or COD +₹200) → order management → tracking emails. Admins manage everything from a redesigned `/admin` panel: products, inventory, SKUs, customers, orders, and sales.
+Replace the current Shopify-backed storefront with a fully self-hosted, single-page commerce flow on Vercel + Supabase. The platform owns the entire customer journey: catalog → WhatsApp OTP login → checkout → payment (Razorpay or COD +₹200) → order management → tracking emails. Admins manage everything from a redesigned `/admin` panel: products, inventory, SKUs, customers, orders, and sales.
 
 **Hard constraint:** the live storefront (`korasutra.com`) must not break during the transition. Existing products are migrated end-to-end without manual re-entry.
 
@@ -24,7 +24,7 @@ Replace the current Shopify-backed storefront with a fully self-hosted, single-p
 - Native WhatsApp OTP login via **AISensy** (replacing MSG91).
 - Native payments via **Razorpay** (UPI, cards, netbanking, wallets) + **COD** with a ₹200 surcharge applied at checkout.
 - Real-time admin dashboard: orders, inventory, customers, sales — all live via Supabase Realtime.
-- Transactional email via Lovable's built-in email infrastructure: customer order confirmation with tracking link, plus admin notification to `korasutra.official@gmail.com`.
+- Transactional email via Resend: customer order confirmation with tracking link, plus admin notification to `korasutra.official@gmail.com`.
 - Migrate every existing Shopify product (titles, images, variants, SKUs, prices, descriptions, blouse flag, category) into the new database **automatically**.
 - Preserve URL structure (`/products/:handle`) so SEO is not lost.
 
@@ -53,7 +53,7 @@ Replace the current Shopify-backed storefront with a fully self-hosted, single-p
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                     React SPA (Lovable)                        │
+│                     React SPA (Vercel)                         │
 │  Storefront · /admin · /checkout · /order-tracking/:id         │
 └─────────────────┬──────────────────────────┬───────────────────┘
                   │                          │
@@ -73,12 +73,12 @@ Replace the current Shopify-backed storefront with a fully self-hosted, single-p
                           ┌────────────────────┼────────────────────┐
                           ▼                    ▼                    ▼
                    ┌──────────────┐    ┌──────────────┐     ┌──────────────┐
-                   │   AISensy    │    │   Razorpay   │     │   Lovable    │
+                   │   AISensy    │    │   Razorpay   │     │    Resend    │
                    │  (WhatsApp)  │    │   Payments   │     │    Email     │
                    └──────────────┘    └──────────────┘     └──────────────┘
 ```
 
-**Key principle:** the browser never holds privileged credentials. AISensy, Razorpay, and SMTP all live behind edge functions. Tokens (customer + admin) are server-issued and validated via SECURITY DEFINER functions used in RLS.
+**Key principle:** the browser never holds privileged credentials. AISensy, Razorpay, and Resend all live behind server-side functions. Tokens (customer + admin) are server-issued and validated via SECURITY DEFINER functions used in RLS.
 
 ---
 
@@ -151,7 +151,7 @@ Client redirects to `/order-tracking/:order_number` on success.
 - Accessible without login if URL is known (token in URL is the order number; further hardening optional).
 
 ### 6.5 Email Notifications
-Powered by Lovable's built-in email infrastructure, queued via pgmq.
+Powered by Resend, queued via pgmq.
 
 **Templates** (in `supabase/functions/_shared/transactional-email-templates/`):
 1. `order-placed-customer.tsx`
@@ -169,7 +169,7 @@ Powered by Lovable's built-in email infrastructure, queued via pgmq.
    - Subject: `Delivered! Tell us what you think 💜`
    - Triggered on `delivered` status.
 
-**Sender:** verified subdomain on `korasutra.com` (e.g. `notify.korasutra.com`).
+**Sender:** verified Resend sending domain on `korasutra.com` (e.g. `notify.korasutra.com`).
 
 ### 6.6 Admin Panel (`/admin`) — Redesigned
 
@@ -277,9 +277,12 @@ After successful migration the storefront switches data source from `lib/shopify
 | `RAZORPAY_KEY_ID` | Razorpay dashboard | client + edge functions |
 | `RAZORPAY_KEY_SECRET` | Razorpay dashboard | `razorpay-create-order`, `razorpay-verify` |
 | `RAZORPAY_WEBHOOK_SECRET` | Razorpay dashboard | webhook handler |
+| `RESEND_API_KEY` | Resend dashboard | `send-order-emails`, order status emails |
+| `RESEND_FROM_EMAIL` | Resend verified domain | transactional email sender |
+| `RESEND_REPLY_TO_EMAIL` | support inbox | reply-to header |
 | `ADMIN_NOTIFICATION_EMAIL` | constant | `korasutra.official@gmail.com` |
 
-User provides AISensy + Razorpay keys later; edge functions are scaffolded with placeholders that return `503 service_not_configured` until keys are added.
+User provides AISensy, Razorpay, and Resend keys later; server-side functions are scaffolded with placeholders that return `503 service_not_configured` until keys are added.
 
 ---
 
