@@ -477,29 +477,14 @@ export default function ProductDetail() {
   };
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!product || !selectedVariant) {
       toast.error('Please select a variant', { position: 'top-center' });
       return;
     }
 
-    if (!isAuthenticated) {
-      toast.error('Sign in required', {
-        description: 'Please sign in with your mobile number to place an order.',
-        position: 'top-center',
-      });
-      setIsAuthModalOpen(true);
-      return;
-    }
-
-    // Open payment method selection modal
-    setIsPaymentModalOpen(true);
-  };
-
-  const handleBuyNowCheckout = async (paymentMethod: 'prepaid' | 'cod') => {
-    const variant = product?.variants.edges.find(
+    const variant = product.variants.edges.find(
       (e) => e.node.id === selectedVariant
     )?.node;
 
@@ -511,16 +496,10 @@ export default function ProductDetail() {
         { variantId: variant.id, quantity: 1 },
       ];
 
-      // Add COD fee line item if COD selected
-      if (paymentMethod === 'cod') {
-        cartItems.push({ variantId: COD_FEE_VARIANT_ID, quantity: 1 });
-      }
-
       const checkoutUrl = await createStorefrontCheckout(cartItems);
 
       if (checkoutUrl) {
-        setIsPaymentModalOpen(false);
-        toast.success('Redirecting to checkout...', { position: 'top-center' });
+        toast.success('Redirecting to secure checkout...', { position: 'top-center' });
         window.open(checkoutUrl, '_blank');
       } else {
         toast.error('Failed to create checkout. Please try again.', { position: 'top-center' });
